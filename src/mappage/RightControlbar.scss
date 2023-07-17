@@ -1,0 +1,96 @@
+.RightControlbar{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5px;
+    height: 100vh;
+    border: 0;
+    overflow: scroll;
+        .RightControlbar_inner{
+            background-color: #fafafa;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            .RightControlbar_header{
+                font-size: 30px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                
+            }
+            .RightControlbar_contents{
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 100vh;
+                .RightControlbar_contents_li{
+                    padding: 10px;
+                    margin-bottom: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                    height: 100px;
+                    // https://www.myro.co.kr/getSpotImage/amsterdam?no=1021
+                    .RightControlbar_contents_img{
+                        // background-image: url(https://www.myro.co.kr/getSpotImage/amsterdam?no=1021);
+                        // background-repeat: no-repeat;
+                        // overflow: auto;
+                        width: 100px;
+                        height: 50px;
+                        .RightControlbar_contents_img_i{
+                            width: 100px;
+                            height: 70px;
+                        }
+                    }
+                    .RightControlbar_contents_p{
+                        width: 55%;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        .RightControlbar_contents_p_left{
+                            display: flex;
+                            justify-content: flex-start;
+                            :nth-child(1){
+                                margin-right: 10px;
+                                font-size: 15px ;
+                                text-align: left;
+                            }
+                            :nth-child(2){
+                                color: gray;
+                                font-size: 15px ;
+                                text-align: left;
+                            }
+                        }
+                        .RightControlbar_contents_p_right{
+                            display: flex;
+                            justify-content: flex-end;
+                            font-size: 18px;
+                            :nth-child(1){
+                                margin-right: 10px;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        
+}
+
+@media (max-width:600px){
+    .RightControlbar{
+        background-color: rgba( 255, 255, 255, 0.5 ) ;
+        position: absolute;
+        right: 0;
+        .RightControlbar_inner{
+            background-color: rgba( 255, 255, 255, 0.5 ) ;
+        }
+        
+    }
+}

@@ -1,0 +1,69 @@
+메인페이지
+	1)여행선택
+	2)사이트소개
+	3)이용방법
+
+
+
+
+로그인 페이지
+
+
+일정만들기
+	1)달력,선택목록 컴포넌트
+	2)멀티버튼 (지도 div위에 떠있게)
+		-- 이용방법,여행기(블로그포스팅),추천일정,일정생성
+	3)지도(googlemaps api)
+	3)추천 여행지.
+	
+
+일정생성후 뜨는 페이지
+일정저장,이메일전송,엑셀표출력
+
+
+
+
+1. 프레젠테이셔널 컴포넌트
+
+
+2. 컨테이너 컴포넌트
+
+
+3. 모듈
+
+
+
+	app.js
+	index.js
+
+
+폴더정리 
+
+login 폴더
+로그인 관련 컴포넌트 
+loginpage
+Join
+FindId
+FindPassword
+
+pages 폴더
+메인페이지
+	MainTop
+	MainBottom
+	FindPlace
+mappage 폴더 
+	googlemaps
+	leftControlbar
+	rightControlbar
+
+components폴더
+	Header
+	Footer
+	맵페이지에서 추가로 뜨는 화면들 컴포넌트에 넣어서사용(ex.블로그 후기띄우기,여행코스완성후 뜨는화면)
+
+
+
+보완 내용
+
+구글맵 마커 디자인, 지역이름 크기랑 마커크기, 클릭했을때 설명볼수있게 
+드로잉 매니저 지우기, autocomplete, search box

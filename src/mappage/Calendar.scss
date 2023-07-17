@@ -1,0 +1,37 @@
+.react-datepicker__month-container{
+    width: 100%;
+}
+.calP{
+    margin-top: 20px;
+    font-size: 24px;
+}
+// @media ( max-width: 1200px ){
+//     .react-datepicker{  
+//     }
+// }
+
+@media ( max-width: 768px ){
+    .react-datepicker{
+        .react-datepicker__month-container{
+        }
+    }
+
+}
+
+@media ( max-width: 600px ){
+    .calP{
+        display: none;
+    }
+    
+
+    .react-datepicker{
+        *{
+            display:none;
+        }
+        // .react-datepicker__month-container{
+        //     display: none;
+        // }
+    }
+
+
+}

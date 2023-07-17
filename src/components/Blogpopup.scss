@@ -1,0 +1,87 @@
+.blogModal{
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 1;
+        transition: opacity 0.15s linear;
+
+        &.hidden{
+            display: none;
+        }
+        .blogpopup{
+            display: flex;
+        }
+
+        .categorybuttons{
+            width: 200px;
+            /* height: 500px; */
+            padding-left: 20px;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            .categorybutton{
+                width: 100%;
+                height: 60px;
+                min-height: 60px;
+                background-color: #000;
+                margin: 8px;
+                border-radius: 4px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                cursor: pointer;
+
+                div{
+                    color: #fff;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    padding-left: 8px;
+                }
+            }
+        }
+        .posts{
+            position: relative;
+            margin: 5px 0;
+            width: 80vw;
+            background: #fff;
+            padding: 16px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .close{
+                position: absolute;
+                z-index: 5;
+                top: 0;
+                right: 4px;
+                color: #000;
+                cursor: pointer;
+                font-size: 1.4rem;
+            }
+            #blogframe{
+                width: 100%;
+                padding: 4px;
+                iframe{
+                    display: block;
+                    border: none;
+                    height: 65vh;
+                    width: 100%;
+                }
+            }
+        }
+}
+

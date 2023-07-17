@@ -1,0 +1,113 @@
+.recommendModal{
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    .recommendModal_inner{
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.6);
+
+    .recommendTop{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 10px;
+        div{font-size: 50px;}
+        color: #fff;
+        position: relative;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        .Recommend_close{
+            position: absolute;
+            right: 320px;
+            top: -5px;
+        }
+    }
+    .recommendBox{
+        margin: 0 auto;
+        width: 50%;
+        height: 70%;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f6f6f6 ;
+        padding: 35px;
+        .innerRecommend{
+            height: 100%;
+            background-color: #fff;
+            padding: 10px;
+            .recommendimg{
+                width: 100%;
+                height: 75%;
+                position: relative;
+                .slide{
+
+                }
+                div{
+                    width: 100%;
+                    img{
+                        width: 90%;
+                    }
+                }
+                .ant-carousel{
+                    height: 100%;
+                    div{
+                        height: 100%;
+                    }
+                }
+                button{
+                    position: absolute;
+                    left: 43.5%;
+                    bottom: -5%;
+                    width: 15%;
+                    height: 10%;
+                    border: none;
+                    // box-shadow: rgb(31 38 135 / 10%) 0px 8px 32px 0px;
+                    backdrop-filter: blur(4px);
+                    background: #f4c7a2;
+                    border-radius: 4px;
+                    color: #fff;
+                    font-size: bold;
+                    font-weight: 500;
+                    cursor: pointer;
+                }
+            }
+            .recomendplace{
+                margin-top: 15px;
+                height: 25%;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-left: 20px;
+                width: 100%;
+                .chip{
+                    // margin: 5px 5px;
+                    color: #fff;
+                    padding: 5px 15px;
+                    height: 20%;
+                    margin-right: 5px;
+                    background-color: #565656;
+                    border-radius: 10px;
+                    font-size: 85%;
+                    cursor: pointer;
+                    hs{
+                        pointer-events: none;
+                    }
+                    &.click{
+                        background-color: #888;
+                    }
+                }
+            }
+        }
+        
+    }
+
+}
+:where(.css-dev-only-do-not-override-ixblex).ant-carousel .slick-dots-bottom {
+    bottom: 23px;
+}
+}

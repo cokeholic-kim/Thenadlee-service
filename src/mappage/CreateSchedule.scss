@@ -1,0 +1,39 @@
+* {
+    margin: 0; padding: 0; box-sizing: border-box ; 
+}
+
+@media ( max-width: 600px ) {
+    #map{
+        flex-direction: column;
+    }
+}
+//     div{
+//         display: flex;
+//         flex-direction: column;
+//         justify-content: center;
+//         align-items: center;
+//         padding: 0;
+        // .LeftBox{
+        //     width: auto;
+        //     height: 30vh;
+        //     border: 0;
+        //     display: block;
+        //     border: 0;
+        // }
+        // .GoogleMapBox{
+        //     display: block;
+        //     border: 0;
+        // }
+        // .RightBox{
+        //     width: auto;
+        //     height: 30vh;
+        //     background-color: #fafafa;
+        //     display: block;
+        //     border: 0;
+        // }
+        // .SearchBox{
+        //     display: none;
+        // }
+
+//     }
+// }

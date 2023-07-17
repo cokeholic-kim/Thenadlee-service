@@ -1,0 +1,305 @@
+.AddTurning_contents_li{
+    padding: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100px;
+    position: relative;
+    .AddTurning_contents_img{
+        width: 95px;
+        height: 65px;
+        margin-right: 5px;
+        .AddTurning_contents_img_i{
+            width: 95px;
+            height: 65px;
+        }
+    }
+    .AddTurning_contents_arrow{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around ;
+        align-items: center;
+        height: 75%;
+        position: absolute;
+        right: 15px;
+        top: 5px ;
+        :nth-child(1){
+            font-size: 15px;
+        }
+        :nth-child(1):hover{
+            font-size: 25px;
+            transition: 0.5s;
+        }
+        :nth-child(2){
+            font-size: 15px;
+        }
+        :nth-child(2):hover{
+            font-size: 25px;
+            transition: 0.5s;
+        }
+
+    }
+    .AddTurning_contents_p{
+        width: 55%;
+        display: flex;
+        flex-direction: column;
+        .AddTurning_contents_p_left{
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            :nth-child(1){
+                margin-right: 10px;
+                font-size: 15px;
+                text-align: left;
+            }
+            :nth-child(2){
+                color: gray;
+                font-size: 15px;
+                text-align: left;
+            }
+        }
+        .AddTurning_contents_p_right{
+            display: flex;
+            justify-content: flex-end;
+            font-size: 18px;
+            :nth-child(1){
+                margin-right: 10px;
+            }
+        }
+    }
+
+}
+
+
+
+@media ( max-width: 1200px ) {
+.LeftControlbar .background .left_bottom_ul .ul-style .AddTurning_contents_li{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 90%;
+            margin-left: 10px;
+            .AddTurning_contents_img{
+                margin-bottom: 5px;
+                // width: 100%;
+                width: 120px ;
+                // .RightControlbar_contents_img_i{
+                //     // width: 100px;
+                //     // height: 50px;
+                // }
+                .AddTurning_contents_img_i{
+                    width: 120px ;
+                }
+            }
+            .AddTurning_contents_arrow{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around ;
+                align-items: center;
+                height: 75%;
+                position: absolute;
+                right: -14px;
+                top: 5px ;
+                :nth-child(1){
+                    font-size: 15px;
+                }
+                :nth-child(1):hover{
+                    font-size: 25px;
+                    transition: 0.5s;
+                }
+                :nth-child(2){
+                    font-size: 15px;
+                }
+                :nth-child(2):hover{
+                    font-size: 25px;
+                    transition: 0.5s;
+                }
+        
+            }
+            .AddTurning_contents_p{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                width: 120px;
+                .AddTurning_contents_p_left{
+                    width: 90%;
+                    display: flex;
+                    flex-direction: column;
+                    :nth-child(1){
+                        width: 100%;
+                    }
+                    :nth-child(2){
+                        width: 100%;
+                        span{
+                            font-size: 12px;
+                        } 
+                    }
+                }
+                .AddTurning_contents_p_right{
+                    width: 10%;
+                    margin-left: 10px;
+                    .div{
+                        width: 90%;
+                    }
+                    
+                }
+            }
+        }
+}
+
+@media ( max-width: 768px ) {
+.LeftControlbar .background 
+    .left_bottom_ul{
+        .center{}
+        .center2{}
+        .ul-style .AddTurning_contents_li{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 60%;
+            margin-left: 20px;
+            height: auto;
+            .AddTurning_contents_img{
+                margin-bottom: 5px;
+                // width: 100%;
+                width: 100px ;
+                // .RightControlbar_contents_img_i{
+                //     // width: 100px;
+                //     // height: 50px;
+                // }
+                .AddTurning_contents_img_i{
+                    width: 100px ;
+                }
+            }
+            .AddTurning_contents_arrow{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around ;
+                align-items: center;
+                height: 75%;
+                position: absolute;
+                right: -35px;
+                top: 5px ;
+                :nth-child(1){
+                    font-size: 15px;
+                }
+                :nth-child(1):hover{
+                    font-size: 25px;
+                    transition: 0.5s;
+                }
+                :nth-child(2){
+                    font-size: 15px;
+                }
+                :nth-child(2):hover{
+                    font-size: 25px;
+                    transition: 0.5s;
+                }
+        
+            }
+            .AddTurning_contents_p{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100px;
+                .AddTurning_contents_p_left{
+                    width: 80%;
+                    :nth-child(1){
+                        width: 100%;
+                    }
+                    :nth-child(2){
+                        width: 100%;
+                        span{
+                            font-size: 12px;
+                            width: 100%;
+                        } 
+                    }
+                }
+                .AddTurning_contents_p_right{
+                    width: 20%;
+                    font-size: 15px;
+                    .div{
+                        width: 80%;
+                        span{
+                            width: 80%;
+                        }
+                    }
+                    
+                }
+            }
+        }
+}
+}
+
+@media ( max-width: 600px ) {
+.LeftControlbar .background .left_bottom_ul .ul-style .AddTurning_contents_li{
+            // margin-bottom: 30px;
+            // margin-left: 10px;
+            // margin-bottom: 30px;
+            // width: 70%;
+            // margin-left: 10px;
+            .AddTurning_contents_img{
+                // order: 1;
+                // width: 130px ;
+                .AddTurning_contents_img_i{
+                    // width: 130px ;
+                    // height: 70px;
+                }
+                // margin-bottom: 25px;
+                // // width: 100%;
+                // width: 120px ;
+                // // .RightControlbar_contents_img_i{
+                // //     // width: 100px;
+                // //     // height: 50px;
+                // // }
+                // .RightControlbar_contents_img_i{
+                //     width: 120px ;
+                // }
+            }
+            .AddTurning_contents_arrow{
+                // display: flex;
+                // flex-direction: column;
+                // justify-content: space-around ;
+                // align-items: center;
+                // height: 75%;
+                // position: absolute;
+                // right: -14px;
+                // top: 5px ;
+                :nth-child(1){
+                    // font-size: 15px;
+                }
+                :nth-child(1):hover{
+                    // font-size: 25px;
+                    // transition: 0.5s;
+                }
+                :nth-child(2){
+                    // font-size: 15px;
+                }
+                :nth-child(2):hover{
+                    // font-size: 25px;
+                    // transition: 0.5s;
+                }
+        
+            }
+            .AddTurning_contents_p{
+                // width: 130px ;
+                // display: flex;
+                .AddTurning_contents_p_left{
+                    :nth-child(1){
+                        // font-size: 0;
+                        // width: 90px;
+                    }
+                    :nth-child(2){
+                        // font-size: 40px;
+                        // font-size: 30px ;
+                        // order: 2;
+                    }   
+                }
+                .AddTurning_contents_p_right{
+                    // order: 1;
+                }
+        }
+    }
+}

@@ -1,0 +1,303 @@
+.LeftControlbar{
+    padding: 20px 10px;
+    background: rgba(255, 255, 255, 0.25);
+    width: 30%;
+    height: 100vh;
+    background-color: #ffffff;
+    overflow-y: scroll ;
+
+    .background{
+        background: rgba(255, 255, 255, 0.25);
+        width: 100%; 
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    
+    }
+    .Place{
+        width: 100%;
+        margin-bottom:15px ;
+        text-align: center;
+        #korCityname{font-size: 30px; font-weight: bold; margin-bottom: 10px;}
+        #engCityname{font-size: 18px; font-weight: 600;}
+    }
+
+    .center{text-align: center;}
+
+    .planeticketing{
+        width: 100%;
+        #Flightbutton{
+            display: flex;
+            justify-content: center;
+        }
+        .Flightbutton{
+            color: #000;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            padding: 4px 8px;
+            box-shadow: rgba(31, 38, 135, 0.14 ) 0px 8px 32px 0px;
+            background: rgba(255, 255, 255, 0.25);
+        }
+    }
+    .selectList{
+        width: 100%;
+        margin-top: 30px;
+        font-size: 20px;
+    }
+    #tabs{
+        width: 100%;
+        .tab{
+            color:#616161 ;
+            border-bottom:2px solid #98dde3;
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
+            font-size: 18px;
+        }
+    }
+
+    .left_bottom_ul{
+        width: 100%;
+    }
+    .center{
+        width: 100%;
+        #seletedSpotsCount {
+            font-size: 1.64rem;
+            color: #ffa500;
+            font-family: 'Montserrat';
+        }
+    }
+    .center2{
+        width: 100%;
+        .Clearbtn {
+            width: 70%;
+            line-height: 0;
+            height: 36px;
+            box-shadow: none;
+            background-color: #ff1744 !important;
+            color: #fff;
+            border: none;
+            h6{
+                font-size: 16px;
+            }
+        }
+    }
+    hs{
+        font-size:9px ;
+        color: #aaa;
+    }
+    .ul-style{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    }
+}
+
+@media ( max-width: 1200px ) {
+    .LeftControlbar{
+        width: 35%;
+        z-index: 101;
+    }
+     .background{
+        .Place{
+            // 도시이름, 날씨 등이 있다. 
+            width: 70%;
+            #korCityname{
+                font-size: 25px;
+            }
+            #engCityname{
+                margin-bottom: 20px;
+            }
+            .wheather{
+                display: none;
+                // position: absolute;
+                // width: 50%;
+                // top: -20px;
+                // left: 50px;
+                // z-index: 90;
+                // text-shadow: 5px 5px 5px white;
+                // background-color: rgba(255, 255, 255, 0.25);
+            }
+        }
+        .planeticketing{
+            display: none ;
+        }
+
+        .selectList{
+            font-size: 25px;
+        }
+        .center{
+            display: none;
+        }
+        .left_bottom_ul{
+            // .center{
+            //     display: flex;
+            //     flex-direction: column;
+            // }
+            // .center2{
+            //     .Clearbtn{
+            //         width: 100%;
+            //         h6{
+            //             font-size: 13px;
+            //         }
+            //     }
+            // }
+        }
+}
+}
+
+
+
+@media ( max-width: 768px ) {
+    .LeftControlbar{
+     .background{
+        .planeticketing{
+            display: none;
+        }
+        div:nth-child(3){
+            display: none;
+        }
+        .left_bottom_ul{
+            .center{
+                display: flex;
+                flex-direction: column;
+            }
+            .center2{
+                .Clearbtn{
+                    width: 100%;
+                    h6{
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+@media ( max-width: 600px ) {
+    .LeftControlbar{
+        width: 0;
+        height: 0;
+        padding: 0;
+        background-color: rgba( 255, 255, 255, 0.5 ) ;
+        // z-index: -6 ;
+        .background{
+            .Place{
+                position: absolute;
+                width: 150px;
+                z-index: 50 ;
+                left: 100px;
+                top: 60px;
+            }
+            .selectList{
+                display: none;
+            }
+            .left_bottom_ul{
+                .center{
+                    display: none;
+                    
+                }
+                .center2{
+                    .Clearbtn{
+                        display: block;
+                        position: absolute;
+                        width: 150px;
+                        z-index: 50 ;
+                        left: 100px;
+                        top: 130px;
+
+                    }
+                    
+                }
+                .ul-style{
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+//     @media ( max-width: 600px ) {
+//         * {
+//             margin: 0;
+//             padding: 0;
+//             box-sizing: border-box;
+            
+//         }
+//         .LeftControlbar{
+//             width: 100% ;
+//             height: 220px ;
+//             overflow-x: scroll;
+//             .background{
+//                 width: 100%;
+//                 height: 150px;
+//                 .Place{
+//                     position: absolute;
+//                     top: 20px ;
+//                     z-index: 5;
+//                 }
+//                 .planeticketing{
+//                     display: none;
+//                 }
+//                 .selectList{
+//                     font-size: 35px;
+//                     order: 1;
+//                     position: relative;
+//                     p{
+//                         position: absolute;
+//                         font-size: 25px;
+//                         left: 0;
+//                         top: 30px;
+//                         z-index: 10;
+//                     }
+//                     // order: 2;
+//                     // font-size: 25px;
+//                     // font-weight: bold;
+//                 }
+//                 .center{
+//                     display: none;
+//                 }
+//                 .left_bottom_ul{
+//                     display: flex;
+//                     flex-direction: row;
+//                     .center{
+//                         // 시간
+//                         margin: 0;
+//                         order: 1;
+//                         position: absolute;
+//                         top: 0;
+//                     }
+//                     .center2{
+//                         order: 2;
+//                         position: relative ;
+//                         height: 0;
+//                         .Clearbtn{
+//                             width: 100px;
+//                             position: absolute;
+//                             left: 0;
+//                             top: -70px;
+//                             z-index: 9;
+//                             h6{
+//                                 font-size: 13px;
+//                             }
+//                         }
+//                     }
+//                     .ul-style{
+//                         display: flex;
+//                         flex-direction: row;
+    
+//                     }
+//                 }
+//             }
+    
+//         }
+//     }
+// }

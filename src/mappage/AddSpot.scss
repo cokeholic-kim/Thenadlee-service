@@ -1,0 +1,249 @@
+.RightControlbar_contents_li{
+    padding: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    height: 200px;   
+    .RightControlbar_contents_img{
+        width: 100px;
+        height: 50px;
+        margin-right: 5px;
+        .RightControlbar_contents_img_i{
+            width: 100px;
+            height: 50px;
+        }
+    }
+    .RightControlbar_contents_p{
+        width: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .RightControlbar_contents_p_left{
+            display: flex;
+            flex-direction: column;
+            :nth-child(1){
+                margin-right: 10px;
+                font-size: 18px;
+            }
+            :nth-child(2){
+                color: gray;
+                font-size: 18px;
+            }
+        }
+        .RightControlbar_contents_p_right{
+            display: flex;
+            justify-content: flex-end;
+            :nth-child(1){
+                margin-right: 10px;
+                font-size: 18px;
+            }
+        }
+    } 
+}
+
+
+@media ( max-width: 1200px ) {
+    .RightControlbar .RightControlbar_inner{
+        .RightControlbar_contents{
+            .RightControlbar_contents_li{
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 30px;
+                width: 90%;
+                margin-left: 10px;
+                .RightControlbar_contents_img{
+                    margin-bottom: 25px;
+                    // width: 100%;
+                    width: 120px ;
+                    // .RightControlbar_contents_img_i{
+                    //     // width: 100px;
+                    //     // height: 50px;
+                    // }
+                    .RightControlbar_contents_img_i{
+                        width: 120px ;
+                    }
+                }
+                .RightControlbar_contents_p{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    width: 125px;
+                    .RightControlbar_contents_p_left{
+                        width: 90%;
+                        margin-right: 10px;
+                        :nth-child(1){
+                            width: 100%;
+                            
+                        }
+                        :nth-child(2){
+                            width: 100%;
+                            span{
+                                font-size: 12px;
+                            } 
+                        }
+                    }
+                    .RightControlbar_contents_p_right{
+                        width: 10%;
+                        margin-left: 10px;
+                        display: flex;
+                        justify-items: flex-end;
+                        div{
+                            width: 90%;
+                        }
+                        
+                    }
+                }
+            }
+    }
+    }
+}
+
+@media ( max-width: 768px ) {
+    .RightControlbar .RightControlbar_inner{
+        .RightControlbar_header{
+            p{
+                font-size: 25px;
+            }
+        }
+        .RightControlbar_contents{
+            .RightControlbar_contents_li{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 30px;
+                width: 70%;
+                margin-left: 20px;
+                .RightControlbar_contents_img{
+                    margin-bottom: 25px;
+                    // width: 100%;
+                    width: 100px ;
+                    // .RightControlbar_contents_img_i{
+                    //     // width: 100px;
+                    //     // height: 50px;
+                    // }
+                    .RightControlbar_contents_img_i{
+                        width: 100px ;
+                    }
+                }
+                .RightControlbar_contents_p{
+                    display: flex;
+                    width: 100px;
+                    margin-right: 6px;
+                    .RightControlbar_contents_p_left{
+                        width: 90%;
+                        display: flex;
+                        justify-content: space-between;
+                        .RightControlbar_contents_p_left:nth-child(1){
+                            width: 100%;
+                            font-size: 0;
+                        }
+                        .RightControlbar_contents_p_left:nth-child(2){
+                            width: 100%;
+                            span{
+                                font-size: 12px;
+                                width: 100%;
+                            } 
+                        }
+                    }
+                    .RightControlbar_contents_p_right{
+                        width: 10%;
+                        div{
+                            width: 80%;
+                            span{
+                                width: 100%;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+    }
+    }
+}
+
+// @media ( max-width: 600px ) {
+//     .RightControlbar .RightControlbar_inner .RightControlbar_contents .RightControlbar_contents_li{
+//                 margin-bottom: 30px;
+//                 margin-left: 10px;
+//                 width: 130px ;
+//                 .RightControlbar_contents_img{
+//                     order: 1;
+//                     width: 130px ;
+//                     .RightControlbar_contents_img_i{
+//                         width: 130px ;
+//                         height: 70px;
+//                     }
+//                 }
+//                 .RightControlbar_contents_p{
+//                     width: 130px ;
+//                     display: flex;
+//                     justify-content: space-between;
+//                     .RightControlbar_contents_p_left{
+//                         :nth-child(1){
+//                             font-size: 0;
+//                             width: 90px;
+//                         }
+//                         :nth-child(2){
+//                             // font-size: 40px;
+//                             font-size: 30px ;
+//                         }
+//                     }
+//                     .RightControlbar_contents_p_right{
+//                         position: relative;
+//                         div{
+//                             // span{
+//                             //     font-size: 20px;
+//                             // }
+//                         }
+//                     }
+//                 }
+//             }
+//                     // margin-bottom: 25px;
+//                     // // width: 100%;
+//                     // width: 120px ;
+//                     // // .RightControlbar_contents_img_i{
+//                     // //     // width: 100px;
+//                     // //     // height: 50px;
+//                     // // }
+//                     // .RightControlbar_contents_img_i{
+//                     //     width: 120px ;
+//                     // }
+//                 }
+//                 .RightControlbar_contents_p{
+//                     // order: 2;
+//                     // position: absolute;
+//                     // right: 0;
+//                     // top: 0;
+//                     // display: flex;
+//                     // flex-direction: row;
+//                     // justify-content: space-between;
+//                     // width: 120px;
+//                     .RightControlbar_contents_p_left{
+//                         // order: 1;
+//                         // position: relative;
+//                             :nth-child(1){
+//                                 // position: absolute;
+//                                 // font-size: 0 ;
+    
+//                             }
+//                             :nth-child(2){
+//                                 // width: 100%;
+//                                 // order: 2 ;
+//                                 // color: white;
+//                                 span{
+//                                     // font-size: 13px;
+//                                 } 
+//                             }
+//                         }
+//                     .RightControlbar_contents_p_right{
+//                         // order: 2;
+//                         // color: white;
+//                         // font-size: 50px;
+//                         div{
+//                             // font-size: 50px;
+//                         }
+                        
+//                     }
+//                 }
