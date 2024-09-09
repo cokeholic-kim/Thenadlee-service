@@ -12,17 +12,16 @@ import { AiFillCaretUp,AiFillCaretDown } from "react-icons/ai";
 const AddTurning = ({adds,uparr,downarr,index}) => {
     const dispatch = useDispatch() ;
     const onclick= ()=>{
-        dispatch(setRight(adds.spotname,adds.nation,adds.lat,adds.lng ,adds.img,adds.time));
+        dispatch(setRight(adds.spotName,adds.lat,adds.lon ,adds.imageUrl));
     }
     return (
             <li className="AddTurning_contents_li">
                 <div className="AddTurning_contents_img">
-                    <img className='AddTurning_contents_img_i' src={adds.img}></img>
+                    <img className='AddTurning_contents_img_i' src={adds.imageUrl}></img>
                 </div>
                 <div className="AddTurning_contents_p">
                     <div className='AddTurning_contents_p_left'>
-                        <p>{adds.nation}</p>
-                        <p><span>{adds.spotname}</span></p>
+                        <p><span>{adds.spotName}</span></p>
                     </div>
                     <div className='AddTurning_contents_p_right'>
                         <div><span onClick={onclick}><FaTrash/></span></div>

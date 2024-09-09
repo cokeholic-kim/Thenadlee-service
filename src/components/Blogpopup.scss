@@ -11,6 +11,7 @@
         background: rgba(0, 0, 0, 0.6);
         opacity: 1;
         transition: opacity 0.15s linear;
+        padding:30px;
 
         &.hidden{
             display: none;

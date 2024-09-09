@@ -14,27 +14,31 @@ export const setRedo = (data) => ({
     type: SET_REDO,
     data    
 })
-export const setRight = (spotname,nation,lat,lng,img,time) => ({
+export const setRight = (spotName,lat,lon,imageUrl) => ({
     type: SET_RIGHT,
     add:{
-        spot_name : spotname,
-        Nation: nation,
-        spot_lat : lat,
-        spot_lng : lng,
-        img_url : img,
-        time : time
+        // spot_name : spotName,
+        // Nation: nation,
+        // spot_lat : lat,
+        // spot_lng : lon,
+        // img_url : img,
+        // time : time
+        spotName,
+        lat,
+        lon,
+        imageUrl
     }
 })
 
-export const setLeft = (spotname,nation,lat,lng,img,time)=>({
+export const setLeft = (spotName,lat,lon,imageUrl)=>({
     type:SET_LEFT,    
     add:{
-        spotname,
-        nation,
+        spotName,
         lat,
-        lng,
-        img,
-        time
+        lon,
+        imageUrl
+        // nation,
+        // time
     }
 })
 
@@ -70,7 +74,7 @@ export function adds(state=initialState,action){
     switch(action.type){
         case SET_RIGHT:
             // x 버튼 클릭 ,,왼쪽
-            const leftadds = state.left.filter(left=> left.spotname !== action.add.spot_name)
+            const leftadds = state.left.filter(left=> left.spotName !== action.add.spotName)
             return{
                 ...state,
                 left: leftadds,
@@ -78,8 +82,9 @@ export function adds(state=initialState,action){
             }
         case SET_LEFT:
             //플러스버튼클릭 ,,오른쪽... 밥먹는손
-            const rightadds = state.right.filter(right=> right.spot_name !== action.add.spotname)
-            console.log(action.add.spotname)
+            
+            // 파라미터로 들어온 spotName과 오른쪽상태값이 가지고있던 spot을 비교해서 같은값은 제거.
+            const rightadds = state.right.filter(right=> right.spotName !== action.add.spotName)
             return{
                 ...state,
                 left: state.left.concat(action.add),

@@ -21,10 +21,10 @@ const contentStyle = {
     background: '#364d79',  };
 
 //추천지역 받아오기 
-export async function recommendFetch(places){
-    const response = await axios.get(`${API_URL}/recommend/${places}`);
-    return response.data
-  }
+// export async function recommendFetch(places){
+//     const response = await axios.get(`${API_URL}/recommend/${places}`);
+//     return response.data
+//   }
 
 
 
@@ -32,38 +32,43 @@ export async function recommendFetch(places){
 
 
 const Recommend = ({place,setRecommend}) => {
-    const {places} = useParams() // 나라이름 받아오기
+    // const {places} = useParams() // 나라이름 받아오기
+    // const state = useAsync(()=>recommendFetch(places),[]);
+    // const {loading,error,data:recomdata} = state;
+    
+    
     const dispatch = useDispatch()
-    const state = useAsync(()=>recommendFetch(places),[]);
-    const {loading,error,data:recomdata} = state;
-
-
-    const data = useSelector(state=>state.add.data)
-    const left =useSelector(state => state.add.left)
+    const data = useSelector(state => state.add.data)
+    const left = useSelector(state => state.add.left)
+    
     const onChange = (currentSlide) => {
         console.log(currentSlide);
     };
+
     const clickall = ()=>{
-        const newdata = recomdata.map(data=>({
-            img:data.img_url,
-            lat:data.spot_lat,
-            lng:data.spot_lng,
-            nation:data.Nation,
-            spotname:data.spot_name,
-            time:data.time,
-        }))
+        // const newdata = recomdata.map(data=>({
+        //     img:data.img_url,
+        //     lat:data.spot_lat,
+        //     lng:data.spot_lng,
+        //     nation:data.Nation,
+        //     spotname:data.spot_name,
+        //     time:data.time,
+        // }))
+        
         let check = document.querySelectorAll('.chip')
         check.forEach(chip=>chip.classList.toggle('click'))
-        if(left.length == 0){
-            dispatch(setLeftAll(newdata))
+
+        if(left.length === 0){
+            dispatch(setLeftAll(place))
         }else{
             dispatch(setRedo(data))
         }
     }
-    if (loading) return <Skeleton/>
-    if (error) return <div>에러발생</div>
-    if (!recomdata) return null
-    console.log(recomdata)
+
+    // if (loading) return <Skeleton/>
+    // if (error) return <div>에러발생</div>
+    // if (!recomdata) return null
+
     return (
         <div className='recommendModal'>
             <div className='recommendModal_inner'>
@@ -74,13 +79,13 @@ const Recommend = ({place,setRecommend}) => {
                 <div className="recommendBox">
                     <div className='innerRecommend'>
                         <div className='recommendimg'>
-                            <Carousel className='slide' afterChange={onChange} >
-                                {recomdata.map(data=><div key={data.recommend}><img src={data.img_url} style={contentStyle}/>X</div>)}
+                            <Carousel className='slide' afterChange={onChange} autoplay="true" >
+                                {place.map((data,index)=><div key={index}><img src={data.imageUrl} style={contentStyle}/>X</div>)}
                             </Carousel>
                             <button title='전체선택' className='allSelect' onClick={clickall}>모두 선택</button>
                         </div>
                         <div className='recomendplace'>
-                            {recomdata.map(data=><Smallrecommend data={data}/>)}
+                            {place.map(data=><Smallrecommend data={data}/>)}
                         </div>
                     </div>
                 </div>

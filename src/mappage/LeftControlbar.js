@@ -15,11 +15,6 @@ import Weather from './Weather';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Skeleton } from 'antd';
 
-async function monthFetch(places){
-    const response = await axios.get(`${API_URL}/citydesc/${places}`);
-    return response.data
-}
-
 const GlobalStyle = createGlobalStyle`
   *{  
     box-sizing: border-box;
@@ -43,8 +38,8 @@ const Wrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const LeftControlbar = ({place,setToggle,toggle}) => {
 
+const LeftControlbar = ({place,setToggle,toggle,month}) => {
     const dispatch = useDispatch() ;
     const [cold, setCold] = useState();
     const places = useSelector(state=>state.add)
@@ -59,6 +54,7 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
         });
         setTime(added)
     }
+    
     useEffect(()=>{
         addTime()
         console.log(time)
@@ -83,16 +79,24 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
         let newarr = places.left
         newarr.splice(index+1,0,downitem[0])
         dispatch(setDown(newarr))
-        console.log(downitem,newarr)
         setToggle(!toggle)
     }
 
-     //캘린더 날짜 상태관리
-     const [ dates , setDates ] = useState({
-        start:"",    
+    const getToday = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+        const day = String(today.getDate()).padStart(2, '0');
+    
+        return `${year}-${month}-${day}`;
+    }
+
+    //캘린더 날짜 상태관리
+    const [ dates , setDates ] = useState({
+        start:getToday(),    
         end: ""
     })
-    //시작날짜와 끝날짜 셋
+    //시작날짜와 끝날짜 set
     const hideDateDiv = (start,end) => {
         if(start && end){
            setDates({
@@ -103,34 +107,20 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
             return;
         }
     }
-    const term= (dates.start && dates.end) ? <p name='start'>{dates.start}~{dates.end}</p>:<></>
-    const monthInfo =Number(dates.start.slice(5,7));
-    const {places:cityname} = useParams()
-    const state = useAsync(()=>monthFetch(cityname),[]);
-    const {loading,error,data} = state;
-    if (loading) return <Skeleton/>
-    if (error) return <div>에러발생</div>
-    if (!data) return null
-    let strArr = [];
-    for (let Key in data[0]) {
-        if(data[0].hasOwnProperty(Key)) {
-            strArr.push(data[0][Key]);
-        }
-    }
-    const recommend = strArr.filter((str,index)=>index == monthInfo-1)
+    const term = (dates.start && dates.end) ? <p name='start'>{dates.start}~{dates.end}</p>:<></>
+    const monthInfo = Number(dates.start.slice(5,7));
 
-
-
-
+    const recommend = month.find(({month})=> month === monthInfo)
+    console.log(place)
     return (
         <div className='LeftControlbar'>
             <div className='background'>
                 <div className='Place'>
-                    <div id="korCityname">{place.kor_cityname}</div>
-                    <div id="engCityname">{place.cityname}</div>
+                    <div id="korCityname">{place.name}</div>
+                    {/* <div id="engCityname">{place.cityname}</div> */}
                     <Wrapper className='wheather' cold={cold}>
                         <GlobalStyle/>
-                        <Weather setCold={setCold} cityname={place.cityname}/>
+                        <Weather setCold={setCold} cityname={place.name}/>
                     </Wrapper>
                 </div>
                 <div className='planeticketing'>
@@ -154,8 +144,8 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
                 </div>
                 <div className="left_bottom_ul">
                     <div className="center" style={{margin:"8px 0"}}>
-                        <span id="seletedSpotsCount">{time}</span>
-                        <span id="totalTimeArea"><span>(총</span><span id="sumOfSpotStayingH">{time}</span><span data-langnum="20">시간</span>)</span>
+                        {/* <span id="seletedSpotsCount">{time}</span> */}
+                        {/* <span id="totalTimeArea"><span>(총</span><span id="sumOfSpotStayingH">{time}</span><span data-langnum="20">시간</span>)</span> */}
                     </div>
                     <div className="center2" style={{display:"flex", justifyContent: "center" , alignItems: "center", width: "100%" , padding: "8px 0"}}>
                         <button className="Clearbtn" onClick={()=>dispatch(setRedo(places.data))}>
@@ -164,7 +154,7 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
                     </div>
                         {term}
                     <ul className="ul-style" id="cart">
-                        { places.left.length != 0 ? places.left.map((d,index)=> <AddTurning key={index} adds={d} uparr={uparr} downarr={downarr} index={index}/>): 
+                        { places.left.length != 0 ? places.left.map((data,index)=> <AddTurning key={index} adds={data} uparr={uparr} downarr={downarr} index={index}/>): 
                             <li id="cartList" className="center">
                                 <hs>
                                     <span data-langnum="27">가고 싶은 장소들을 검색하여 추가해주세요.</span><br/>
@@ -177,7 +167,7 @@ const LeftControlbar = ({place,setToggle,toggle}) => {
                     </ul>
                 </div>
                 </div>
-                {recommend.length > 0 && <MonthDesc recommenddesc={recommend}/>}
+                {recommend && <MonthDesc recommenddesc={recommend.description}/>}
                 
             </div>            
     );

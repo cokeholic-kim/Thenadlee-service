@@ -5,22 +5,23 @@ import { setLeft, setRight } from '../modules/add';
 
 const Smallrecommend = ({data}) => {
     const dispatch = useDispatch()
+    
     const onClick=(e)=>{
         e.target.classList.toggle('click')
-        if(e.target.className.split(" ")[1]=="click"){
-            dispatch(setLeft(data.spot_name,data.Nation,data.spot_lat,data.spot_lng,data.img_url,data.time))
+        if(e.target.className.split(" ")[1]==="click"){
+            dispatch(setLeft(data.spotName,data.lat,data.lon,data.imageUrl))
         }else{
-            dispatch(setRight(data.spot_name,data.Nation,data.spot_lat,data.spot_lng,data.img_url,data.time));
+            dispatch(setRight(data.spotName,data.lat,data.lon,data.imageUrl));
         }
     }
     const passleft=()=>{
-        dispatch(setLeft(data.spot_name,data.Nation,data.spot_lat,data.spot_lng,data.img_url,data.time))
+        dispatch(setLeft(data.spotName,data.lat,data.lon,data.imageUrl))
     } 
 
     return (
         <div className="chip" onClick={e=>onClick(e)}>
             <SiStrapi/>
-            <hs disabled="false">{data.spot_name}</hs>
+            <hs disabled="false">{data.spotName}</hs>
         </div>    
     );
 };

@@ -4,8 +4,8 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const api = {
-  key: "b3514c282b0881d3c62d1738e4d0f678",
-  base: "https://api.openweathermap.org/data/2.5/",
+  key: process.env.REACT_APP_WHEATHER_API_KEY,
+  base: process.env.REACT_APP_WHEATHER_BASE_URL
 };
 
 function Weather({ setCold, cityname }) {
@@ -37,6 +37,7 @@ function Weather({ setCold, cityname }) {
   };
 
   const url = `${api.base}weather?q=${cityname}&appid=${api.key}`;
+  console.log(url)
   const [weather, setWeather] = useState("");
 
   // 날씨 가져오기

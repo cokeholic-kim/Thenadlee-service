@@ -19,17 +19,17 @@ export async function markerFetch(places){
 
 // SET_RIGHT상태가 필요
 
-const RightControlbar = ({place,map}) => {
+const RightControlbar = ({map,marker}) => {
 
-    const {places} = useParams()
-    const state = useAsync(()=>markerFetch(places),[]);
-    const {loading,error,data} = state;
-    if (loading) return <Skeleton/>
-    if (error) return <div>에러발생</div>
-    if (!data) return null
+    // const {places} = useParams()
+    // const state = useAsync(()=>markerFetch(places),[]);
+    // const {loading,error,data} = state;
+    // if (loading) return <Skeleton/>
+    // if (error) return <div>에러발생</div>
+    // if (!data) return null
    
     return (
-        <RightControlPage data={data} map={map}/>
+        <RightControlPage data={marker} map={map}/>
     );
 };
 
@@ -40,7 +40,7 @@ export default RightControlbar;
 // RightControlPage
 
 function RightControlPage({data,map}){
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     useEffect(()=>{
         dispatch(setRedo(data))
     },[])
@@ -53,8 +53,11 @@ function RightControlPage({data,map}){
                     <p>추천장소</p>
                 </div>
                 <ul className=" RightControlbar_contents">
-                    {rightdata.map((d,index)=><AddSpot key={index} spotname={d.spot_name} 
-                    nation={d.Nation} p_lat={d.spot_lat} p_lng={d.spot_lng} img={d.img_url} time={d.time} map={map}/>)}
+                    {rightdata.map((d,index)=><AddSpot key={index} spotname={d.spotName} 
+                    // nation={d.Nation} 
+                    p_lat={d.lat} p_lng={d.lon} img={d.imageUrl} 
+                    // time={d.time} 
+                    map={map}/>)}
                 </ul>
             </div>
         </div>

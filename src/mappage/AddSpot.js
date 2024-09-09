@@ -4,21 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLeft } from "../modules/add";
 import { setENTER, setLEAVE } from "../modules/hover";
 import './AddSpot.scss' ;
+import { useState } from "react";
 
 // 데이터 카드(li)에 대한 컴포넌트
 
-const AddSpot = ({spotname,nation, p_lat, p_lng , img,  time ,map}) => {
+const AddSpot = ({spotname, p_lat, p_lng , img ,map}) => {
     const adds = useSelector(state=>state.add.right)
 
     // const [deleteArr, setDeleteArr ] = useState(spotname) ; 
     const dispatch = useDispatch() ;
+   
     const onclick= ()=>{
-
-        dispatch(setLeft(spotname,nation,p_lat,p_lng,img,time));
-        
-
-        // +시 배열에서 삭제
-        // const  = state.adds.filter(add=> add.spotname !== action.spotname)
+        dispatch(setLeft(spotname,p_lat,p_lng,img));
+        // 왼쪽으로 넘길시 오른쪽 배열에서 삭제
+        // const newarr = adds.filter(add => add.spotname !== action.spotname)
     }
 
     const onMouseEnter = (lat,lng)=>{
@@ -38,7 +37,7 @@ const AddSpot = ({spotname,nation, p_lat, p_lng , img,  time ,map}) => {
             </div>
             <div className=" RightControlbar_contents_p">
                 <div className='RightControlbar_contents_p_left'>
-                    <p>{nation}</p>
+                    {/* <p>{nation}</p> */}
                     <p><span>{spotname}</span></p>
                 </div>
                 <div className='RightControlbar_contents_p_right'>
