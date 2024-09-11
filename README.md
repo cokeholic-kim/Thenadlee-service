@@ -1,70 +1,44 @@
-# Getting Started with Create React App
+# 🖥️ 프로젝트 소개
+React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
+<br>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🕰️ 개발 기간
+* 23.02.01 - 23.02.14
 
-## Available Scripts
+## 🧑‍🤝‍🧑 맴버구성
+ - 김동현: 여행지 , 여행스팟 NodeJs API 서버 개발, 지도페이지 컴포넌트 개발
+ - 고요한: 구글 API연동 , API를 이용한 기능 개발.
+ - 김민준: 회원가입, 로그인, 로그아웃, 아이디 찾기, 비밀번호 찾기, 비밀번호 변경
+ - 김별: 메인페이지, 이용방법 페이지, 전체적인 css 확인, DB관리
 
-In the project directory, you can run:
+### ⚙️ 사용한 스킬
+Html, Css, Sass, JavaScript, React.js, Redux, MySQL, Node.Js
 
-### `npm start`
+## 📌 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### 추천 여행지 조회
+- 각 도시별 추천 여행지 조회
+- 추천 여행지를 추가하여 왼쪽의 일정페이지에 추가할수있다.
+- 일정을 추가하면 해당 여행지가 지도위에 마커로 표시된다
+- 지도위의 마커는 선으로 이어져서 동선을 파악하는데 도움을 줄수있다.
+- 추가한 일정은 순서를 변경할수있고 변경한 순서대로 다시 선을 그려준다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### 월 정보조회
+- 여행지 페이지로 이동시 오늘 날짜로 관광지의 정보를 조회할수있다.
+- 캘린더를 조정하여 여행일정을 조정하면 조정한 날짜의 정보로 다시 조회된다.
 
-### `npm test`
+#### 날씨 조회
+- 오늘 날짜로 관광지의 날씨를 조회할수있다.
+- OpenWeatherMap API 이용
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 여행 포스팅 조회
+- 여행지와 관련된 포스팅을 조회할수있다.
+- 현재 페이지에서 이동없이 모달로 포스팅을 조회
 
-### `npm run build`
+#### 추천일정 조회
+- 추천하는 일정을 조회할수있다 
+- 해당 일정을 내 일정에 선택해서 추가할수있다
+- 모두선택으로 해당일정을 모두 내 일정에 추가할수 있다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### 일정 생성
+- 현재 추가해놓은 일정을 캡처해서 Png 파일로 저장할수 있다. 
