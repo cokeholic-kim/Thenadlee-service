@@ -31,7 +31,7 @@ function Header({moveto}){
                 <ul className="header_top_right">
 
                     <a href="tour" onClick={moveto}><li>여행지</li></a>
-                    <a href="/guide"><li>이용방법</li></a>         
+                    <Link to="/guide"><li>이용방법</li></Link>         
                     {/* { isLogin? <a href="#"onClick={logoutClick}><li>로그아웃</li></a>:<Link to="/login"><li>로그인</li></Link>} */}
                 </ul>
             </div>
