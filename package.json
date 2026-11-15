@@ -51,5 +51,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "/front"
+  "homepage": "/front",
+  "overrides": {
+    "typescript": "4.9.5"
+  }
 }
