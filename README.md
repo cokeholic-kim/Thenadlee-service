@@ -2,6 +2,44 @@
 React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
 <br>
 
+## 🚀 배포 (공유호스팅 · FTP)
+
+| 저장소 경로 | 서버 경로 | 내용 |
+|---|---|---|
+| `build/` (빌드 결과) | `html/front/` | React 앱. 웹 시작점 |
+| `file/` | `html/file/` | 이미지·영상 정적 파일 |
+| (별도 private 저장소) | `html/back/` | PHP API |
+
+`main` 브랜치에 push 하면 `.github/workflows/deploy.yml` 이 React 빌드 후 FTP 로 업로드합니다.
+
+### GitHub 설정 (Settings → Secrets and variables → Actions, Environment: `production`)
+
+**Secrets**
+
+| 이름 | 설명 |
+|---|---|
+| `FTP_SERVER` / `FTP_USERNAME` / `FTP_PASSWORD` | FTP 접속 정보 |
+| `REACT_APP_GOOGLE_API_KEY` | Google Maps 키 (도메인 referrer 제한 필수) |
+| `REACT_APP_WHEATHER_API_KEY` | OpenWeatherMap 키 |
+
+**Variables**
+
+| 이름 | 기본값 | 설명 |
+|---|---|---|
+| `DEPLOY_ENABLED` | (없음) | `true` 로 설정해야 FTP 업로드 실행 |
+| `FTP_BASE_DIR` | `html/` | FTP 접속 후 웹 루트 경로 |
+| `FTP_PROTOCOL` / `FTP_PORT` | `ftp` / `21` | FTPS 지원 시 `ftps` 권장 |
+| `REACT_APP_API_URL` / `REACT_APP_FILE_URL` | `/back` / `/file` | 프론트가 호출할 경로 |
+| `REACT_APP_WHEATHER_BASE_URL` | | OpenWeatherMap API 주소 |
+
+### 로컬 개발
+
+```bash
+cp .env.example .env.local
+npm install
+npm start
+```
+
 ## 🕰️ 개발 기간
 * 23.02.01 - 23.02.14
 

@@ -1,0 +1,92 @@
+# 공유호스팅(FTP 전용) 웹 배포
+#   html/front/  <- React 빌드 결과물(build/)
+#   html/file/   <- file/ (이미지·영상 정적 파일)
+# PHP API(html/back/)는 별도 private 저장소에서 배포함
+#
+# 저장소 Variables 의 DEPLOY_ENABLED 를 'true' 로 설정해야 FTP 업로드가 실행됨
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: React 빌드
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: npm run build
+        run: npm run build
+        env:
+          # 기존 코드의 경고가 CI 에서 에러로 처리되지 않도록 함
+          CI: 'false'
+          GENERATE_SOURCEMAP: 'false'
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL || '/back' }}
+          REACT_APP_FILE_URL: ${{ vars.REACT_APP_FILE_URL || '/file' }}
+          REACT_APP_WHEATHER_BASE_URL: ${{ vars.REACT_APP_WHEATHER_BASE_URL }}
+          REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
+          REACT_APP_WHEATHER_API_KEY: ${{ secrets.REACT_APP_WHEATHER_API_KEY }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: front-build
+          path: build
+          include-hidden-files: true
+          retention-days: 7
+
+  deploy:
+    name: FTP 업로드
+    needs: build
+    if: github.event_name != 'pull_request' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      FTP_BASE_DIR: ${{ vars.FTP_BASE_DIR || 'html/' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: front-build
+          path: build
+
+      - name: 업로드 - html/front/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ vars.FTP_PORT || 21 }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
+          local-dir: ./build/
+          server-dir: ${{ env.FTP_BASE_DIR }}front/
+
+      - name: 업로드 - html/file/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ vars.FTP_PORT || 21 }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
+          local-dir: ./file/
+          server-dir: ${{ env.FTP_BASE_DIR }}file/
