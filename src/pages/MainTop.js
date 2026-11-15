@@ -1,4 +1,5 @@
 import React from 'react';
+import { FILE_URL } from '../config/apiurl';
 import "./MainTop.scss"
 
 const MainTop = ({moveto}) => {
@@ -15,7 +16,7 @@ const MainTop = ({moveto}) => {
             </div>
             <div className='videodiv'>
                 <video autoPlay muted loop id="mainVideo">
-                    <source src="./videos/Newyork.mp4" type="video/mp4"/>
+                    <source src={`${FILE_URL}/videos/Newyork.mp4`} type="video/mp4"/>
                 </video>
             </div>
         </div>

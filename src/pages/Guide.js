@@ -1,4 +1,5 @@
 import React from 'react';
+import { FILE_URL } from '../config/apiurl';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import './Guide.scss';
@@ -17,7 +18,7 @@ const Guide = () => {
                         <div className="half-flex-div-video">
                             <div className="video-container"><div className="vsc-controller"></div>
                                 <video autoPlay muted loop className="video-div" id="video01" name="guideVideo">
-                                    <source src="./videos/GuideVideo01.mp4" type="video/mp4"/>
+                                    <source src={`${FILE_URL}/videos/GuideVideo01.mp4`} type="video/mp4"/>
                                 </video>
                             </div>
                         </div>
@@ -48,7 +49,7 @@ const Guide = () => {
                         <div className="half-flex-div-video">
                             <div className="video-container"><div className="vsc-controller"></div>
                                 <video autoPlay muted loop className="video-div" id="video02" name="guideVideo">
-                                    <source src="/videos/GuideVideo02.mp4" type="video/mp4"/>
+                                    <source src={`${FILE_URL}/videos/GuideVideo02.mp4`} type="video/mp4"/>
                                 </video>
                             </div>
                         </div>
@@ -84,7 +85,7 @@ const Guide = () => {
                         <div className="half-flex-div-video">
                             <div className="video-container"><div className="vsc-controller"></div>
                                <video autoPlay muted loop className="video-div" id="video03" name="guideVideo">
-                                    <source src="./videos/GuideVideo03.mp4" type="video/mp4"/>
+                                    <source src={`${FILE_URL}/videos/GuideVideo03.mp4`} type="video/mp4"/>
                                 </video>
                             </div>
                         </div>
@@ -115,7 +116,7 @@ const Guide = () => {
                             <div className="video-container"><div className="vsc-controller"></div>
                                                                     
                                 <video autoPlay muted="" loop="" className="video-div" id="video04" name="guideVideo">
-                                    <source src="./videos/GuideVideo04.mp4" type="video/mp4"/>
+                                    <source src={`${FILE_URL}/videos/GuideVideo04.mp4`} type="video/mp4"/>
                                 </video>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FILE_URL } from '../config/apiurl';
 import { Link } from 'react-router-dom';
 import './FindPlace.scss' ;
 
@@ -13,7 +14,7 @@ function FindPlace () {
                 <div className='FindPlace_country_detail'>
                     <div className='FindPlace_country_detail_left'>
                         <div className='FindPlace_country_detail_left_img'>
-                            <img src="./imgs/jeju_title.jpg" alt="제주도"></img>
+                            <img src={`${FILE_URL}/imgs/jeju_title.jpg`} alt="제주도"></img>
                         </div>
                     </div>
                     <div className='FindPlace_country_detail_right'>
@@ -36,7 +37,7 @@ function FindPlace () {
                     <div className='FindPlace_country_detail'>
                         <div className='FindPlace_country_detail_left'>
                             <div className='FindPlace_country_detail_left_img'>
-                                <img src="./imgs/singapore_title.jpg" alt='싱가포르'></img>
+                                <img src={`${FILE_URL}/imgs/singapore_title.jpg`} alt='싱가포르'></img>
                             </div>
                         </div>
                         <div className='FindPlace_country_detail_right'>
@@ -59,7 +60,7 @@ function FindPlace () {
                     <div className='FindPlace_country_detail'>
                         <div className='FindPlace_country_detail_left'>
                             <div className='FindPlace_country_detail_left_img'>
-                                <img className='haerbinpic' src="./imgs/harbin_title.jpg" alt='하얼빈'></img>
+                                <img className='haerbinpic' src={`${FILE_URL}/imgs/harbin_title.jpg`} alt='하얼빈'></img>
                             </div>
                         </div>
                         <div className='FindPlace_country_detail_right'>
@@ -84,7 +85,7 @@ function FindPlace () {
                     <div className='FindPlace_country_detail'>
                         <div className='FindPlace_country_detail_left'>
                             <div className='FindPlace_country_detail_left_img'>
-                                <img src="./imgs/vancouver_title.jpg" alt='밴쿠버'></img>
+                                <img src={`${FILE_URL}/imgs/vancouver_title.jpg`} alt='밴쿠버'></img>
                             </div>
                         </div>
                         <div className='FindPlace_country_detail_right'>

@@ -9,7 +9,7 @@ import useAsync from '../customHook/useAsync';
 import Calendar from './Calendar';
 import { useParams } from 'react-router';
 import axios from 'axios';
-import { API_URL } from '../config/apiurl';
+import { API_URL, FILE_URL } from '../config/apiurl';
 import MonthDesc from './MonthDesc';
 import Weather from './Weather';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -127,7 +127,7 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
                     <div id="Flightbutton">
                         <button className="Flightbutton">
                             <MdAirplaneTicket/>
-                            <img style={{width:"80px"}} src="../imgs/kyowon.png" alt="placephoto" loading='lazy'></img>
+                            <img style={{width:"80px"}} src={`${FILE_URL}/imgs/kyowon.png`} alt="placephoto" loading='lazy'></img>
                         </button>
                     </div>
                 </div>    
