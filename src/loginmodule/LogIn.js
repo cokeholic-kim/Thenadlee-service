@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setCookie } from '../util/cookie';
 import { goToHome, setLogin } from '../modules/logincheck';
-import { API_URL } from '../config/apiurl';
+import { API_URL, FILE_URL } from '../config/apiurl';
+import { getApiErrorMessage } from '../util/apiError';
 
 const LogIn = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const LogIn = () => {
         }else{
             axios.post(`${API_URL}/login`,loginData)
             .then(result=>{
-                const { m_email,m_nickname } =result.data[0];
+                const { email: m_email, nickName: m_nickname } = result.data.body;
                 if(m_email && m_nickname){
                     alert("로그인 되었습니다.");
                     //현재 시간 객체
@@ -45,7 +46,7 @@ const LogIn = () => {
                 }
             })
             .catch(e=>{
-                console.log(e)
+                alert(getApiErrorMessage(e))
             })
         }
     }
@@ -85,18 +86,18 @@ const LogIn = () => {
                 <div className="socialBtn-container">
                     <div className="socialBtn">
                         <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src="/imgs/kakaolink_btn.png" alt="logo"/>
+                            <img src={`${FILE_URL}/imgs/kakaolink_btn.png`} alt="logo"/>
                         </div>
                     </div>
                     <div className="socialBtn">
                         <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src="imgs/naver_btn.png" alt="logo"/>
+                            <img src={`${FILE_URL}/imgs/naver_btn.png`} alt="logo"/>
                         </div>
                     </div>
                     
                     <div className="socialBtn google-mobile-login">
                         <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src="/imgs/google_btn.png" alt="logo"/>
+                            <img src={`${FILE_URL}/imgs/google_btn.png`} alt="logo"/>
                         </div>
                     </div>
                 </div>

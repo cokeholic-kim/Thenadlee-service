@@ -4,6 +4,7 @@ import axios from 'axios';
 import './JoinPage.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/apiurl';
+import { getApiErrorMessage } from '../util/apiError';
 
 const JoinPage = () => {
     const navigate =useNavigate();
@@ -62,8 +63,7 @@ const JoinPage = () => {
             navigate('/');
         })
         .catch(e=>{
-            console.log("에러발생")
-            console.log(e);
+            alert(getApiErrorMessage(e));
         })
     }
     const checkPassword= (e) =>{
