@@ -19,8 +19,6 @@ React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
 | 이름 | 설명 |
 |---|---|
 | `FTP_SERVER` / `FTP_USERNAME` / `FTP_PASSWORD` | FTP 접속 정보 |
-| `REACT_APP_GOOGLE_API_KEY` | Google Maps 키 (도메인 referrer 제한 필수) |
-| `REACT_APP_WHEATHER_API_KEY` | OpenWeatherMap 키 |
 
 **Variables**
 
@@ -29,8 +27,20 @@ React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
 | `DEPLOY_ENABLED` | (없음) | `true` 로 설정해야 FTP 업로드 실행 |
 | `FTP_BASE_DIR` | `html/` | FTP 접속 후 웹 루트 경로 |
 | `FTP_PROTOCOL` / `FTP_PORT` | `ftp` / `21` | FTPS 지원 시 `ftps` 권장 |
-| `REACT_APP_API_URL` / `REACT_APP_FILE_URL` | `/back` / `/file` | 프론트가 호출할 경로 |
-| `REACT_APP_WHEATHER_BASE_URL` | | OpenWeatherMap API 주소 |
+
+### 프론트 환경변수 (`.env.production`)
+
+API 키와 경로는 저장소의 `.env.production` 파일에 넣으며, 빌드 시 이 값이 사용됩니다.
+
+| 이름 | 기본값 | 발급처 |
+|---|---|---|
+| `REACT_APP_API_URL` / `REACT_APP_FILE_URL` | `/back` / `/file` | |
+| `REACT_APP_GOOGLE_API_KEY` | | Google Cloud Console → API 및 서비스 → 사용자 인증 정보 |
+| `REACT_APP_WHEATHER_API_KEY` | | https://home.openweathermap.org/api_keys |
+| `REACT_APP_WHEATHER_BASE_URL` | `https://api.openweathermap.org/data/2.5/` | |
+
+> `REACT_APP_` 값은 빌드된 JS 에 포함되어 브라우저에서 누구나 볼 수 있습니다.
+> 이 저장소는 public 이므로 Google Maps 키에는 반드시 배포 도메인 HTTP referrer 제한을 걸어주세요.
 
 ### 로컬 개발
 

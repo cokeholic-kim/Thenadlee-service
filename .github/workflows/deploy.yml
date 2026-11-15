@@ -34,17 +34,13 @@ jobs:
 
       - run: npm ci
 
+      # REACT_APP_* 값(API 키, 경로)은 저장소의 .env.production 에서 읽음
       - name: npm run build
         run: npm run build
         env:
           # 기존 코드의 경고가 CI 에서 에러로 처리되지 않도록 함
           CI: 'false'
           GENERATE_SOURCEMAP: 'false'
-          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL || '/back' }}
-          REACT_APP_FILE_URL: ${{ vars.REACT_APP_FILE_URL || '/file' }}
-          REACT_APP_WHEATHER_BASE_URL: ${{ vars.REACT_APP_WHEATHER_BASE_URL }}
-          REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
-          REACT_APP_WHEATHER_API_KEY: ${{ secrets.REACT_APP_WHEATHER_API_KEY }}
 
       - uses: actions/upload-artifact@v4
         with:
