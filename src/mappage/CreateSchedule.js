@@ -1,7 +1,7 @@
-import { React, useEffect, useMemo, useState } from "react";
-import { GoogleMap, Marker, MarkerF, Polyline, useJsApiLoader,DrawingManager, useGoogleMap,InfoWindow } from "@react-google-maps/api";
+import React, { useEffect, useMemo, useState } from "react";
+import { GoogleMap, Marker, MarkerF, Polyline, useJsApiLoader, useGoogleMap,InfoWindow } from "@react-google-maps/api";
 import axios from "axios";
-import { API_URL } from "../config/apiurl";
+import { API_URL, FILE_URL } from "../config/apiurl";
 import { useParams } from "react-router-dom";
 import useAsync from "../customHook/useAsync";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +17,7 @@ const containerStyle = {
 };
 
 //google map library
-const libs = ['places', 'visualization', 'drawing', 'geometry'];
+const libs = ['places', 'visualization', 'geometry'];
 
 
 const CreateSchedule = ({place,marker,month}) => {
@@ -73,11 +73,6 @@ const CreateSchedule = ({place,marker,month}) => {
     zIndex: 1
   };
 
-  //drawing manager
-  const onPolylineComplete = polyline => {
-    console.log(polyline);
-  }
-  
   if (!isLoaded) return <Skeleton/>;
 
   return (
@@ -113,7 +108,7 @@ const CreateSchedule = ({place,marker,month}) => {
             options={{
               width: '30px',
               height: '30px',
-              icon: '../imgs/marker.gif',
+              icon: `${FILE_URL}/imgs/marker.gif`,
             }}
             >
             <InfoWindow
@@ -133,10 +128,7 @@ const CreateSchedule = ({place,marker,month}) => {
           </Marker>)}
 
           {/* {Markerposition && <Marker position={{lat:marker.lat, lng:marker.lng}}/>} */}
-          <DrawingManager 
-          onLoad={onLoad}
-          onPolygonComplete={onPolylineComplete}
-          />
+          {/* DrawingManager 는 Google Maps JS API v3.65 에서 제거되어 사용 중단 */}
           {/* <SearchBox map={map}/> */}
         </GoogleMap>
       <RightControlbar map={map} marker={marker}/>

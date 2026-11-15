@@ -49,9 +49,9 @@ const Map = () => {
     const {loading:monthLoading,error:monthError,data:monthData} = monthState;
 
 
-    if (cityLoading || markerLoading) return <div>로딩중</div>
-    if (cityError || markerError) return <div>에러발생</div>
-    if (!cityData || !markerData) return <div>데이터 없음</div>
+    if (cityLoading || markerLoading || monthLoading) return <div>로딩중</div>
+    if (cityError || markerError || monthError) return <div>에러발생</div>
+    if (!cityData || !markerData || !monthData) return <div>데이터 없음</div>
     // const [name,lat,lon] = data;
     return (
         <div style={{display:"flex"}} className="map">
