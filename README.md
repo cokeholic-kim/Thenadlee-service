@@ -6,9 +6,13 @@ React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
 
 | 저장소 경로 | 서버 경로 | 내용 |
 |---|---|---|
-| `build/` (빌드 결과) | `html/front/` | React 앱. 웹 시작점 |
+| `root/.htaccess` | `html/` | 도메인 루트 접속 시 `html/front/` 의 React 앱 제공 |
+| `build/` (빌드 결과) | `html/front/` | React 앱 |
 | `file/` | `html/file/` | 이미지·영상 정적 파일 |
 | (별도 private 저장소) | `html/back/` | PHP API |
+
+접속 주소는 도메인 그대로입니다 (예: `https://도메인/`, `https://도메인/map/Jeju`).
+파일은 `html/front/` 에 있지만 주소창에는 `/front` 가 나타나지 않으며, `/front/...` 로 접속하면 루트 주소로 이동합니다.
 
 `main` 브랜치에 push 하면 `.github/workflows/deploy.yml` 이 React 빌드 후 FTP 로 업로드합니다.
 

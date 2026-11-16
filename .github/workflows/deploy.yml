@@ -1,4 +1,5 @@
 # 공유호스팅(FTP 전용) 웹 배포
+#   html/        <- root/.htaccess (도메인 루트 접속 시 html/front/ 의 React 앱 제공)
 #   html/front/  <- React 빌드 결과물(build/)
 #   html/file/   <- file/ (이미지·영상 정적 파일)
 # PHP API(html/back/)는 별도 private 저장소에서 배포함
@@ -64,6 +65,17 @@ jobs:
         with:
           name: front-build
           path: build
+
+      - name: 업로드 - html/ (도메인 루트 .htaccess)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ vars.FTP_PORT || 21 }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
+          local-dir: ./root/
+          server-dir: ${{ env.FTP_BASE_DIR }}
 
       - name: 업로드 - html/front/
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

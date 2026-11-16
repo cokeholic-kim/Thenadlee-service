@@ -1,0 +1,21 @@
+# 도메인 루트(html/) 설정
+# 주소창은 도메인 그대로 두고, 실제 파일은 html/front/ 에서 제공
+#   /back/...  -> PHP API (html/back/)
+#   /file/...  -> 정적 파일 (html/file/)
+#   그 외      -> React 앱 (html/front/)
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # API, 정적 파일, 이미 front 로 재작성된 요청은 그대로 통과
+    RewriteRule ^(back|file|front)(/|$) - [L]
+
+    # front 폴더에 실제 파일이 있으면 그 파일 제공 (JS, CSS, 아이콘 등)
+    RewriteCond %{DOCUMENT_ROOT}/front/$1 -f
+    RewriteRule ^(.+)$ front/$1 [L]
+
+    # 나머지 경로는 React 라우터가 처리하도록 index.html 제공
+    RewriteRule ^ front/index.html [L]
+</IfModule>
