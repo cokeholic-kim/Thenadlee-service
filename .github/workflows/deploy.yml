@@ -4,7 +4,8 @@
 #   html/file/   <- file/ (이미지·영상 정적 파일)
 # PHP API(html/back/)는 별도 private 저장소에서 배포함
 #
-# 저장소 Variables 의 DEPLOY_ENABLED 를 'true' 로 설정해야 FTP 업로드가 실행됨
+# production environment 의 Variables 에 DEPLOY_ENABLED=true 가 있어야 배포가 실행됨
+# API 키(REACT_APP_GOOGLE_API_KEY, REACT_APP_WHEATHER_API_KEY)는 production environment 의 Secrets 에서 읽음
 name: Deploy
 
 on:
@@ -22,8 +23,10 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  build:
-    name: React 빌드
+  # PR 에서는 키 없이 빌드가 되는지만 확인
+  build-check:
+    name: React 빌드 확인 (PR)
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,24 +38,15 @@ jobs:
 
       - run: npm ci
 
-      # REACT_APP_* 값(API 키, 경로)은 저장소의 .env.production 에서 읽음
       - name: npm run build
         run: npm run build
         env:
-          # 기존 코드의 경고가 CI 에서 에러로 처리되지 않도록 함
           CI: 'false'
           GENERATE_SOURCEMAP: 'false'
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: front-build
-          path: build
-          include-hidden-files: true
-          retention-days: 7
-
+  # main push / 수동 실행 시 production environment 의 Secrets 로 빌드 후 FTP 업로드
   deploy:
-    name: FTP 업로드
-    needs: build
+    name: 빌드 및 FTP 업로드
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: production
@@ -64,10 +58,24 @@ jobs:
         uses: actions/checkout@v4
 
       - if: vars.DEPLOY_ENABLED == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/setup-node@v4
         with:
-          name: front-build
-          path: build
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - if: vars.DEPLOY_ENABLED == 'true'
+        run: npm ci
+
+      # 경로 값(REACT_APP_API_URL 등)은 .env.production, API 키는 Secrets 에서 주입
+      - if: vars.DEPLOY_ENABLED == 'true'
+        name: npm run build
+        run: npm run build
+        env:
+          # 기존 코드의 경고가 CI 에서 에러로 처리되지 않도록 함
+          CI: 'false'
+          GENERATE_SOURCEMAP: 'false'
+          REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
+          REACT_APP_WHEATHER_API_KEY: ${{ secrets.REACT_APP_WHEATHER_API_KEY }}
 
       - if: vars.DEPLOY_ENABLED == 'true'
         name: 업로드 - html/ (도메인 루트 .htaccess)
