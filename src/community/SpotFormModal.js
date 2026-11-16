@@ -1,0 +1,78 @@
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { createSpot, updateSpot } from '../api/communityApi';
+import { getApiErrorMessage } from '../util/apiError';
+import LocationPicker from './LocationPicker';
+import LoginRequired from './LoginRequired';
+import MapModal from './MapModal';
+import PhotoUploader from './PhotoUploader';
+import './Community.scss';
+
+// 서버 설정(community.maxSpotImages)과 같은 값
+const MAX_PHOTOS = 3;
+
+const toForm = (spot) => ({
+    name: spot?.spotName || '',
+    description: spot?.description || '',
+    position: spot ? { lat: spot.lat, lng: spot.lon } : null,
+    imageUrls: spot?.source === 'USER' ? spot.images : [],
+});
+
+const useSpotSave = (cityName, spot, onSaved) => {
+    const [saving, setSaving] = useState(false);
+    const save = async (form) => {
+        if (!form.position) return alert('지도를 눌러 장소 위치를 정해 주세요.');
+        setSaving(true);
+        const payload = { name: form.name, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
+        try {
+            await (spot ? updateSpot(spot.id, payload) : createSpot(cityName, payload));
+            alert(spot ? '장소를 수정했어요.' : '장소를 등록했어요. 다른 여행자에게 바로 보여요.');
+            onSaved();
+        } catch (error) {
+            alert(getApiErrorMessage(error));
+            setSaving(false);
+        }
+        return undefined;
+    };
+    return { saving, save };
+};
+
+const SpotForm = ({ initial, center, saving, onSubmit }) => {
+    const [form, setForm] = useState(initial);
+    const set = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+    return (
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }}>
+            <label htmlFor="spotName">장소 이름</label>
+            <input id="spotName" value={form.name} onChange={(e) => set('name', e.target.value)} maxLength="100" required />
+            <label>위치 (지도를 눌러 표시)</label>
+            <LocationPicker center={center} position={form.position} onChange={(position) => set('position', position)} />
+            <label htmlFor="spotDescription">소개 (선택)</label>
+            <textarea id="spotDescription" rows="3" maxLength="1000" value={form.description} onChange={(e) => set('description', e.target.value)} />
+            <label>사진 (선택, 최대 {MAX_PHOTOS}장)</label>
+            <PhotoUploader images={form.imageUrls} max={MAX_PHOTOS} onChange={(urls) => set('imageUrls', urls)} />
+            <p className="map-modal__hint">직접 찍은 사진만 올려 주세요. 사진의 촬영 위치 정보는 서버에서 지워져요.</p>
+            <div className="map-modal__actions">
+                <button type="submit" className="map-modal__button is-primary" disabled={saving}>{saving ? '저장 중…' : '저장'}</button>
+            </div>
+        </form>
+    );
+};
+
+// 여행자 추천장소 등록(spot 없음)·수정(내가 등록한 spot)
+const SpotFormModal = ({ cityName, center, spot, onClose, onSaved }) => {
+    const isLogin = useSelector((state) => state.logincheck.isLogin);
+    const { saving, save } = useSpotSave(cityName, spot, onSaved);
+    return (
+        <MapModal title={spot ? '내 장소 수정' : '추천 장소 등록'} onClose={onClose}>
+            {!isLogin && <LoginRequired action="장소를 등록" />}
+            {isLogin && (
+                <>
+                    {!spot && <p className="map-modal__message">등록한 장소는 "여행자 추천"으로 바로 공개되고 닉네임이 함께 표시돼요.</p>}
+                    <SpotForm initial={toForm(spot)} center={center} saving={saving} onSubmit={save} />
+                </>
+            )}
+        </MapModal>
+    );
+};
+
+export default SpotFormModal;

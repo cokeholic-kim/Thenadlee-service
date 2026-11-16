@@ -1,31 +1,23 @@
 * {
-    margin: 0; padding: 0; box-sizing: border-box ; 
+    margin: 0; padding: 0; box-sizing: border-box ;
 }
 
+// 모바일: 지도 → 메뉴 버튼 → 선택목록(달력·일차·담은 장소) → 추천장소 순으로 세로 배치
+// (예전 .map :nth-child 규칙은 모든 하위 요소에 걸려 화면이 깨졌으므로 직계 자식만 지정)
 @media ( max-width: 600px ) {
     .map{
-        display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 0;
-        :nth-child(1){
-            width: 100%;
-            border: 0;
-            order: 3;
-            display: block;
-        }
-        :nth-child(2){
-            width: 100%;
-            order: 2;
-            display: block;
-        }
-        :nth-child(3){
-            width: 100%;
-            border: 0;
-            order: 2;
-            background-color: #fafafa;
-            display: block;
+
+        > .map-area{ order: 1; width: 100%; }
+        > #blockbtn{ order: 2; }
+        > .LeftControlbar{ order: 3; }
+        > .RightControlbar{ order: 4; }
+
+        // GoogleMap 높이는 인라인 스타일(100vh)이라 모바일에서만 덮어씀
+        .map-area .map-container{
+            height: 60vh !important;
         }
     }
 }

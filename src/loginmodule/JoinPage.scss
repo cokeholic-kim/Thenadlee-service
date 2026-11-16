@@ -7,20 +7,30 @@
         height: 100vh;
         width: 100%;
         /* background: #fafafa; */
-        .uk-input {
-            height: 32px ;
+        // 흰 배경과 구분되도록 회색 배경 + 테두리
+        .auth-input {
+            height: 40px ;
             width: 100%;
-            border: none ;
-            background-color: #fafafa ;
-            font-size: 0.8rem ;
+            margin-bottom: 12px;
+            padding: 0 12px;
+            border: 1px solid #c8c8c8 ;
+            border-radius: 4px;
+            background-color: #f1f1f1 ;
+            font-size: 0.95rem ;
+        }
+        .auth-input:focus {
+            border-color: #FFC288;
+            background-color: #fff;
         }
         .email-btn {
-            height: 32px ;
-            font-size: 10px ;
+            height: 40px ;
+            font-size: 13px ;
             display: flex ;
             justify-content: center ;
             align-items: center ;
-            border: none;
+            border: 1px solid #c8c8c8;
+            border-radius: 4px;
+            background-color: #e2e2e2;
             cursor: pointer;
         }
         input[type="password"] {
@@ -46,7 +56,7 @@
             flex-direction: column;
             justify-content: center;
             background: #fff;
-            width: 410px;
+            max-width: 410px;
             padding: 30px;
             /* box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); */
         }
@@ -134,18 +144,21 @@
 }
 .input-button-flex {
     display: flex;
+    gap: 6px;
 }
 .label-text {
-    font-size: 12px;
-    color: #999;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #666;
 }
 .email-btn {
-    width: 50px ;
+    flex-shrink: 0;
+    width: 56px ;
     padding: 0 ;
-    font-size: 1.2rem;
 }
 
-.myro-btn {
+.auth-btn {
     margin-top: 24px;
     height: 45px;
     width: 100%;
@@ -158,7 +171,7 @@
     border-radius: 4px;
     background-color: #FFC288;
 }
-.myro-btn-back {
+.auth-btn-secondary {
     margin-top: 24px;
     height: 45px;
     width: 100%;
@@ -175,7 +188,7 @@
 
 @media (max-width: 600px) {
     .label-text {
-        font-size: 10px;
+        font-size: 12px;
     }
 }
 
@@ -204,26 +217,28 @@
 .agree-link-text {
     font-size: 11px;
 }
-table {
-    width: 100%;
-    padding: 4px;
-    margin: 8px;
-    border: 1px solid #e0e0e0;
-}
-table th {
-    font-size: 8px;
-    text-align: left;
-    font-weight: lighter;
-    border-collapse: collapse;
-}
-table td {
-    font-size: 8px;
-    color: #999;
-    text-align: left;
-    border-collapse: collapse;
-}
-.second-td {
-    color: #000 ;
+// 회원가입 화면의 개인정보 수집 항목 표 (다른 페이지 표에 영향 주지 않도록 범위 지정)
+.agree-container {
+    table {
+        width: 100%;
+        margin: 8px 0;
+        border: 1px solid #e0e0e0;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 6px 10px;
+        font-size: 13px;
+        color: #777;
+        text-align: left;
+        vertical-align: top;
+    }
+    td:first-child {
+        width: 80px;
+        white-space: nowrap;
+    }
+    .second-td {
+        color: #000 ;
+    }
 }
 @media (max-width: 600px) {
     .agree-link-container label {
@@ -232,11 +247,11 @@ table td {
     .agree-link-text {
         font-size: 10px;
     }
-    .myro-btn {
+    .auth-btn {
         margin-top: 8px;
         height: 40px;
     }
-    .myro-btn-back {
+    .auth-btn-secondary {
         margin-top: 8px;
         height: 40px;
     }

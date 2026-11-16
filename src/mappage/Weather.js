@@ -36,35 +36,48 @@ function Weather({ setCold, cityname }) {
     return `${day} ${date} ${month} ${year}`;
   };
 
-  const url = `${api.base}weather?q=${cityname}&appid=${api.key}`;
-  console.log(url)
-  const [weather, setWeather] = useState("");
+  const [weather, setWeather] = useState(null);
 
-  // 날씨 가져오기
-  useEffect(()=>{
-        console.log(url)
-      axios.get(url).then((responseData) => {
+  // 날씨 가져오기 (API 키가 없거나 요청이 실패하면 날씨 없이 화면 유지)
+  useEffect(() => {
+    if (!api.key || !cityname) {
+      return;
+    }
+    const url = `${api.base}weather?q=${encodeURIComponent(cityname)}&appid=${api.key}`;
+    axios.get(url)
+      .then((responseData) => {
         const data = responseData.data;
         setWeather({
           id: data.weather[0].id,
           temperature: data.main.temp,
           main: data.weather[0].main,
-          loading: false,
         });
+      })
+      .catch((error) => {
+        console.warn("날씨 정보를 불러오지 못했습니다.", error?.response?.status);
       });
-  },[])
+  }, [cityname]);
 
-  setCold(weather.temperature < 290 ? true : false);
+  // 기온(켈빈)이 290K(약 17℃) 미만이면 추운 날씨로 표시
+  useEffect(() => {
+    setCold(weather ? weather.temperature < 290 : false);
+  }, [weather, setCold]);
 
   return (
     <Wrapper>
-      <div className="locationBox"> 
+      <div className="locationBox">
         <DateDiv> {dateBuilder(new Date())} </DateDiv>
       </div>
 
       <div className="weatherBox">
-        <Temperature>{(weather.temperature - 273.15).toFixed(2)}℃</Temperature>
-        <h2>{weather.main}</h2>
+        {weather ? (
+          <>
+            <Temperature>{(weather.temperature - 273.15).toFixed(2)}℃</Temperature>
+            <h2>{weather.main}</h2>
+          </>
+        ) : (
+          <EmptyWeather>날씨 정보 없음</EmptyWeather>
+        )}
       </div>
     </Wrapper>
   );
@@ -82,5 +95,11 @@ const DateDiv = styled.div`
 const Temperature = styled.div`
   color: black;
   font-size: 50px;
+  margin-top: 1rem;
+`;
+
+const EmptyWeather = styled.div`
+  color: #999;
+  font-size: 15px;
   margin-top: 1rem;
 `;

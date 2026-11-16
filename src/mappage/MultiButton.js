@@ -3,7 +3,7 @@ import React from 'react';
 import { AiOutlineConsoleSql } from 'react-icons/ai';
 import './MultiButton.scss';
 
-const MultiButton = ({setBlog,setRecommend}) => {
+const MultiButton = ({setBlog,setRecommend,setSaving}) => {
     const copyMAP =()=>{
         html2canvas(document.getElementsByClassName('App')[0],{ useCORS: true }).then(canvas=>{
            onSaveAs(canvas.toDataURL('image/png'),'image-download.png')
@@ -29,7 +29,8 @@ const MultiButton = ({setBlog,setRecommend}) => {
         <div id='blockbtn'>
             <a href='#' onClick={()=>setBlog(true)}>여행기</a>
             <a href='#' onClick={()=>setRecommend(true)}>추천일정</a>
-            <a href='#' onClick={()=>copyMAP()}>일정생성</a>
+            <a href='#' onClick={(e)=>{e.preventDefault(); setSaving(true)}}>일정저장</a>
+            <a href='#' onClick={()=>copyMAP()}>이미지저장</a>
         </div>
     );
 };

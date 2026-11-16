@@ -18,20 +18,10 @@
 
 }
 
+// 모바일: 지도 아래 선택목록 영역에서 달력을 가운데 정렬해 보여줌 (예전엔 공간이 없어 숨겼음)
 @media ( max-width: 600px ){
-    .calP{
-        display: none;
+    .LeftControlbar .react-datepicker{
+        display: inline-block;
+        margin: 0 auto;
     }
-    
-
-    .react-datepicker{
-        *{
-            display:none;
-        }
-        // .react-datepicker__month-container{
-        //     display: none;
-        // }
-    }
-
-
 }

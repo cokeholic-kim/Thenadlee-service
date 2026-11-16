@@ -1,141 +1,121 @@
-import { act } from "react-dom/test-utils";
+// 지도 화면의 장소 담기 상태 (날짜별 일정)
+//   data  : 도시의 추천 장소 전체
+//   days  : 일차별로 담은 장소 목록 [[1일차 장소...], [2일차 장소...]]
+//   left  : 현재 선택한 일차의 장소 목록 (기존 컴포넌트 호환용 파생 값)
+//   right : 아직 어느 일차에도 담지 않은 추천 장소 (파생 값)
+// 장소 객체: { id, spotName, lat, lon, imageUrl }
 
-// 1.액션 타입
-const SET_REDO = "SET_REDO" ;
-const SET_RIGHT = "SET_RIGHT" ;
-const SET_LEFT = "SET_LEFT" ;
-const SET_RESET = "SET_RESET" ;
-const SET_TOP = "SET_TOP";
-const SET_DOWN = "SET_DOWN";
-const SET_LEFTALL = "SET_LEFTALL"
+// 1. 액션 타입
+const SET_REDO = 'SET_REDO';
+const SET_LEFT = 'SET_LEFT';
+const SET_RIGHT = 'SET_RIGHT';
+const SET_LEFTALL = 'SET_LEFTALL';
+const CLEAR_DAY = 'CLEAR_DAY';
+const MOVE_SPOT = 'MOVE_SPOT';
+const SET_DAY_COUNT = 'SET_DAY_COUNT';
+const SET_ACTIVE_DAY = 'SET_ACTIVE_DAY';
+const LOAD_DAYS = 'LOAD_DAYS';
+const REPLACE_SPOTS = 'REPLACE_SPOTS';
 
-// 2.액션 생성함수
-export const setRedo = (data) => ({
-    type: SET_REDO,
-    data    
-})
-export const setRight = (spotName,lat,lon,imageUrl) => ({
-    type: SET_RIGHT,
-    add:{
-        // spot_name : spotName,
-        // Nation: nation,
-        // spot_lat : lat,
-        // spot_lng : lon,
-        // img_url : img,
-        // time : time
-        spotName,
-        lat,
-        lon,
-        imageUrl
-    }
-})
+const MAX_DAYS = 30;
 
-export const setLeft = (spotName,lat,lon,imageUrl)=>({
-    type:SET_LEFT,    
-    add:{
-        spotName,
-        lat,
-        lon,
-        imageUrl
-        // nation,
-        // time
-    }
-})
+// 2. 액션 생성 함수
+export const setRedo = (data) => ({ type: SET_REDO, data });            // 도시 장소 불러오기(초기화)
+export const setLeft = (spot) => ({ type: SET_LEFT, spot });            // 현재 일차에 장소 담기
+export const setRight = (spot) => ({ type: SET_RIGHT, spot });          // 현재 일차에서 장소 빼기
+export const setLeftAll = (spots) => ({ type: SET_LEFTALL, spots });    // 추천 장소 모두 담기
+export const clearDay = () => ({ type: CLEAR_DAY });                    // 현재 일차 비우기
+export const moveSpot = (index, offset) => ({ type: MOVE_SPOT, index, offset });
+export const setDayCount = (dayCount) => ({ type: SET_DAY_COUNT, dayCount });
+export const setActiveDay = (dayIndex) => ({ type: SET_ACTIVE_DAY, dayIndex });
+export const loadDays = (days) => ({ type: LOAD_DAYS, days });          // 저장된 일정 불러오기
 
-export const setLeftAll = (leftall) =>({
-    type:SET_LEFTALL,
-    add:leftall
-})
+export const replaceSpots = (data) => ({ type: REPLACE_SPOTS, data }); // 장소 등록·수정·삭제 후 목록 갱신 (담은 일정 유지)
 
-export const setReset = ()=>({
-    type:SET_RESET
-})
+export const toSpot = (item) => ({
+    id: item.id ?? item.spotId,
+    spotName: item.spotName,
+    lat: item.lat,
+    lon: item.lon,
+    imageUrl: item.imageUrl,
+    description: item.description,
+    source: item.source,
+    authorNickName: item.authorNickName,
+    images: item.images || [],
+    isMine: Boolean(item.isMine)
+});
 
-export const setTop = (newarr)=>({
-    type:SET_TOP,
-    arr:newarr
-})
+// 3. 초기값
+export const initialState = { data: [], days: [[]], activeDay: 0, left: [], right: [] };
 
-export const setDown = (newarr)=>({
-    type:SET_DOWN,
-    arr:newarr
-})
+// 4. 파생 값 계산: 같은 장소는 한 일정에 한 번만 담을 수 있으므로 모든 일차에 담긴 장소를 추천 목록에서 제외
+const withDerived = (state) => {
+    const usedIds = new Set(state.days.flat().map((spot) => spot.id));
+    return {
+        ...state,
+        left: state.days[state.activeDay] || [],
+        right: state.data.filter((spot) => !usedIds.has(spot.id))
+    };
+};
 
-// 3.초기값 생성
-export const initialState = {
-    data:[],
-    left:[],
-    right:[]
-  };
+const updateActiveDay = (state, updater) => {
+    const days = state.days.map((spots, index) => (index === state.activeDay ? updater(spots) : spots));
+    return withDerived({ ...state, days });
+};
 
+const moveInList = (spots, index, offset) => {
+    const target = index + offset;
+    if (target < 0 || target >= spots.length) return spots;
+    const moved = [...spots];
+    [moved[index], moved[target]] = [moved[target], moved[index]];
+    return moved;
+};
 
-//  4. 리듀서 생성
-export function adds(state=initialState,action){
-    switch(action.type){
-        case SET_RIGHT:
-            // x 버튼 클릭 ,,왼쪽
-            const leftadds = state.left.filter(left=> left.spotName !== action.add.spotName)
-            return{
-                ...state,
-                left: leftadds,
-                right: state.right.concat(action.add)
-            }
+// 일수를 줄이면 뒤쪽 일차의 장소는 일정에서 빠짐
+const resizeDays = (state, dayCount) => {
+    const count = Math.min(Math.max(dayCount, 1), MAX_DAYS);
+    const days = Array.from({ length: count }, (_, index) => state.days[index] || []);
+    return withDerived({ ...state, days, activeDay: Math.min(state.activeDay, count - 1) });
+};
+
+const addSpots = (state, spots) => {
+    const usedIds = new Set(state.days.flat().map((spot) => spot.id));
+    const newSpots = spots.map(toSpot).filter((spot) => !usedIds.has(spot.id));
+    return updateActiveDay(state, (current) => current.concat(newSpots));
+};
+
+// 목록에서 사라진(삭제·숨김) 장소는 담은 일정에서도 빼고, 남은 장소는 최신 정보로 바꿈
+const replaceData = (state, list) => {
+    const data = list.map(toSpot);
+    const byId = new Map(data.map((spot) => [spot.id, spot]));
+    const days = state.days.map((spots) => spots.filter((spot) => byId.has(spot.id)).map((spot) => byId.get(spot.id)));
+    return withDerived({ ...state, data, days });
+};
+
+// 5. 리듀서
+export default function adds(state = initialState, action) {
+    switch (action.type) {
+        case SET_REDO:
+            return withDerived({ ...initialState, data: action.data.map(toSpot) });
         case SET_LEFT:
-            //플러스버튼클릭 ,,오른쪽... 밥먹는손
-            
-            // 파라미터로 들어온 spotName과 오른쪽상태값이 가지고있던 spot을 비교해서 같은값은 제거.
-            const rightadds = state.right.filter(right=> right.spotName !== action.add.spotName)
-            return{
-                ...state,
-                left: state.left.concat(action.add),
-                right: rightadds
-            } ;
+            return addSpots(state, [action.spot]);
         case SET_LEFTALL:
-            //추천장소 모두추가
-            // 오른쪽배열에서 왼쪽값들을 제외시킨값
-            // 조건으로줄 새로운 배열값만들기
-            let spotname = action.add.map(left=>left.spotname)
-            //right에 필터를 주고 spotname과  right의spot_name 이 일치하지않는값을 반환 
-            let newarr=state.right.filter(list=> spotname.indexOf(list.spot_name)===-1)
-            return{
-                ...state,
-                right:newarr,
-                left:action.add
-            };
-        case SET_RESET:
-            // 전체 삭제
-            return{
-                ...state,
-                left:[],
-                right:[...state.left]
-            }
-        case SET_TOP:
-            return{
-                ...state,
-                left:action.arr
-            }
-        case SET_DOWN:
-            return{
-                ...state,
-                left:action.arr
-            }
-
-        case SET_REDO:{
-            // 마운트 시 데이터 재업로드
-            return{
-                data:action.data,
-                left:[],
-                right:action.data
-            }
-        }
-
-        // useEffect(()=>{
-        //     dispatch(setRedo(data))
-        // },[])
+            return addSpots(state, action.spots);
+        case SET_RIGHT:
+            return updateActiveDay(state, (spots) => spots.filter((spot) => spot.id !== toSpot(action.spot).id));
+        case CLEAR_DAY:
+            return updateActiveDay(state, () => []);
+        case MOVE_SPOT:
+            return updateActiveDay(state, (spots) => moveInList(spots, action.index, action.offset));
+        case SET_DAY_COUNT:
+            return resizeDays(state, action.dayCount);
+        case SET_ACTIVE_DAY:
+            return withDerived({ ...state, activeDay: action.dayIndex });
+        case REPLACE_SPOTS:
+            return replaceData(state, action.data);
+        case LOAD_DAYS:
+            return withDerived({ ...state, days: action.days.map((spots) => spots.map(toSpot)), activeDay: 0 });
         default:
             return state;
     }
 }
-
-
-export default adds;

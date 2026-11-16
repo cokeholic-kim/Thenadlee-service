@@ -1,6 +1,8 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "더 나들이",
+  "name": "더 나들이 - 여행 일정 플래너",
+  "description": "가고 싶은 곳을 지도에 담고 나만의 여행 동선을 만드는 여행 플래너",
+  "lang": "ko",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +20,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#FFC288",
   "background_color": "#ffffff"
 }

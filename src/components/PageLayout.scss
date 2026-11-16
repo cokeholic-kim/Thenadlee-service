@@ -1,0 +1,18 @@
+.page-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+
+    // 고정 헤더 높이는 Header 가 --header-height 로 넣어줌 (값이 없을 때만 기본값 사용)
+    .page-layout__content {
+        flex: 1 0 auto;
+        width: 100%;
+        padding-top: var(--header-height, 250px);
+    }
+
+    footer {
+        flex-shrink: 0;
+    }
+}

@@ -1,23 +1,19 @@
 import { FaInfoCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setLeft } from "../modules/add";
-import { setENTER, setLEAVE } from "../modules/hover";
+import { setENTER } from "../modules/hover";
 import './AddSpot.scss' ;
-import { useState } from "react";
 
-// 데이터 카드(li)에 대한 컴포넌트
+// 데이터 카드(li)에 대한 컴포넌트 (여행자 추천 장소는 배지 표시, i 버튼으로 상세 보기)
 
-const AddSpot = ({spotname, p_lat, p_lng , img ,map}) => {
-    const adds = useSelector(state=>state.add.right)
-
-    // const [deleteArr, setDeleteArr ] = useState(spotname) ; 
+const AddSpot = ({spot, map, onOpen}) => {
+    const { spotName: spotname, lat: p_lat, lon: p_lng, imageUrl: img } = spot;
     const dispatch = useDispatch() ;
-   
+
+    // 현재 선택한 일차에 장소 담기 (담은 장소는 추천 목록에서 빠짐)
     const onclick= ()=>{
-        dispatch(setLeft(spotname,p_lat,p_lng,img));
-        // 왼쪽으로 넘길시 오른쪽 배열에서 삭제
-        // const newarr = adds.filter(add => add.spotname !== action.spotname)
+        dispatch(setLeft(spot));
     }
 
     const onMouseEnter = (lat,lng)=>{
@@ -25,22 +21,18 @@ const AddSpot = ({spotname, p_lat, p_lng , img ,map}) => {
         map.panTo({lat,lng})
     }
 
-    // const onMouseleave = ()=>{
-    //     dispatch(setLEAVE())
-    // }
-
-        
     return (
         <li className=" RightControlbar_contents_li" onMouseEnter={()=>onMouseEnter(p_lat,p_lng)}>
             <div className=" RightControlbar_contents_img">
-                <img className='RightControlbar_contents_img_i' src={img} referrerpolicy="no-referrer"></img>
+                {img && <img className='RightControlbar_contents_img_i' src={img} referrerPolicy="no-referrer" alt=""></img>}
             </div>
             <div className=" RightControlbar_contents_p">
+                {spot.source === 'USER' && <span className="spot-card__badge">여행자 추천</span>}
                 <div className='RightControlbar_contents_p_left'>
-                    {/* <p>{nation}</p> */}
                     <p><span>{spotname}</span></p>
                 </div>
                 <div className='RightControlbar_contents_p_right'>
+                    <button type="button" className="spot-card__info" onClick={()=>onOpen(spot)} aria-label={`${spotname} 자세히 보기`}><FaInfoCircle/></button>
                     <div><span onClick={onclick}><FaPlus/></span></div>
                 </div>
             </div>

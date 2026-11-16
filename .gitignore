@@ -24,3 +24,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# 관리자·사용자가 올린 이미지 (서버의 html/file/uploads 에만 존재, 배포 대상 아님)
+/file/uploads/

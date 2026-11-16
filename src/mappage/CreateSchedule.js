@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { GoogleMap, Marker, MarkerF, Polyline, useJsApiLoader, useGoogleMap,InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, Marker, useJsApiLoader, InfoWindow } from "@react-google-maps/api";
 import axios from "axios";
 import { API_URL, FILE_URL } from "../config/apiurl";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,12 @@ import { SearchBox } from "./SearchBox";
 import RightControlbar from "./RightControlbar";
 import LeftControlbar from "./LeftControlbar";
 import { Skeleton } from "antd";
+import useRouteLegs from "../route/useRouteLegs";
+import RouteLines from "../route/RouteLines";
+import RoutePanel from "../route/RoutePanel";
+import { setTravelMode } from "../modules/itinerary";
+import { departureTimeOfDay } from "../itinerary/tripDates";
+import "./CreateSchedule.scss";
 
 const google_key = process.env.REACT_APP_GOOGLE_API_KEY;
 const containerStyle = {
@@ -31,6 +37,13 @@ const CreateSchedule = ({place,marker,month}) => {
     googleMapsApiKey: google_key,
     libraries: libs
   });
+
+  // 현재 일차에 담은 장소 사이의 실제 이동 경로 (이동수단은 사용자가 선택, 일정과 함께 저장)
+  const dispatch = useDispatch();
+  const { travelMode, startDate } = useSelector(state => state.itinerary);
+  const activeDay = useSelector(state => state.add.activeDay);
+  const departureTime = useMemo(() => departureTimeOfDay(startDate, activeDay), [startDate, activeDay]);
+  const { legs, loading: routeLoading } = useRouteLegs(state_places, travelMode, isLoaded, departureTime);
 
 
   const[map,setMaps]=useState(/**@type google.maps.Map*/(null)) //google map 상태관리. , @type을 써줘야 panTo 사용가능
@@ -55,29 +68,12 @@ const CreateSchedule = ({place,marker,month}) => {
     fullscreenControl: false,
   };
   
-  //polyline 경로 배열
-  const path = [];
-  state_places.forEach(d => {
-    let lat = d.lat
-    let lng = d.lon
-    path.push({lat,lng})
-  });
-
-  const optionsPolyline = {
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-    radius: 30000,
-    paths:path,
-    zIndex: 1
-  };
-
   if (!isLoaded) return <Skeleton/>;
 
   return (
     <>
       <LeftControlbar place={place} setToggle={setToggle} toggle={toggle} month={month}/>
+      <div className="map-area">
         <GoogleMap
           zoom={12}
           options={options}
@@ -87,19 +83,9 @@ const CreateSchedule = ({place,marker,month}) => {
           mapContainerStyle={containerStyle}
           onLoad={map=>setMaps(map)}
           >
-          
-          <Polyline 
-          onLoad={onLoad} 
-          path={path} 
-          optionsPolyline={optionsPolyline}
-          options={{
-            strokeColor: 'yellow',
-            strokeWeight: 5,
-            fillColor: 'yellow',
-            fillOpacity: 0.35,
-          }}
-          />
-          
+
+          <RouteLines legs={legs}/>
+
           {state_places.map((d,index)=>
             <Marker
             key={index}
@@ -131,7 +117,10 @@ const CreateSchedule = ({place,marker,month}) => {
           {/* DrawingManager 는 Google Maps JS API v3.65 에서 제거되어 사용 중단 */}
           {/* <SearchBox map={map}/> */}
         </GoogleMap>
-      <RightControlbar map={map} marker={marker}/>
+        <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
+          legs={legs} places={state_places} loading={routeLoading}/>
+      </div>
+      <RightControlbar map={map} marker={marker} place={place}/>
     </>
   );
 };

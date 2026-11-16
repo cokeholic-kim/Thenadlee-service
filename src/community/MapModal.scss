@@ -1,0 +1,171 @@
+$modal-text: #333;
+$modal-sub: #777;
+$modal-line: #ddd;
+$modal-soft: #f5f5f5;
+$modal-primary: #f2a65a;
+$modal-mint: #5cc8c3;
+$modal-danger: #d64545;
+
+.map-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: $modal-text;
+    font-size: 14px;
+    text-align: left;
+
+    .map-modal__box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 440px;
+        max-height: 90vh;
+        border-radius: 10px;
+        background-color: #fff;
+        overflow: hidden;
+
+        &.is-wide {
+            max-width: 640px;
+        }
+    }
+
+    .map-modal__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px 8px;
+
+        h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+    }
+
+    .map-modal__close {
+        border: none;
+        background: none;
+        font-size: 26px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .map-modal__body {
+        padding: 8px 20px 20px;
+        overflow-y: auto;
+    }
+
+    .map-modal__message {
+        margin: 8px 0;
+        color: $modal-sub;
+        line-height: 1.5;
+    }
+
+    label,
+    legend {
+        display: block;
+        margin: 12px 0 4px;
+        font-size: 13px;
+        color: $modal-sub;
+    }
+
+    input[type="text"],
+    input:not([type]),
+    textarea {
+        display: block;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #c8c8c8;
+        border-radius: 4px;
+        background-color: #f1f1f1;
+        font: inherit;
+    }
+
+    fieldset {
+        border: 0;
+        padding: 0;
+        margin: 0;
+    }
+
+    .map-modal__radio {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+        color: $modal-text;
+        font-size: 14px;
+    }
+
+    .map-modal__actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .map-modal__button {
+        flex: 1;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 12px;
+        border: 1px solid $modal-line;
+        border-radius: 4px;
+        background-color: #fff;
+        color: $modal-text;
+        font: inherit;
+        text-decoration: none;
+        cursor: pointer;
+
+        &.is-primary {
+            border-color: $modal-primary;
+            background-color: $modal-primary;
+            color: #fff;
+        }
+
+        &.is-mint {
+            border-color: $modal-mint;
+            background-color: $modal-mint;
+            color: #fff;
+        }
+
+        &.is-danger {
+            border-color: $modal-danger;
+            color: $modal-danger;
+        }
+
+        &.is-small {
+            flex: 0 0 auto;
+            min-height: 30px;
+            font-size: 13px;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+    }
+
+    .map-modal__badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background-color: $modal-mint;
+        color: #fff;
+        font-size: 12px;
+
+        &.is-official {
+            background-color: $modal-primary;
+        }
+    }
+
+    .map-modal__hint {
+        margin-top: 4px;
+        color: $modal-sub;
+        font-size: 12px;
+    }
+}

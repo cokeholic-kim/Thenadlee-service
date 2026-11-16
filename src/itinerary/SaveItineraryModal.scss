@@ -1,0 +1,109 @@
+// 일정 저장 창 (지도 화면 모바일 규칙의 영향을 받지 않도록 .map 아래로 범위·속성 명시)
+.map .save-itinerary {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 16px;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+
+    .save-itinerary__box {
+        display: block;
+        order: 0;
+        width: 100%;
+        max-width: 420px;
+        padding: 20px;
+        border: 0;
+        border-radius: 10px;
+        background-color: #fff;
+        color: #333;
+    }
+    .save-itinerary__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        border: 0;
+        background: none;
+
+        h2 {
+            font-size: 18px;
+        }
+    }
+    .save-itinerary__close {
+        display: block;
+        width: auto;
+        border: none;
+        background: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .save-itinerary__message {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #666;
+    }
+    form,
+    fieldset {
+        display: block;
+        width: 100%;
+        border: 0;
+        background: none;
+    }
+    label {
+        display: block;
+        margin-top: 12px;
+        margin-bottom: 4px;
+        font-size: 13px;
+        color: #666;
+    }
+    input[type="text"],
+    input:not([type]),
+    textarea {
+        display: block;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #c8c8c8;
+        border-radius: 4px;
+        background-color: #f1f1f1;
+        font-size: 14px;
+    }
+    legend {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #666;
+    }
+    .save-itinerary__radio {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        color: #333;
+        font-size: 14px;
+    }
+    .save-itinerary__primary,
+    .save-itinerary__secondary {
+        display: block;
+        width: 100%;
+        height: 44px;
+        margin-top: 14px;
+        border: none;
+        border-radius: 4px;
+        font-size: 15px;
+        line-height: 44px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .save-itinerary__primary {
+        background-color: #FFC288;
+        color: #fff;
+    }
+    .save-itinerary__secondary {
+        background-color: #adeae8;
+        color: #fff;
+    }
+}

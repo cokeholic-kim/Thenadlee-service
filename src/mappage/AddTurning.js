@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from "react-icons/fa";
 import './AddTurning.scss' ;
-import { setDown, setRight, setTop} from '../modules/add';
+import { setRight } from '../modules/add';
 import { AiFillCaretUp,AiFillCaretDown } from "react-icons/ai";
 
 // 데이터 카드(li)가 LeftControlbar로 넘어가기 위한 컴포넌트
@@ -12,7 +12,7 @@ import { AiFillCaretUp,AiFillCaretDown } from "react-icons/ai";
 const AddTurning = ({adds,uparr,downarr,index}) => {
     const dispatch = useDispatch() ;
     const onclick= ()=>{
-        dispatch(setRight(adds.spotName,adds.lat,adds.lon ,adds.imageUrl));
+        dispatch(setRight(adds));
     }
     return (
             <li className="AddTurning_contents_li">

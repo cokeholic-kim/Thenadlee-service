@@ -37,3 +37,8 @@
 
 //     }
 // }
+// 지도 위에 경로 패널을 띄우기 위한 기준 영역
+.map-area {
+    position: relative;
+    width: 100%;
+}

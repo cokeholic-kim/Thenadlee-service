@@ -4,7 +4,9 @@ import { AiOutlinePlus } from "react-icons/ai";
 import './LeftControlbar.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import AddTurning from './AddTurning';
-import { setDown, setRedo, setTop} from '../modules/add';
+import { clearDay, moveSpot } from '../modules/add';
+import { changeTripDates } from '../modules/itinerary';
+import DayTabs from '../itinerary/DayTabs';
 import useAsync from '../customHook/useAsync';
 import Calendar from './Calendar';
 import { useParams } from 'react-router';
@@ -43,75 +45,21 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
     const dispatch = useDispatch() ;
     const [cold, setCold] = useState();
     const places = useSelector(state=>state.add)
+    const { startDate, endDate } = useSelector(state=>state.itinerary)
 
-    // 총시간의 합계 상태값
-    const [time,setTime] = useState(0)
-    const addTime = () =>{
-        let added = 0
-        places.left.forEach(T => {
-            added=added+Number(T.time)
-            console.log(T.time)
-        });
-        setTime(added)
-    }
-    
-    useEffect(()=>{
-        addTime()
-        console.log(time)
-    },[places.left])
+    // 현재 일차 안에서 순서 바꾸기 (맨 위/맨 아래에서는 무시)
+    const uparr = (index)=> dispatch(moveSpot(index, -1))
+    const downarr = (index)=> dispatch(moveSpot(index, 1))
 
-    const uparr = (index)=>{
-        if(index === 0 ){
-            alert("순서를  올릴수없습니다.")
-        }
-        let upitem = places.left.splice(index,1)
-        let newarr = places.left
-        newarr.splice(index-1,0,upitem[0])
-        dispatch(setTop(newarr))
-        setToggle(!toggle)
+    // 여행 기간을 고르면 일차 수가 함께 바뀜
+    const onChangeDates = (start,end) => {
+        if(start && end) dispatch(changeTripDates(start, end))
     }
-
-    const downarr = (index)=>{
-        if(index >=  places.left.length){
-            alert("순서를 내릴수없습니다.")
-        }
-        let downitem = places.left.splice(index,1)
-        let newarr = places.left
-        newarr.splice(index+1,0,downitem[0])
-        dispatch(setDown(newarr))
-        setToggle(!toggle)
-    }
-
-    const getToday = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-        const day = String(today.getDate()).padStart(2, '0');
-    
-        return `${year}-${month}-${day}`;
-    }
-
-    //캘린더 날짜 상태관리
-    const [ dates , setDates ] = useState({
-        start:getToday(),    
-        end: ""
-    })
-    //시작날짜와 끝날짜 set
-    const hideDateDiv = (start,end) => {
-        if(start && end){
-           setDates({
-            start: start,
-            end: end
-           })
-        }else{
-            return;
-        }
-    }
-    const term = (dates.start && dates.end) ? <p name='start'>{dates.start}~{dates.end}</p>:<></>
-    const monthInfo = Number(dates.start.slice(5,7));
+    const term = (startDate && endDate) ? <p name='start'>{startDate}~{endDate}</p>:<></>
+    // 월별 정보는 여행 시작월 기준 (기간을 안 골랐으면 이번 달)
+    const monthInfo = startDate ? Number(startDate.slice(5,7)) : new Date().getMonth() + 1;
 
     const recommend = month.find(({month})=> month === monthInfo)
-    console.log(place)
     return (
         <div className='LeftControlbar'>
             <div className='background'>
@@ -131,37 +79,31 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
                         </button>
                     </div>
                 </div>    
-                <Calendar className="calendar" hideDateDiv={hideDateDiv}/>
+                <Calendar className="calendar" startDate={startDate} endDate={endDate} onChangeDates={onChangeDates}/>
                 <div className='selectList'>
                     <p>선택목록</p>
                 </div>
                 <div className="center" style={{margin:"16px 0",width:"100%" }}>
-                    <ul id="tabs" className="tabs tabs-fixed-width">
-                        <li className="tab">
-                            <a id="selecteSpotsTab" style={{textDecoration:"none !important"}}>장 소</a>
-                        </li>
-                    </ul>
+                    <DayTabs/>
                 </div>
                 <div className="left_bottom_ul">
                     <div className="center" style={{margin:"8px 0"}}>
-                        {/* <span id="seletedSpotsCount">{time}</span> */}
-                        {/* <span id="totalTimeArea"><span>(총</span><span id="sumOfSpotStayingH">{time}</span><span data-langnum="20">시간</span>)</span> */}
                     </div>
                     <div className="center2" style={{display:"flex", justifyContent: "center" , alignItems: "center", width: "100%" , padding: "8px 0"}}>
-                        <button className="Clearbtn" onClick={()=>dispatch(setRedo(places.data))}>
-                            <h6>장소전체삭제</h6>
+                        <button className="Clearbtn" onClick={()=>dispatch(clearDay())}>
+                            <h6>{places.activeDay + 1}일차 비우기</h6>
                         </button>
                     </div>
                         {term}
                     <ul className="ul-style" id="cart">
-                        { places.left.length != 0 ? places.left.map((data,index)=> <AddTurning key={index} adds={data} uparr={uparr} downarr={downarr} index={index}/>): 
+                        { places.left.length != 0 ? places.left.map((data,index)=> <AddTurning key={data.id} adds={data} uparr={uparr} downarr={downarr} index={index}/>):
                             <li id="cartList" className="center">
-                                <hs>
-                                    <span data-langnum="27">가고 싶은 장소들을 검색하여 추가해주세요.</span><br/>
-                                    <span data-langnum="28">설정하신 일자별 여행시간 내에서 </span><br/>
-                                    <span data-langnum="29">하루 평균 최대 8개의 장소까지 선택 가능합니다.</span><br/><br/>
+                                <p className="empty-cart-guide">
+                                    아직 담은 장소가 없어요.<br/>
+                                    오른쪽 추천 장소에서 + 를 눌러<br/>
+                                    가고 싶은 곳을 담아 보세요.<br/><br/>
                                     <AiOutlinePlus/>
-                                </hs>
+                                </p>
                             </li>
                         }
                     </ul>

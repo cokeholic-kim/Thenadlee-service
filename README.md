@@ -40,11 +40,25 @@ React를 활용한 웹사이트 만들기(여행 커뮤니티) 더 나들이
 
 | 이름 | 값 |
 |---|---|
+| `REACT_APP_SITE_URL` | `https://thenadlee.dothome.co.kr` — 검색엔진 대표 주소, 공유 미리보기, sitemap 에 사용 |
+| `REACT_APP_CONTACT_EMAIL` | 푸터·개인정보처리방침의 문의 메일 (비우면 표시 안 함) |
 | `REACT_APP_API_URL` / `REACT_APP_FILE_URL` | `/back` / `/file` |
 | `REACT_APP_WHEATHER_BASE_URL` | `https://api.openweathermap.org/data/2.5/` |
 
 > `REACT_APP_` 값은 빌드된 JS 에 포함되어 사이트 방문자는 브라우저에서 볼 수 있습니다.
 > Google Maps 키에는 반드시 배포 도메인 HTTP referrer 제한을 걸어주세요.
+
+### SEO
+
+- `public/index.html`: 기본 제목·설명·키워드, 공유 미리보기(Open Graph·Twitter), 대표 주소(canonical), 사이트 정보(JSON-LD)
+- `src/seo/pageMeta.js` + `usePageMeta`: 페이지별 제목·설명·대표 주소 변경, 회원 화면은 `noindex`
+- `npm run build` 후 `scripts/generate-seo-files.js` 가 `build/robots.txt`, `build/sitemap.xml` 생성
+  (공개 페이지를 추가하면 이 스크립트의 `SITEMAP_PAGES` 와 `pageMeta.js` 를 함께 수정)
+- 배포 후 [Google Search Console](https://search.google.com/search-console), [네이버 서치어드바이저](https://searchadvisor.naver.com) 에 사이트를 등록하고 `sitemap.xml` 을 제출하세요.
+
+### 회원 기능
+
+실명·이메일 없이 **아이디 + 닉네임 + 비밀번호**만으로 가입합니다. 비밀번호를 잊으면 가입 때 한 번만 보여 주는 **복구 코드**로 재설정하며, 마이페이지에서 즉시 탈퇴할 수 있습니다.
 
 ### 로컬 개발
 

@@ -34,12 +34,13 @@ header{
         }
             li{
                 vertical-align: baseline;
-                width: 100px;
+                min-width: 100px;
                 height: 100px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0;                
+                padding: 0 12px;
+                white-space: nowrap;
             }
             li:hover {
                 background-color: #D3EFEE;
@@ -92,11 +93,13 @@ header{
                     li{
                         vertical-align: baseline;
                         width: 100%;
+                        min-width: 0;
                         height: 50px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        padding: 0;                
+                        padding: 0 8px;
+                        letter-spacing: 0;
                     }
                     li:hover {
                         background-color: #ccc;

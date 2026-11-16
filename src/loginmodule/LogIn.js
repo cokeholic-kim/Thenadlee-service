@@ -1,114 +1,65 @@
 import React, { useState } from 'react';
-import './Login.scss'
+import './Login.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
-import { setCookie } from '../util/cookie';
-import { goToHome, setLogin } from '../modules/logincheck';
-import { API_URL, FILE_URL } from '../config/apiurl';
+import { login } from '../api/userApi';
+import { setLogin } from '../modules/logincheck';
 import { getApiErrorMessage } from '../util/apiError';
+import usePageMeta from '../seo/usePageMeta';
+import { PAGE_META } from '../seo/pageMeta';
 
 const LogIn = () => {
+    usePageMeta(PAGE_META.login);
     const dispatch = useDispatch();
-    const navigate=useNavigate();
-    const [loginData,setLoginData]=useState({
-        useremail:"",
-        userpass:""
-    })
-    const onChange= (e)=>{
-        const {name,value} = e.target;
-        setLoginData({
-            ...loginData,
-            [name]:value
-        })
-    }
-    const onSubmit = (e) =>{
-        //form 전송이벤트 제거
+    const navigate = useNavigate();
+    const [loginData, setLoginData] = useState({ loginId: '', password: '' });
+
+    const onChange = (e) => {
+        const { name, value } = e.target;
+        setLoginData({ ...loginData, [name]: value });
+    };
+
+    const onSubmit = async (e) => {
         e.preventDefault();
-        //인풋에 입력되었는지 확인
-        if(loginData.useremail === ''|| loginData.userpass === ''){
-            alert("이메일과 비밀번호를 입력해주세요");
-        }else{
-            axios.post(`${API_URL}/login`,loginData)
-            .then(result=>{
-                const { email: m_email, nickName: m_nickname } = result.data.body;
-                if(m_email && m_nickname){
-                    alert("로그인 되었습니다.");
-                    //현재 시간 객체
-                    let expires =new Date();
-                    //60분을 더한 값으로
-                    expires.setMinutes(expires.getMinutes()+60);
-                    //쿠키생성
-                    setCookie('useremail',`${m_email}`,{path:'/',expires});
-                    setCookie('username',`${m_nickname}`,{path:'/',expires});
-                    dispatch(setLogin());
-                    dispatch(goToHome(navigate))
-                }
-            })
-            .catch(e=>{
-                alert(getApiErrorMessage(e))
-            })
+        try {
+            dispatch(setLogin(await login(loginData)));
+            navigate('/');
+        } catch (error) {
+            alert(getApiErrorMessage(error));
         }
-    }
+    };
+
     return (
         <div className='center'>
             <div className='container'>
-                <div className='text'>LOG IN</div>
-                <div className='small-text'>효율적인 여행 가이드 THE-나들이</div>
+                <h1 className='text'>LOG IN</h1>
+                <div className='small-text'>지도 위에서 짜는 나만의 여행, 더 나들이</div>
                 <div className='form-container'>
                     <form onSubmit={onSubmit}>
                         <div className='data'>
-                            <label>E-mail</label>
-                            <input type='text' onChange={onChange} name='useremail' value={loginData.useremail} required></input>
+                            <label htmlFor='loginId'>아이디</label>
+                            <input id='loginId' type='text' name='loginId' value={loginData.loginId}
+                                onChange={onChange} autoComplete='username' required />
                         </div>
                         <div className='data'>
-                            <label>Password</label>
-                            <input type="password" value={loginData.userpass}  name='userpass' onChange={onChange} required=""></input>
+                            <label htmlFor='password'>비밀번호</label>
+                            <input id='password' type='password' name='password' value={loginData.password}
+                                onChange={onChange} autoComplete='current-password' required />
                         </div>
                         <div className='forgot-pass'>
-                            <Link to="/findPass">비밀번호를 잊으셨나요?</Link>
+                            <Link to='/findPass'>비밀번호를 잊으셨나요?</Link>
                         </div>
                         <div className='btn'>
-                            <div className="inner"></div>
-                            <button type="submit"  onClick={(e)=>{console.log(e)}}>로그인</button>
+                            <div className='inner'></div>
+                            <button type='submit'>로그인</button>
                         </div>
                     </form>
                     <div className='datsignup-linka'>
-                        "회원이 아니라면?"
-                        <Link to="/join">회원가입하기</Link>
-                    </div>
-                </div>
-                <div className="divider-container">
-                    <div className="divider"></div>
-                    <span>or</span>
-                </div>
-                <div className="sns-text">SNS 간편 로그인</div>
-                <div className="socialBtn-container">
-                    <div className="socialBtn">
-                        <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src={`${FILE_URL}/imgs/kakaolink_btn.png`} alt="logo"/>
-                        </div>
-                    </div>
-                    <div className="socialBtn">
-                        <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src={`${FILE_URL}/imgs/naver_btn.png`} alt="logo"/>
-                        </div>
-                    </div>
-                    
-                    <div className="socialBtn google-mobile-login">
-                        <div className="socialBtn-image-container" onClick={(e)=>{console.log(e)}}>
-                            <img src={`${FILE_URL}/imgs/google_btn.png`} alt="logo"/>
-                        </div>
+                        회원이 아니라면? <Link to='/join'>회원가입하기</Link>
                     </div>
                 </div>
             </div>
         </div>
-        // <script src="/build/login.js"></script>
-        // <script>
-        //     let headAddress = 'https://www.myro.co.kr';
-        //     let savedRouteTokenKey = '';
-        //     let fromMobile = '0';
-        // </script>
     );
 };
 

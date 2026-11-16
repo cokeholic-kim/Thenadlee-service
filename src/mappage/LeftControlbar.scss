@@ -88,8 +88,10 @@
             }
         }
     }
-    hs{
-        font-size:9px ;
+    // 담은 장소가 없을 때 안내 문구
+    .empty-cart-guide{
+        font-size: 12px ;
+        line-height: 1.6;
         color: #aaa;
     }
     .ul-style{
@@ -133,9 +135,6 @@
         .selectList{
             font-size: 25px;
         }
-        .center{
-            display: none;
-        }
         .left_bottom_ul{
             // .center{
             //     display: flex;
@@ -161,9 +160,6 @@
         .planeticketing{
             display: none;
         }
-        div:nth-child(3){
-            display: none;
-        }
         .left_bottom_ul{
             .center{
                 display: flex;
@@ -182,43 +178,30 @@
 }
 }
 
+// 모바일: 지도 아래에 전체 너비로 펼쳐서 달력·일차 탭·담은 장소를 모두 보여줌
 @media ( max-width: 600px ) {
     .LeftControlbar{
-        width: 0;
-        height: 0;
-        padding: 0;
-        background-color: rgba( 255, 255, 255, 0.5 ) ;
-        // z-index: -6 ;
+        width: 100%;
+        height: auto;
+        padding: 16px;
+        overflow: visible;
+        border-top: 1px solid #eee;
         .background{
             .Place{
-                position: absolute;
-                width: 150px;
-                z-index: 50 ;
-                left: 100px;
-                top: 60px;
+                position: static;
+                width: 100%;
+                margin-bottom: 8px;
             }
             .selectList{
-                display: none;
+                display: block;
+                margin-top: 16px;
             }
             .left_bottom_ul{
-                .center{
-                    display: none;
-                    
-                }
-                .center2{
-                    .Clearbtn{
-                        display: block;
-                        position: absolute;
-                        width: 150px;
-                        z-index: 50 ;
-                        left: 100px;
-                        top: 130px;
-
-                    }
-                    
+                .center2 .Clearbtn{
+                    width: 60%;
                 }
                 .ul-style{
-                    display: none;
+                    display: flex;
                 }
             }
         }

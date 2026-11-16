@@ -45,14 +45,23 @@
 
 //     }
 // }
+// 모바일: 지도 바로 아래 한 줄 메뉴
 @media ( max-width: 600px ) {
     #blockbtn{
+        position: static;
         width: 100%;
-        z-index: 3;
-        top: 89%;
-        left: 0;
         flex-direction: row;
-        justify-content: flex-start;
+        justify-content: space-between;
+        padding: 6px 4px;
+        background-color: #fff;
+        a{
+            flex: 1;
+            width: auto;
+            height: 44px;
+            margin: 0 3px;
+            padding: 0;
+            background: #e9f6f6;
+            white-space: nowrap;
+        }
     }
-    
 }

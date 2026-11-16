@@ -1,169 +1,117 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-// import { API_URL } from '../../config/apiurl';
 import './JoinPage.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import { API_URL } from '../config/apiurl';
+import { checkLoginId, join } from '../api/userApi';
 import { getApiErrorMessage } from '../util/apiError';
+import RecoveryCodeNotice from '../components/RecoveryCodeNotice';
+import usePageMeta from '../seo/usePageMeta';
+import { PAGE_META } from '../seo/pageMeta';
+
+// 서버와 같은 규칙 (영문 소문자·숫자·_ 4~20자 / 영문·숫자·특수문자 포함 8~20자)
+const LOGIN_ID_PATTERN = /^[a-z0-9_]{4,20}$/;
+const PASSWORD_PATTERN = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,20}$/;
+const EMPTY_FORM = { loginId: '', nickName: '', password: '', passwordConfirm: '' };
+const EMPTY_AGREE = { age: false, privacy: false, terms: false };
+
+const validateForm = (form, agree, checkedLoginId) => {
+    if (!LOGIN_ID_PATTERN.test(form.loginId)) return '아이디는 영문 소문자, 숫자, 밑줄(_)로 4~20자여야 합니다.';
+    if (checkedLoginId !== form.loginId) return '아이디 중복 확인을 해주세요.';
+    if (form.nickName.trim().length < 2) return '닉네임은 2~20자로 입력해주세요.';
+    if (!PASSWORD_PATTERN.test(form.password)) return '비밀번호는 영문자, 숫자, 특수문자를 포함한 8~20자여야 합니다.';
+    if (form.password !== form.passwordConfirm) return '비밀번호와 비밀번호 확인이 일치하지 않습니다.';
+    if (!agree.age || !agree.privacy || !agree.terms) return '필수 항목에 모두 동의해주세요.';
+    return null;
+};
+
+const JoinAgreements = ({ agree, onAgree }) => (
+    <div className="agree-container">
+        <span className="agree-link-container">
+            <label><input type="checkbox" name="age" checked={agree.age} onChange={onAgree} />
+                본인은 만 14세 이상입니다.<span>(필수)</span></label>
+        </span>
+        <span className="agree-link-container">
+            <label><input type="checkbox" name="privacy" checked={agree.privacy} onChange={onAgree} />
+                개인정보 수집·이용에 동의합니다.<span>(필수)</span></label>
+            <Link to="/privacy" target="_blank" className="agree-link-text">보기</Link>
+        </span>
+        <table>
+            <tbody>
+                <tr><td>수집 항목</td><td className="second-td">아이디, 닉네임, 비밀번호(암호화 저장)</td></tr>
+                <tr><td>목적</td><td className="second-td">회원 식별, 로그인</td></tr>
+                <tr><td>보유 기간</td><td className="second-td">회원 탈퇴 시 즉시 파기</td></tr>
+            </tbody>
+        </table>
+        <span className="agree-link-container">
+            <label><input type="checkbox" name="terms" checked={agree.terms} onChange={onAgree} />
+                이용약관에 동의합니다.<span>(필수)</span></label>
+            <Link to="/terms" target="_blank" className="agree-link-text">보기</Link>
+        </span>
+    </div>
+);
 
 const JoinPage = () => {
-    const navigate =useNavigate();
-    const [formData,setFormData]=useState({
-        m_name:"",
-        m_pass:"",
-        m_passch:"",
-        m_nickname:"",
-        m_email:"",
-        m_phone:"",
-        m_address1:"",
-        m_address2:"",
+    usePageMeta(PAGE_META.join);
+    const navigate = useNavigate();
+    const [form, setForm] = useState(EMPTY_FORM);
+    const [agree, setAgree] = useState(EMPTY_AGREE);
+    const [checkedLoginId, setCheckedLoginId] = useState('');
+    const [recoveryCode, setRecoveryCode] = useState('');
 
-    });
-    const onChange = (e)=>{
-        const {name,value} =e.target;
-        setFormData({
-            ...formData,
-            [name]:value
-        })
-    }
-    const check1=document.querySelector("#userAgeChecked");
-    const check2=document.querySelector("#userPolicyChecked");
-    const check3=document.querySelector("#userAgreementsChecked");
-    
-    //폼전송 이벤트
-    const onSubmit = (e) => {
+    const onChange = (e) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: name === 'loginId' ? value.toLowerCase() : value });
+    };
+    const onAgree = (e) => setAgree({ ...agree, [e.target.name]: e.target.checked });
+
+    const onCheckLoginId = async () => {
+        try {
+            const result = await checkLoginId(form.loginId);
+            setCheckedLoginId(result.available ? result.loginId : '');
+            alert(result.available ? '사용할 수 있는 아이디입니다.' : '이미 사용 중인 아이디입니다.');
+        } catch (error) {
+            alert(getApiErrorMessage(error));
+        }
+    };
+
+    const onSubmit = async (e) => {
         e.preventDefault();
-        if(formData.m_name !== ""&&formData.m_pass !==""&&formData.m_passch !=="" &&formData.m_nickname !==""&&formData.m_email !==""){
-            if(check1.checked&&check2.checked&&check3.checked==true){ 
-            // console.log("prevent통과")
-                // console.log("빈칸통과")
-                if(formData.m_pass==formData.m_passch){
-                    // console.log("비밀번호들 일치")
-                    if(checkPassword(formData.m_pass)==true){
-                        // console.log("비밀번호 정규표현식 시작")
-                        addMember();
-                    }else{
-                        alert("비밀번호의 형식이 일치하지 않습니다.")
-                        // console.log("정규표현식이 틀림")
-                    }
-                }else{
-                    alert("비밀번호와 비밀번호재확인이 일치하지 않습니다.")
-                }
-            }else{
-                alert("약관에 동의하지 않았습니다.")
-            }
-        }else{
-            alert("입력하지 않은 값이 존재합니다..")
+        const errorMessage = validateForm(form, agree, checkedLoginId);
+        if (errorMessage) return alert(errorMessage);
+        try {
+            setRecoveryCode((await join(form)).recoveryCode);
+        } catch (error) {
+            alert(getApiErrorMessage(error));
         }
-    }
-    const addMember = () => {
-        axios.post(`${API_URL}/join`,formData)
-        .then(res=>{
-            alert('등록되었습니다.');
-            navigate('/');
-        })
-        .catch(e=>{
-            alert(getApiErrorMessage(e));
-        })
-    }
-    const checkPassword= (e) =>{
-        // 영문자,특수문자,숫자 10~20자 사이
-        const regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,20}$/;
-        if(regExp.test(e)){
-            // alert("조건을 만족하였습니다.")
-            addMember();
-        }else{
-            alert("비밀번호에는 영문자,특수문자,숫자가 1개이상 포함되어야 합니다.")
-        }
-    }
+    };
 
+    if (recoveryCode) {
+        return <RecoveryCodeNotice title="가입 완료" recoveryCode={recoveryCode} onConfirm={() => navigate('/login')} />;
+    }
     return (
         <div className="container">
-            <div className="text">Join us!!</div>
-            <div className="small-text">효율적인 여행 가이드 THE-나들이</div>
-            <form className="uk-form-stacked" onSubmit={onSubmit}>
-                <div>
-                    <label className="label-text" for="signInEmail">이메일</label>
-                    <div className="uk-form-controls input-button-flex">
-                        <input className="uk-input" type="text" id="signInEmail" maxLength="30"  name="m_email" value={formData.m_email} onChange={onChange} />
-                        <button className="uk-button email-btn" id="checkDuplicationEmail">확인</button>
-                    </div>
+            <h1 className="text">회원가입</h1>
+            <div className="small-text">지도 위에서 짜는 나만의 여행, 더 나들이</div>
+            <form className="auth-form" onSubmit={onSubmit}>
+                <label className="label-text" htmlFor="loginId">아이디 (영문 소문자·숫자·_ 4~20자)</label>
+                <div className="input-button-flex">
+                    <input className="auth-input" type="text" id="loginId" name="loginId" maxLength="20"
+                        value={form.loginId} onChange={onChange} autoComplete="username" />
+                    <button type="button" className="email-btn" onClick={onCheckLoginId}>확인</button>
                 </div>
-                <div>
-                    <label className="label-text" for="signInName">이름</label>
-                    <div className="uk-form-controls">
-                        <input className="uk-input" type="text" id="signInName"  name="m_name" maxLength="12" value={formData.m_name} onChange={onChange} />
-                    </div>
-                </div>
-                <div>
-                    <label className="label-text" for="signInNickname">닉네임</label>
-                    <div className="uk-form-controls">
-                        <input className="uk-input" type="text" id="signInNickname"  name="m_nickname" maxLength="12" value={formData.m_nickname} onChange={onChange}/>
-                    </div>
-                </div>
-                <div>
-                    <label className="label-text" for="signInPwd">비밀번호</label>
-                    <div className="uk-form-controls"> 
-                        <input className="uk-input" type="password" id="signInPwd"   name="m_pass"  placeholder="비밀번호(영문자, 숫자, 특수문자 포함 8~20자)" maxLength="20" value={formData.m_pass} required="" onChange={onChange} />
-                    </div>
-                </div>
-                <div>
-                    <label className="label-text" for="checkSignInPwd">비밀번호확인</label>
-                    <div className="uk-form-controls">
-                        <input className="uk-input" type="password" id="checkSignInPwd"  name="m_passch" placeholder="비밀번호 재입력"  value={formData.m_passch}  maxLength="20" required="" onChange={onChange} />
-                    </div>
-                </div>
-                <div className="agree-container">
-                    <span className="agree-link-container">
-                        <label><input type="checkbox" id="userAgeChecked" name="color" value="blue"/>
-                            본인은 만 14세 이상입니다.<span>(필수)</span></label>
-                    </span>
-                    <span className="agree-link-container">
-                        <label><input type="checkbox" id="userPolicyChecked" name="color" value="blue"/>
-                            개인정보수집에 동의합니다.
-                            <span>(필수)</span></label>
-                        {/* <a onclick="window.open('/userPolicy')" class="agree-link-text">보기</a> */}
-                        <Link to="/UserPolicy" target="_blank"><li className="agree-link-text">보기</li></Link>
-                    </span>
-                    <table>
-                        <tbody><tr>
-                            <td>개인정보수집</td>
-                        </tr>
-                        <tr>
-                            <td>목적</td>
-                            <td className="second-td">
-                                개인식별, 회원자격 유지・관리
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>항목</td>
-                            <td className="second-td">
-                                이름,아이디,이메일,닉네임,비밀번호
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>보유기간</td>
-                            <td className="second-td">회원탈퇴 시 즉시 파기</td>
-                        </tr>
-                    </tbody></table>
-                    <span className="agree-link-container">
-                        <label><input type="checkbox" id="userAgreementsChecked"/>
-                            이용약관에 동의합니다.
-                            <span>(필수)</span></label>
-                            <Link to="/UserPolicy2" target="_blank"><li className="agree-link-text">보기</li></Link>                    </span>
-                </div>
-                <div>
-                    <button className="myro-btn" id="completeSignInAndSendVerifyCode">
-                        회원가입
-                    </button>
-                </div>
+                <label className="label-text" htmlFor="nickName">닉네임 (2~20자)</label>
+                <input className="auth-input" type="text" id="nickName" name="nickName" maxLength="20"
+                    value={form.nickName} onChange={onChange} />
+                <label className="label-text" htmlFor="password">비밀번호</label>
+                <input className="auth-input" type="password" id="password" name="password" maxLength="20"
+                    placeholder="영문자, 숫자, 특수문자 포함 8~20자" value={form.password} onChange={onChange}
+                    autoComplete="new-password" />
+                <label className="label-text" htmlFor="passwordConfirm">비밀번호 확인</label>
+                <input className="auth-input" type="password" id="passwordConfirm" name="passwordConfirm" maxLength="20"
+                    value={form.passwordConfirm} onChange={onChange} autoComplete="new-password" />
+                <JoinAgreements agree={agree} onAgree={onAgree} />
+                <button type="submit" className="auth-btn">회원가입</button>
             </form>
-                <div>                    
-                <Link to="/login"><button className="myro-btn-back" id="backPage">
-                        뒤로가기
-                    </button></Link>
-                </div>
-            <div className="small-text"></div>
+            <Link to="/login"><button type="button" className="auth-btn-secondary">뒤로가기</button></Link>
         </div>
     );
 };
