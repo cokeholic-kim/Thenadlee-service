@@ -1,31 +1,30 @@
+$main-accent: #ffc288;
+$main-step: #3a9ea5;
+$main-text: #333;
+$main-sub: #666;
+
+// 고정 헤더 높이는 Header 가 --header-height 로 넣어줌
 .MainTop{
     display: flex;
     width: 100%;
-    position: relative;
-    .mainVisual{
-        width: 100%;
-        height: 100vh;
-        background: linear-gradient(200deg, #8fc9cc 0%, #b4dde0 55%, #d6edf1 100%);
-    }
+    min-height: 100vh;
+    padding-top: var(--header-height, 120px);
+
     .leftMainTop{
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 40%;
-        max-width: 100%;
-        height: 100vh;
+        flex: 0 0 40%;
         background-color: #fff;
-        position:absolute;
 
         >*{
             margin: 10px 0;
         }
         #startbutton{
             a {
-                margin-top:15px;
                 display: inline-block;
-                background-color: #ffc288 !important;
+                background-color: $main-accent !important;
                 letter-spacing: 2px;
                 height: 85px;
                 line-height: 85px;
@@ -40,24 +39,96 @@
             }
         }
     }
+
+    .mainVisual{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        padding: 40px;
+        background: linear-gradient(200deg, #8fc9cc 0%, #b4dde0 55%, #d6edf1 100%);
+    }
 }
 
-@media screen and (max-width:1200px) {
-    .MainTop{
-        padding-top: 150px;
+// 오른쪽 영역: 소개 문구 + 이용 순서 카드
+.mainGuide{
+    width: 100%;
+    max-width: 520px;
+    color: $main-text;
+    text-align: left;
+
+    .mainGuide__intro{
+        margin-bottom: 28px;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.6;
+        letter-spacing: 0;
+    }
+
+    .mainGuide__steps{
         display: flex;
         flex-direction: column;
+        gap: 14px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .mainGuide__step{
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 18px 20px;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 6px 20px rgba(40, 110, 115, 0.12);
+
+        strong{
+            display: block;
+            margin-bottom: 4px;
+            font-size: 17px;
+        }
+        p{
+            color: $main-sub;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    }
+
+    .mainGuide__number{
+        flex: 0 0 auto;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background-color: $main-step;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+}
+
+// 1200px 이하: 제목·시작 버튼 아래에 안내 카드를 이어서 배치
+@media screen and (max-width:1200px) {
+    .MainTop{
+        flex-direction: column;
         .leftMainTop{
-            width: 100%;
+            flex: 0 0 auto;
+            padding: 60px 16px;
         }
         .mainVisual{
-            height: 500px;
+            padding: 40px 16px;
         }
     }
 }
 
 @media screen and (max-width:768px) {
-    .MainTop{
-        padding-top: 250px;
+    .MainTop .leftMainTop #startbutton a{
+        width: 220px;
+        height: 64px;
+        line-height: 64px;
+        font-size: 22px;
+    }
+    .mainGuide .mainGuide__intro{
+        font-size: 17px;
     }
 }
