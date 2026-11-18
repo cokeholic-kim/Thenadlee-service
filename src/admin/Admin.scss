@@ -193,6 +193,20 @@ $admin-radius: 6px;
         }
     }
 
+    .admin-form__region {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        border: 0;
+        padding: 0;
+
+        legend {
+            width: 100%;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+    }
+
     .admin-form__check {
         flex-direction: row !important;
         align-items: center;

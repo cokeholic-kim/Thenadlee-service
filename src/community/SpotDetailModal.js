@@ -1,5 +1,6 @@
 import React from 'react';
 import MapModal from './MapModal';
+import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import './Community.scss';
 
 export const SourceBadge = ({ spot }) => (spot.source === 'USER'
@@ -30,7 +31,10 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
             {spot.source === 'USER' && <span>{spot.authorNickName || '탈퇴한 회원'} 님이 등록</span>}
         </p>
         {spot.description && <p className="spot-detail__description">{spot.description}</p>}
+        {spot.credit && <p className="map-modal__hint">자료 제공: {spot.credit}</p>}
         <SpotActions spot={spot} {...actions} />
+        <div className="map-modal__actions"><GroupWishButton spot={spot} /></div>
+        <GroupSpotComments spot={spot} />
     </MapModal>
 );
 

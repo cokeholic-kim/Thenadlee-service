@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import SaveItineraryModal from '../itinerary/SaveItineraryModal';
 import useItineraryLoader from '../itinerary/useItineraryLoader';
 import { loadLoginUser } from '../modules/logincheck';
+import { GroupMapProvider } from '../group/GroupMapContext';
 
 
 async function productFetch(places){
@@ -71,6 +72,7 @@ const Map = () => {
     if (!cityData || !markerData || !monthData) return <div>데이터 없음</div>
     // const [name,lat,lon] = data;
     return (
+        <GroupMapProvider groupId={searchParams.get('group')} cityName={places}>
         <div style={{display:"flex"}} className="map">
             <MultiButton setBlog={setBlog} setRecommend={setRecommend} setSaving={setSaving}/>
             {blog && <Blogpopup setBlog={setBlog} place={cityData.body}/>}
@@ -79,6 +81,7 @@ const Map = () => {
 
             <CreateSchedule place={cityData.body} marker={markerData.body} month={monthData.body}/>
         </div>
+        </GroupMapProvider>
     );
 };
 

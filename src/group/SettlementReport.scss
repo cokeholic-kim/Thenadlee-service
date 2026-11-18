@@ -1,0 +1,180 @@
+$report-text: #2b2b2b;
+$report-sub: #8a8a8a;
+$report-line: #eee5da;
+$report-paper: #fffdf9;
+
+// 손글씨 메모처럼 편안한 정산서 카드 (이미지 저장 대상)
+.report-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    h2 {
+        flex: 1;
+        margin: 0;
+    }
+}
+
+.report-card {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 24px 18px;
+    border: 1px solid $report-line;
+    border-radius: 16px;
+    background: $report-paper;
+    color: $report-text;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.report-card__group {
+    margin: 0 0 4px;
+    color: $report-sub;
+    font-size: 13px;
+}
+
+.report-card__total {
+    display: inline-block;
+    margin: 0 0 22px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid $report-text;
+    font-size: 20px;
+}
+
+.report-bundle {
+    margin-bottom: 22px;
+}
+
+.report-chip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 16px;
+
+    &.tone-pink { background: #ffe4ef; }
+    &.tone-mint { background: #dcfbf6; }
+    &.tone-yellow { background: #fff6d6; }
+    &.tone-lavender { background: #ece6ff; }
+    &.tone-peach { background: #ffe8d9; }
+    &.tone-sky { background: #e0f0ff; }
+    &.tone-lime { background: #ebf8d9; }
+    &.tone-rose { background: #ffe3e3; }
+    &.tone-gray { background: #f1efec; }
+}
+
+.report-category {
+    margin: 0 0 12px 4px;
+
+    .report-category__head {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 0 2px;
+        font-weight: 700;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 24px;
+        color: #555;
+        font-size: 14px;
+
+        span:first-child::before {
+            content: '- ';
+        }
+    }
+}
+
+.report-plain {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 2px 4px;
+        font-size: 14px;
+    }
+}
+
+.report-summary {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px dashed $report-line;
+}
+
+.report-perperson {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 10px;
+
+    span {
+        color: $report-sub;
+        font-size: 13px;
+    }
+}
+
+.report-subtitle {
+    margin: 16px 0 8px;
+    font-size: 16px;
+}
+
+.report-people {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin-bottom: 12px;
+    }
+
+    p {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 6px;
+        margin: 0;
+
+        b {
+            margin-left: auto;
+            font-size: 16px;
+        }
+    }
+
+    .report-people__marks {
+        color: $report-sub;
+        font-size: 13px;
+    }
+}
+
+.report-formula {
+    color: $report-sub;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.report-done {
+    margin: 0 0 6px;
+    font-weight: 700;
+}
+
+.report-card__footer {
+    margin: 18px 0 0;
+    color: #bbb;
+    font-size: 11px;
+    text-align: right;
+}

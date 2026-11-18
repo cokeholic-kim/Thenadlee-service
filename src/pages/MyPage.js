@@ -22,7 +22,7 @@ const WithdrawSection = ({ onWithdraw }) => {
     return (
         <form className="mypage-section" onSubmit={onSubmit}>
             <h2>회원 탈퇴</h2>
-            <p>탈퇴 즉시 아이디·닉네임·비밀번호 정보와 저장한 일정, 등록한 장소가 함께 삭제됩니다. 본인 확인을 위해 비밀번호를 입력해 주세요.</p>
+            <p>탈퇴 즉시 아이디·닉네임·비밀번호 정보와 저장한 일정, 등록한 장소가 함께 삭제됩니다. 모임 앨범에 올린 사진도 삭제되며, 모임에 남긴 댓글은 "삭제된 회원"으로 남습니다. 본인 확인을 위해 비밀번호를 입력해 주세요.</p>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder="비밀번호" autoComplete="current-password" required />
             <button type="submit" className="mypage-danger-btn">회원 탈퇴</button>

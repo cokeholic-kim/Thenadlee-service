@@ -9,6 +9,9 @@ import MyPage from './pages/MyPage';
 import PrivacyPolicy from './pages/policy/PrivacyPolicy';
 import Terms from './pages/policy/Terms';
 import NotFound from './pages/NotFound';
+import GroupList from './group/GroupList';
+import GroupDetail from './group/GroupDetail';
+import InvitePage from './group/InvitePage';
 import AdminCityList from './admin/AdminCityList';
 import AdminCityEdit from './admin/AdminCityEdit';
 import AdminItineraries from './admin/AdminItineraries';
@@ -28,6 +31,9 @@ function App() {
           <Route path="/mypage" element={<MyPage/>}/>
           <Route path="/privacy" element={<PrivacyPolicy/>}/>
           <Route path="/terms" element={<Terms/>}/>
+          <Route path="/groups" element={<GroupList/>}/>
+          <Route path="/groups/:id" element={<GroupDetail/>}/>
+          <Route path="/invite/:token" element={<InvitePage/>}/>
           <Route path="/admin" element={<Navigate to="/admin/cities" replace/>}/>
           <Route path="/admin/cities" element={<AdminCityList/>}/>
           <Route path="/admin/cities/:id" element={<AdminCityEdit/>}/>

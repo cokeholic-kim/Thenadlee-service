@@ -83,6 +83,44 @@ $community-like: #e0575b;
         white-space: pre-line;
     }
 
+    .place-search {
+        margin-bottom: 8px;
+    }
+
+    .place-search__row {
+        display: flex;
+        gap: 6px;
+
+        input {
+            flex: 1;
+        }
+    }
+
+    .place-search__results {
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+
+        button {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 8px 10px;
+            border: none;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        span {
+            color: #777;
+            font-size: 12px;
+        }
+    }
+
     .itinerary-list {
         margin: 0;
         padding: 0;
@@ -133,6 +171,35 @@ $community-like: #e0575b;
         align-items: center;
         gap: 8px;
         margin-bottom: 4px;
+    }
+}
+
+// 모임 모드 안내 (오른쪽 추천 장소 목록 위)
+.map .RightControlbar .group-map-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    order: 0;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #e9f6f6;
+    font-size: 13px;
+    text-align: left;
+
+    strong {
+        color: #2c7d83;
+    }
+
+    span {
+        color: #666;
+        font-size: 12px;
+    }
+
+    a {
+        color: #3a9ea5;
+        font-size: 12px;
     }
 }
 

@@ -42,7 +42,8 @@ export const toSpot = (item) => ({
     source: item.source,
     authorNickName: item.authorNickName,
     images: item.images || [],
-    isMine: Boolean(item.isMine)
+    isMine: Boolean(item.isMine),
+    credit: item.credit || null
 });
 
 // 3. 초기값

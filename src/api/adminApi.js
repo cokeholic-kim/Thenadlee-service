@@ -18,6 +18,9 @@ export const adminApi = {
     deleteSpot: (spotId) => post(`/spots/${spotId}/delete`),
     changeSpotStatus: (spotId, status) => post(`/spots/${spotId}/status`, { status }),
 
+    searchTour: (cityId, params) => get(`/cities/${cityId}/tour`, params),
+    importTour: (cityId, contentId) => post(`/cities/${cityId}/tour/import`, { contentId }),
+
     listReports: () => get('/reports'),
     resolveReport: (targetType, targetId, action) => post('/reports/resolve', { targetType, targetId, action }),
 

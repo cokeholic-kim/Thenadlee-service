@@ -23,7 +23,7 @@ const SITEMAP_PAGES = [
 ];
 
 // 검색 결과에 나올 필요 없는 경로 (API, 회원 화면)
-const DISALLOW_PATHS = ['/back/', '/login', '/join', '/findPass', '/mypage', '/admin'];
+const DISALLOW_PATHS = ['/back/', '/login', '/join', '/findPass', '/mypage', '/admin', '/groups', '/invite'];
 
 function readEnvValue(filePath, key) {
     if (!fs.existsSync(filePath)) return '';

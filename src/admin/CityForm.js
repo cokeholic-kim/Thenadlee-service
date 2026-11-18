@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import ImageUploadField from './ImageUploadField';
 
+const REGION_OPTIONS = [
+    { value: 'DOMESTIC', label: '국내' },
+    { value: 'OVERSEAS', label: '해외' },
+];
+
+// 좌표 확인용 외부 지도 링크 (국내는 카카오맵)
+const mapCheckUrl = (form) => (form.region === 'DOMESTIC'
+    ? `https://map.kakao.com/link/map/${encodeURIComponent(form.displayName || form.name || '위치')},${form.lat},${form.lng}`
+    : `https://www.google.com/maps?q=${form.lat},${form.lng}`);
+
 const MONTHS = Array.from({ length: 12 }, (_, index) => index + 1);
 
 export const emptyCityForm = () => ({
     name: '', displayName: '', lat: '', lng: '', description: '', titleImageUrl: '',
-    sortOrder: 0, isPublished: false, monthly: MONTHS.map((month) => ({ month, description: '' })),
+    sortOrder: 0, isPublished: false, region: 'DOMESTIC', monthly: MONTHS.map((month) => ({ month, description: '' })),
 });
 
 export const toCityForm = (city) => ({
@@ -17,6 +27,7 @@ export const toCityForm = (city) => ({
     titleImageUrl: city.titleImageUrl || '',
     sortOrder: city.sortOrder,
     isPublished: city.isPublished,
+    region: city.region,
     monthly: city.monthly.map((info) => ({ month: info.month, description: info.description || '' })),
 });
 
@@ -39,12 +50,21 @@ const BasicFields = ({ form, set, isNew }) => (
             <input value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="예: Busan" required />
             {!isNew && <small>바꾸면 기존 공유 링크(/map/이전이름)가 동작하지 않아요.</small>}
         </label>
+        <fieldset className="admin-form__region">
+            <legend>구분 (국내는 카카오맵, 해외는 Google 지도로 표시)</legend>
+            {REGION_OPTIONS.map((option) => (
+                <label key={option.value} className="admin-form__check">
+                    <input type="radio" name="region" value={option.value} checked={form.region === option.value}
+                        onChange={(e) => set('region', e.target.value)} />{option.label}
+                </label>
+            ))}
+        </fieldset>
         <label>표시 이름<input value={form.displayName} onChange={(e) => set('displayName', e.target.value)} placeholder="예: 대한민국 부산" required /></label>
         <div className="admin-form__row">
             <label>위도<input type="number" step="any" value={form.lat} onChange={(e) => set('lat', e.target.value)} required /></label>
             <label>경도<input type="number" step="any" value={form.lng} onChange={(e) => set('lng', e.target.value)} required /></label>
             {form.lat !== '' && form.lng !== '' && (
-                <a className="admin-button" href={`https://www.google.com/maps?q=${form.lat},${form.lng}`} target="_blank" rel="noreferrer">지도에서 확인</a>
+                <a className="admin-button" href={mapCheckUrl(form)} target="_blank" rel="noreferrer">지도에서 확인</a>
             )}
         </div>
         <label>소개<textarea rows="4" value={form.description} maxLength="1000" onChange={(e) => set('description', e.target.value)} /></label>

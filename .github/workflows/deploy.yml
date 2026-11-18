@@ -5,7 +5,8 @@
 # PHP API(html/back/)는 별도 private 저장소에서 배포함
 #
 # production environment 의 Variables 에 DEPLOY_ENABLED=true 가 있어야 배포가 실행됨
-# API 키(REACT_APP_GOOGLE_API_KEY, REACT_APP_WHEATHER_API_KEY)는 production environment 의 Secrets 에서 읽음
+# API 키(REACT_APP_GOOGLE_API_KEY, REACT_APP_WHEATHER_API_KEY, REACT_APP_KAKAO_JS_KEY)는 production environment 의 Secrets 에서 읽음
+# REACT_APP_KAKAO_JS_KEY 가 없으면 국내 여행지도 Google 지도로 표시됨
 name: Deploy
 
 on:
@@ -76,6 +77,7 @@ jobs:
           GENERATE_SOURCEMAP: 'false'
           REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
           REACT_APP_WHEATHER_API_KEY: ${{ secrets.REACT_APP_WHEATHER_API_KEY }}
+          REACT_APP_KAKAO_JS_KEY: ${{ secrets.REACT_APP_KAKAO_JS_KEY }}
 
       - if: vars.DEPLOY_ENABLED == 'true'
         name: 업로드 - html/ (도메인 루트 .htaccess)

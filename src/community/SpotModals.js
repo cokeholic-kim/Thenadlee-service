@@ -5,13 +5,13 @@ import SpotDetailModal from './SpotDetailModal';
 import SpotFormModal from './SpotFormModal';
 
 // 추천 장소 팝업 묶음 (상세 → 수정·신고로 이어짐)
-const SpotModals = ({ cityName, center, actions }) => {
+const SpotModals = ({ cityName, center, provider, actions }) => {
     const days = useSelector((state) => state.add.days);
     const { modal, open, close, refresh, remove, add } = actions;
     if (!modal) return null;
     const { type, spot } = modal;
     if (type === 'form') {
-        return <SpotFormModal cityName={cityName} center={center} spot={spot} onClose={close}
+        return <SpotFormModal cityName={cityName} center={center} provider={provider} spot={spot} onClose={close}
             onSaved={() => { close(); refresh(); }} />;
     }
     if (type === 'report') {

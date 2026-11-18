@@ -2,10 +2,12 @@ import './RightControlbar.scss' ;
 import { useParams } from 'react-router-dom';
 import AddSpot from './AddSpot';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { providerFor } from '../map/mapProvider';
 import { setRedo } from '../modules/add';
 import useSpotActions from '../community/useSpotActions';
 import SpotModals from '../community/SpotModals';
+import { GroupMapBanner } from '../group/GroupMapContext';
 import '../community/Community.scss';
 
 // 추천 장소 보기 필터 (서버 spot.source 값)
@@ -41,6 +43,7 @@ function RightControlPage({ data, map, place }) {
         dispatch(setRedo(data))
     },[])
     const rightdata = useSelector(state=>state.add.right)
+    const center = useMemo(() => ({ lat: place.lat, lng: place.lon }), [place.lat, place.lon])
     const visible = rightdata.filter((spot) => filter === 'ALL' || spot.source === filter)
 
     return (
@@ -49,12 +52,13 @@ function RightControlPage({ data, map, place }) {
                 <div className=" RightControlbar_header">
                     <p>추천장소</p>
                 </div>
+                <GroupMapBanner />
                 <SpotToolbar filter={filter} onFilter={setFilter} onRegister={() => actions.open('form')} />
                 <ul className=" RightControlbar_contents">
                     {visible.map((d)=><AddSpot key={d.id} spot={d} map={map} onOpen={(spot) => actions.open('detail', spot)}/>)}
                 </ul>
             </div>
-            <SpotModals cityName={places} center={{ lat: place.lat, lng: place.lon }} actions={actions} />
+            <SpotModals cityName={places} center={center} provider={providerFor(place.region)} actions={actions} />
         </div>
     )
 }

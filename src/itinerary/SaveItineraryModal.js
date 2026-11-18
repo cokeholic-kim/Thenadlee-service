@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createItinerary, updateItinerary } from '../api/itineraryApi';
 import { setItineraryInfo } from '../modules/itinerary';
 import { getApiErrorMessage } from '../util/apiError';
+import { groupApi } from '../api/groupApi';
+import { useGroupMap } from '../group/GroupMapContext';
 import { VISIBILITY_OPTIONS, buildItineraryPayload, countSpots, defaultTitle } from './itineraryPayload';
 import './SaveItineraryModal.scss';
 
@@ -44,9 +46,17 @@ const SaveForm = ({ form, setForm, canUpdate, onSave }) => {
 };
 
 // 작성자는 기존 일정을 수정, 다른 사람의 공개 일정을 열었으면 내 일정으로 새로 저장
+// 모임 모드에서 방장이 저장하면 그 일정을 모임 확정 동선으로 연결
+const linkToGroup = async (groupContext, itineraryId) => {
+    if (!groupContext || groupContext.group.myRole !== 'OWNER') return '';
+    const linked = await groupContext.run(() => groupApi.linkPlan(groupContext.group.id, itineraryId));
+    return linked ? '\n모임의 확정 동선으로 연결했어요.' : '';
+};
+
 const useSaveItinerary = (cityName, onClose) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const groupContext = useGroupMap();
     const days = useSelector((state) => state.add.days);
     const itinerary = useSelector((state) => state.itinerary);
     return async (form, asUpdate) => {
@@ -54,8 +64,9 @@ const useSaveItinerary = (cityName, onClose) => {
         try {
             const saved = asUpdate ? await updateItinerary(itinerary.id, payload) : await createItinerary(payload);
             dispatch(setItineraryInfo({ id: saved.id, title: payload.title, description: payload.description, visibility: payload.visibility, isOwner: true }));
-            navigate(`/map/${cityName}?itinerary=${saved.id}`, { replace: true });
-            alert(saved.message);
+            const groupQuery = groupContext ? `&group=${groupContext.group.id}` : '';
+            navigate(`/map/${cityName}?itinerary=${saved.id}${groupQuery}`, { replace: true });
+            alert(saved.message + await linkToGroup(groupContext, saved.id));
             onClose();
         } catch (error) {
             alert(getApiErrorMessage(error));

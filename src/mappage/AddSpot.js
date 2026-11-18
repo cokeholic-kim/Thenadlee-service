@@ -18,7 +18,7 @@ const AddSpot = ({spot, map, onOpen}) => {
 
     const onMouseEnter = (lat,lng)=>{
         dispatch(setENTER(lat,lng))
-        map.panTo({lat,lng})
+        map?.panTo({lat,lng})
     }
 
     return (

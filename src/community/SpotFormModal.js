@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createSpot, updateSpot } from '../api/communityApi';
 import { getApiErrorMessage } from '../util/apiError';
@@ -6,6 +6,8 @@ import LocationPicker from './LocationPicker';
 import LoginRequired from './LoginRequired';
 import MapModal from './MapModal';
 import PhotoUploader from './PhotoUploader';
+import PlaceSearch from './PlaceSearch';
+import { MAP_PROVIDERS } from '../map/mapProvider';
 import './Community.scss';
 
 // 서버 설정(community.maxSpotImages)과 같은 값
@@ -37,15 +39,19 @@ const useSpotSave = (cityName, spot, onSaved) => {
     return { saving, save };
 };
 
-const SpotForm = ({ initial, center, saving, onSubmit }) => {
+const SpotForm = ({ initial, center, provider, saving, onSubmit }) => {
     const [form, setForm] = useState(initial);
-    const set = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+    const set = useCallback((key, value) => setForm((current) => ({ ...current, [key]: value })), []);
+    const onPosition = useCallback((position) => set('position', position), [set]);
+    // 검색으로 고르면 위치를 채우고, 이름이 비어 있으면 이름도 채움
+    const onPick = ({ name, position }) => setForm((current) => ({ ...current, position, name: current.name || name }));
     return (
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }}>
             <label htmlFor="spotName">장소 이름</label>
             <input id="spotName" value={form.name} onChange={(e) => set('name', e.target.value)} maxLength="100" required />
-            <label>위치 (지도를 눌러 표시)</label>
-            <LocationPicker center={center} position={form.position} onChange={(position) => set('position', position)} />
+            <label>위치 ({provider === MAP_PROVIDERS.KAKAO ? '검색하거나 ' : ''}지도를 눌러 표시)</label>
+            {provider === MAP_PROVIDERS.KAKAO && <PlaceSearch center={center} onPick={onPick} />}
+            <LocationPicker provider={provider} center={center} position={form.position} onChange={onPosition} />
             <label htmlFor="spotDescription">소개 (선택)</label>
             <textarea id="spotDescription" rows="3" maxLength="1000" value={form.description} onChange={(e) => set('description', e.target.value)} />
             <label>사진 (선택, 최대 {MAX_PHOTOS}장)</label>
@@ -59,7 +65,7 @@ const SpotForm = ({ initial, center, saving, onSubmit }) => {
 };
 
 // 여행자 추천장소 등록(spot 없음)·수정(내가 등록한 spot)
-const SpotFormModal = ({ cityName, center, spot, onClose, onSaved }) => {
+const SpotFormModal = ({ cityName, center, provider, spot, onClose, onSaved }) => {
     const isLogin = useSelector((state) => state.logincheck.isLogin);
     const { saving, save } = useSpotSave(cityName, spot, onSaved);
     return (
@@ -68,7 +74,7 @@ const SpotFormModal = ({ cityName, center, spot, onClose, onSaved }) => {
             {isLogin && (
                 <>
                     {!spot && <p className="map-modal__message">등록한 장소는 "여행자 추천"으로 바로 공개되고 닉네임이 함께 표시돼요.</p>}
-                    <SpotForm initial={toForm(spot)} center={center} saving={saving} onSubmit={save} />
+                    <SpotForm initial={toForm(spot)} center={center} provider={provider} saving={saving} onSubmit={save} />
                 </>
             )}
         </MapModal>

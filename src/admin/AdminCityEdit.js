@@ -7,6 +7,7 @@ import AdminLayout from './AdminLayout';
 import CityForm, { emptyCityForm, toCityForm } from './CityForm';
 import PostManager from './PostManager';
 import SpotManager from './SpotManager';
+import TourImportPanel from './TourImportPanel';
 import { isAdmin } from './roles';
 
 const NEW_ID = 'new';
@@ -52,6 +53,7 @@ const CityEditPanel = () => {
                 <>
                     <CityForm key={city.id} initial={toCityForm(city)} onSave={onSave} onDelete={isAdmin(role) ? onDelete : null} />
                     <SpotManager cityId={city.id} spots={city.spots} onChanged={load} />
+                    {city.region === 'DOMESTIC' && <TourImportPanel cityId={city.id} onImported={load} />}
                     <PostManager cityId={city.id} posts={city.posts} onChanged={load} />
                 </>
             )}

@@ -28,6 +28,7 @@ const LoginMenu = () => {
     }
     return (
         <>
+            <Link to="/groups"><li>내 모임</li></Link>
             {canEdit(user.role) && <Link to="/admin"><li>관리자</li></Link>}
             <Link to="/mypage"><li>{user.nickName}님</li></Link>
             <a href="/" onClick={onLogout}><li>로그아웃</li></a>

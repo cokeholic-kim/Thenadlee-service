@@ -1,0 +1,486 @@
+$group-text: #333;
+$group-sub: #777;
+$group-line: #e5e5e5;
+$group-soft: #f6f8f8;
+$group-primary: #3a9ea5;
+$group-accent: #f2a65a;
+$group-danger: #d64545;
+
+.group-page {
+    max-width: 760px;
+    margin: 40px auto 80px;
+    padding: 0 16px;
+    color: $group-text;
+    text-align: left;
+
+    &.group-page--narrow {
+        max-width: 480px;
+    }
+
+    h1 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        font-size: 26px;
+        margin-bottom: 8px;
+    }
+
+    a {
+        color: $group-primary;
+    }
+
+    input,
+    select {
+        height: 40px;
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #fff;
+        font: inherit;
+    }
+}
+
+.group-page__intro,
+.group-hint {
+    margin: 6px 0 12px;
+    color: $group-sub;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.group-empty {
+    padding: 16px 0;
+    color: $group-sub;
+}
+
+.group-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid $group-line;
+    border-radius: 6px;
+    background: #fff;
+    color: $group-text !important;
+    font: inherit;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &.is-small {
+        min-height: 32px;
+        padding: 0 10px;
+        font-size: 13px;
+    }
+
+    &.is-primary {
+        border-color: $group-primary;
+        background: $group-primary;
+        color: #fff !important;
+    }
+
+    &.is-active {
+        border-color: $group-accent;
+        color: $group-accent !important;
+        font-weight: 700;
+    }
+
+    &.is-danger {
+        border-color: $group-danger;
+        color: $group-danger !important;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+}
+
+.group-form {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+
+    &.group-form--row {
+        flex-wrap: wrap;
+        align-items: center;
+
+        input:not([type="date"]) {
+            flex: 1;
+            min-width: 180px;
+        }
+    }
+}
+
+.group-list {
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.group-card a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding: 16px;
+    border: 1px solid $group-line;
+    border-radius: 10px;
+    color: $group-text !important;
+    text-decoration: none;
+
+    span {
+        color: $group-sub;
+        font-size: 13px;
+    }
+
+    &:hover {
+        border-color: $group-primary;
+    }
+}
+
+.group-header {
+    margin-bottom: 12px;
+
+    .group-header__meta {
+        color: $group-sub;
+        font-size: 14px;
+    }
+}
+
+.group-tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-bottom: 16px;
+    border-bottom: 2px solid $group-line;
+
+    button {
+        margin-bottom: -2px;
+        padding: 10px 18px;
+        border: none;
+        border-bottom: 3px solid transparent;
+        background: none;
+        color: $group-sub;
+        font: inherit;
+        cursor: pointer;
+
+        flex-shrink: 0;
+
+        &.active {
+            border-bottom-color: $group-primary;
+            color: $group-primary;
+            font-weight: 700;
+        }
+    }
+}
+
+.group-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid $group-line;
+    border-radius: 10px;
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+}
+
+.group-items {
+    margin: 8px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.group-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid $group-line;
+
+    &.is-confirmed {
+        padding: 10px 12px;
+        border: 1px solid $group-primary;
+        border-radius: 8px;
+        background: $group-soft;
+    }
+
+    img,
+    .group-item__noimg {
+        flex: 0 0 56px;
+        width: 56px;
+        height: 42px;
+        border-radius: 4px;
+        background: $group-soft;
+        object-fit: cover;
+    }
+}
+
+.group-item__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    span {
+        color: $group-sub;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.group-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.group-select {
+    margin-top: 8px;
+    max-width: 100%;
+}
+
+.date-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin: 8px 0 12px;
+
+    .date-grid__weekday {
+        color: $group-sub;
+        font-size: 12px;
+        text-align: center;
+    }
+}
+
+// 가능 인원 비율(--ratio)만큼 진하게
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border: 1px solid $group-line;
+    border-radius: 6px;
+    background: rgba(58, 158, 165, calc(var(--ratio) * 0.55));
+    font: inherit;
+    cursor: pointer;
+
+    &.is-mine {
+        border: 2px solid $group-accent;
+    }
+
+    .date-cell__day {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .date-cell__count {
+        font-size: 11px;
+        color: $group-text;
+    }
+}
+
+.invite-box {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: $group-soft;
+
+    .invite-box__url {
+        display: flex;
+        gap: 6px;
+
+        input {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+}
+
+.activity-list {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid $group-line;
+        font-size: 14px;
+    }
+
+    time {
+        flex: 0 0 auto;
+        color: $group-sub;
+        font-size: 12px;
+    }
+}
+
+// 정산 탭
+.expense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 13px;
+        color: $group-sub;
+    }
+
+    .expense-form__row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        > label {
+            flex: 1 1 140px;
+        }
+    }
+}
+
+.expense-split {
+    border: 1px solid $group-line;
+    border-radius: 8px;
+    padding: 10px 12px;
+
+    legend {
+        display: flex;
+        gap: 16px;
+        padding: 0 4px;
+
+        label {
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            color: $group-text;
+            font-size: 14px;
+        }
+    }
+
+    .expense-split__row {
+        flex-direction: row !important;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
+        color: $group-text !important;
+        font-size: 14px !important;
+
+        input[type="number"] {
+            width: 120px;
+        }
+    }
+}
+
+.expense-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid $group-line;
+
+    &.is-editing {
+        display: block;
+        padding: 12px;
+        border: 1px solid $group-primary;
+        border-radius: 8px;
+    }
+
+    .expense-amount {
+        margin-left: 6px;
+        color: $group-primary;
+    }
+}
+
+.balance-table-wrap {
+    overflow-x: auto;
+}
+
+.balance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th,
+    td {
+        padding: 8px;
+        border-bottom: 1px solid $group-line;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+        text-align: left;
+    }
+
+    th {
+        color: $group-sub;
+        font-weight: 600;
+    }
+
+    .is-plus {
+        color: $group-primary;
+        font-weight: 700;
+    }
+
+    .is-minus {
+        color: $group-danger;
+        font-weight: 700;
+    }
+}
+
+.settle-title {
+    margin: 16px 0 4px;
+    font-size: 15px;
+}
+
+.settled-list summary {
+    margin-top: 8px;
+    color: $group-sub;
+    cursor: pointer;
+}
+
+.quick-people {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+
+    label {
+        flex-direction: row !important;
+        align-items: center;
+        gap: 4px;
+        color: $group-text !important;
+        font-size: 14px !important;
+    }
+}
+
+.expense-form textarea {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font: inherit;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .group-item {
+        flex-wrap: wrap;
+    }
+
+    .date-cell {
+        min-height: 40px;
+    }
+}

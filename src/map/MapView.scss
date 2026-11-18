@@ -1,0 +1,16 @@
+// 지도 위 장소 이름표 (카카오 CustomOverlay, Google InfoWindow 공통)
+.map-label {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    font-size: 13px;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+// Google InfoWindow 안에서는 기본 상자가 있으므로 그림자 제거
+.gm-style .map-label {
+    padding: 0;
+    box-shadow: none;
+}

@@ -29,7 +29,8 @@ const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
 const SpotLabel = ({ spot }) => (
     <div className="admin-list__text">
         <strong>
-            {spot.source === 'USER' && <span className="admin-badge">여행자</span>} {spot.name}
+            {spot.source === 'USER' && <span className="admin-badge">여행자</span>}
+            {spot.tourContentId && <span className="admin-badge is-muted">관광공사</span>} {spot.name}
             {spot.status === 'HIDDEN' && <span className="admin-badge is-muted">숨김</span>}
         </strong>
         <span>{spot.lat}, {spot.lon}{spot.source === 'USER' && ` · ${spot.authorNickName || '탈퇴한 회원'} 님 등록`}</span>

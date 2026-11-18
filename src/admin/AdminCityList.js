@@ -7,12 +7,13 @@ import AdminLayout from './AdminLayout';
 const CityTable = ({ cities }) => (
     <table className="admin-table">
         <thead>
-            <tr><th>순서</th><th>영문 이름</th><th>표시 이름</th><th>추천 장소</th><th>공개</th><th></th></tr>
+            <tr><th>순서</th><th>구분</th><th>영문 이름</th><th>표시 이름</th><th>추천 장소</th><th>공개</th><th></th></tr>
         </thead>
         <tbody>
             {cities.map((city) => (
                 <tr key={city.id}>
                     <td>{city.sortOrder}</td>
+                    <td>{city.region === 'DOMESTIC' ? '국내' : '해외'}</td>
                     <td>{city.name}</td>
                     <td>{city.displayName}</td>
                     <td>{city.spotCount}곳</td>

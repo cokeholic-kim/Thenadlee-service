@@ -1,0 +1,136 @@
+$album-line: #e5e5e5;
+$album-sub: #777;
+
+.album-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        color: $album-sub;
+        font-size: 13px;
+    }
+
+    > button {
+        align-self: flex-start;
+    }
+}
+
+.album-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        color: $album-sub;
+        font-size: 13px;
+    }
+
+    select,
+    input {
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font: inherit;
+        font-size: 14px;
+    }
+
+    &__caption {
+        flex: 1 1 220px;
+    }
+}
+
+.album-section {
+    margin-top: 14px;
+
+    h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+
+        span {
+            color: $album-sub;
+            font-weight: 400;
+            font-size: 13px;
+        }
+    }
+}
+
+.album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    button {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 8px;
+        background: #f2f2f2;
+        aspect-ratio: 1;
+        cursor: pointer;
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    &__star {
+        position: absolute;
+        top: 4px;
+        left: 6px;
+        color: #ffd24d;
+        font-size: 18px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    &__caption {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 12px 6px 4px;
+        overflow: hidden;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+        color: #fff;
+        font-size: 12px;
+        text-align: left;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+.album-viewer__image {
+    display: block;
+    max-width: 100%;
+    max-height: 60vh;
+    margin: 0 auto;
+    border-radius: 8px;
+}
+
+.album-viewer__meta {
+    margin: 10px 0;
+    color: $album-sub;
+    font-size: 13px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .album-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
