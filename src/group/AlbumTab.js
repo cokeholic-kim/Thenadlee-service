@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { groupApi } from '../api/groupApi';
-import { uploadPhoto } from '../api/communityApi';
 import MapModal from '../community/MapModal';
 import { getApiErrorMessage } from '../util/apiError';
 import { PhotoTagFields, groupPhotos, VIEW_MODES } from './albumFormat';
@@ -38,10 +37,7 @@ const useUpload = (groupId, run) => {
     const upload = async (files, tags) => {
         for (let index = 0; index < files.length; index += 1) {
             setProgress(`${index + 1} / ${files.length}`);
-            const ok = await run(async () => {
-                const { url } = await uploadPhoto(files[index]);
-                return groupApi.addPhoto(groupId, { ...toPayload(tags), imageUrl: url });
-            });
+            const ok = await run(() => groupApi.addPhoto(groupId, files[index], toPayload(tags)));
             if (!ok) break;
         }
         setProgress(null);

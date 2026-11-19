@@ -114,8 +114,9 @@ jobs:
           protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
           local-dir: ./file/
           server-dir: ${{ env.FTP_BASE_DIR }}file/
-          # 서버에서 올린 이미지(html/file/uploads)는 배포가 건드리지 않도록 제외
+          # 서버에서 올린 이미지(html/file/uploads, 비공개 html/file/private)는 배포가 건드리지 않도록 제외
           exclude: |
             **/.git*
             **/.git*/**
             uploads/**
+            private/**

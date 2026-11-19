@@ -27,3 +27,5 @@ yarn-error.log*
 
 # 관리자·사용자가 올린 이미지 (서버의 html/file/uploads 에만 존재, 배포 대상 아님)
 /file/uploads/
+# 모임 앨범 등 비공개 파일 (서버의 html/file/private 에만 존재, 웹 직접 접근 차단)
+/file/private/

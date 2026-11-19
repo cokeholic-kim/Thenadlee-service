@@ -1,6 +1,9 @@
 # 정적 파일 전용 폴더: 목록 노출 금지, 스크립트 실행 금지
 Options -Indexes
 
+# 비공개 파일(모임 앨범 등)은 웹으로 직접 열 수 없음 → 권한 확인 API(/back/groups/.../file)로만 제공
+RedirectMatch 404 ^/file/private(/|$)
+
 <FilesMatch "\.(php|phtml|phar|pl|py|cgi|sh)$">
     <IfModule mod_authz_core.c>
         Require all denied

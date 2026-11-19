@@ -38,9 +38,14 @@ export const groupApi = {
     addPlanComment: (id, spotId, content) => post(`/groups/${id}/plan/comments`, { spotId, content }),
     deletePlanComment: (id, commentId) => post(`/groups/${id}/plan/comments/${commentId}/delete`),
 
-    // 추억: 사진 API 는 앨범 전체를 돌려줌 (사진 파일은 communityApi.uploadPhoto 로 먼저 올림)
+    // 추억: 사진 API 는 앨범 전체를 돌려줌. 사진은 비공개 저장이라 imageUrl 도 멤버 확인 API 주소
     album: (id) => get(`/groups/${id}/photos`),
-    addPhoto: (id, photo) => post(`/groups/${id}/photos`, photo),
+    addPhoto: (id, file, photo) => {
+        const formData = new FormData();
+        formData.append('image', file);
+        Object.entries(photo).forEach(([key, value]) => value !== null && value !== '' && formData.append(key, value));
+        return post(`/groups/${id}/photos`, formData);
+    },
     updatePhoto: (id, photoId, photo) => post(`/groups/${id}/photos/${photoId}`, photo),
     deletePhoto: (id, photoId) => post(`/groups/${id}/photos/${photoId}/delete`),
     featurePhoto: (id, photoId, featured) => post(`/groups/${id}/photos/${photoId}/featured`, { featured }),
