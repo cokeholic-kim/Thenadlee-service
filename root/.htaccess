@@ -2,20 +2,41 @@
 # 주소창은 도메인 그대로 두고, 실제 파일은 html/front/ 에서 제공
 #   /back/...  -> PHP API (html/back/)
 #   /file/...  -> 정적 파일 (html/file/)
-#   그 외      -> React 앱 (html/front/)
+#   /, /map/도시, /privacy, /terms -> 빌드 때 미리 만든 페이지별 HTML (html/front/prerender/, 검색엔진·링크 미리보기용)
+#   React 앱 화면 주소 -> html/front/index.html
+#   그 외 없는 주소 -> 404 상태로 React 앱의 "페이지를 찾을 수 없습니다" 화면
+# ※ React 에 새 화면 주소(App.js 의 Route)를 추가하면 아래 APP_ROUTES 줄에도 추가할 것
 Options -Indexes
 DirectoryIndex index.html
+ErrorDocument 404 /front/index.html
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # http 로 들어오면 https 로 영구 이동 (검색엔진에 주소를 하나로 알림). 프록시 뒤에서 반복 이동하지 않도록 X-Forwarded-Proto 도 확인
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
     # API, 정적 파일, 이미 front 로 재작성된 요청은 그대로 통과
     RewriteRule ^(back|file|front)(/|$) - [L]
+
+    # 빌드 때 미리 만든 페이지별 HTML
+    RewriteRule ^$ front/prerender/index.html [L]
+    RewriteCond %{DOCUMENT_ROOT}/front/prerender/$1.html -f
+    RewriteRule ^(map/[^/]+|privacy|terms)/?$ front/prerender/$1.html [L]
+
+    # 브라우저가 gzip 을 받을 수 있으면 미리 압축한 JS·CSS(.gz) 제공 (Content-Encoding 헤더를 붙일 수 있을 때만)
+    <IfModule mod_headers.c>
+        RewriteCond %{HTTP:Accept-Encoding} gzip
+        RewriteCond %{DOCUMENT_ROOT}/front/$1.gz -f
+        RewriteRule ^(static/.+\.(js|css))$ front/$1.gz [E=no-gzip:1,L]
+    </IfModule>
 
     # front 폴더에 실제 파일이 있으면 그 파일 제공 (JS, CSS, 아이콘 등)
     RewriteCond %{DOCUMENT_ROOT}/front/$1 -f
     RewriteRule ^(.+)$ front/$1 [L]
 
-    # 나머지 경로는 React 라우터가 처리하도록 index.html 제공
-    RewriteRule ^ front/index.html [L]
+    # APP_ROUTES: React 앱 화면 주소만 index.html 로 (여기 없는 주소는 404)
+    RewriteRule ^(login|join|findPass|mypage|privacy|terms|map|groups|invite|admin)(/.*)?$ front/index.html [L]
 </IfModule>

@@ -30,7 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "node scripts/generate-seo-files.js",
+    "postbuild": "node scripts/generate-seo-files.js && node scripts/prerender-pages.js && node scripts/compress-assets.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

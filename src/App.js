@@ -1,27 +1,30 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Main from './pages/Main';
-import LogIn from './loginmodule/LogIn';
-import Map from './mappage/Map.js';
-import JoinPage from './loginmodule/JoinPage';
-import FindPass from './loginmodule/FindPass';
-import MyPage from './pages/MyPage';
-import PrivacyPolicy from './pages/policy/PrivacyPolicy';
-import Terms from './pages/policy/Terms';
 import NotFound from './pages/NotFound';
-import GroupList from './group/GroupList';
-import GroupDetail from './group/GroupDetail';
-import InvitePage from './group/InvitePage';
-import AdminCityList from './admin/AdminCityList';
-import AdminCityEdit from './admin/AdminCityEdit';
-import AdminItineraries from './admin/AdminItineraries';
-import AdminUsers from './admin/AdminUsers';
-import AdminReports from './admin/AdminReports';
 
+// 첫 화면(메인)만 바로 불러오고, 나머지 화면은 들어갈 때 불러옴 (첫 로딩 JS 크기를 줄여 검색엔진 속도 평가 개선)
+const LogIn = lazy(() => import('./loginmodule/LogIn'));
+const Map = lazy(() => import('./mappage/Map.js'));
+const JoinPage = lazy(() => import('./loginmodule/JoinPage'));
+const FindPass = lazy(() => import('./loginmodule/FindPass'));
+const MyPage = lazy(() => import('./pages/MyPage'));
+const PrivacyPolicy = lazy(() => import('./pages/policy/PrivacyPolicy'));
+const Terms = lazy(() => import('./pages/policy/Terms'));
+const GroupList = lazy(() => import('./group/GroupList'));
+const GroupDetail = lazy(() => import('./group/GroupDetail'));
+const InvitePage = lazy(() => import('./group/InvitePage'));
+const AdminCityList = lazy(() => import('./admin/AdminCityList'));
+const AdminCityEdit = lazy(() => import('./admin/AdminCityEdit'));
+const AdminItineraries = lazy(() => import('./admin/AdminItineraries'));
+const AdminUsers = lazy(() => import('./admin/AdminUsers'));
+const AdminReports = lazy(() => import('./admin/AdminReports'));
 
 function App() {
   return (
     <div className="App">
+      <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<LogIn/>}/>
@@ -42,6 +45,7 @@ function App() {
           <Route path="/admin/reports" element={<AdminReports/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
+      </Suspense>
     </div>
   );
 }

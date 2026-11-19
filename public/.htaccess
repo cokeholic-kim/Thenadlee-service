@@ -10,12 +10,33 @@ DirectoryIndex index.html
     RewriteRule ^ /%1 [R=301,L]
 </IfModule>
 
-# index.html 은 항상 새로 받고, 해시가 붙은 정적 파일은 오래 캐시
+# HTML(index.html, 미리 만든 페이지)은 항상 새로 받고, 해시가 붙은 정적 파일과 그 압축본(.gz)은 오래 캐시
 <IfModule mod_headers.c>
-    <FilesMatch "^index\.html$">
+    <FilesMatch "\.html$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
-    <FilesMatch "\.(js|css|woff2?)$">
+    <FilesMatch "\.(js|css|woff2?)(\.gz)?$">
         Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# 미리 압축한 JS·CSS(.gz, html/.htaccess 가 gzip 을 받을 수 있는 브라우저에만 제공)는 원래 형식과 gzip 인코딩으로 알려 줌
+<IfModule mod_mime.c>
+    RemoveType .gz
+    RemoveEncoding .gz
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.js\.gz$">
+        # 서버 압축(mod_deflate)이 켜져 있어도 이미 압축한 파일을 다시 압축하지 않음
+        SetEnv no-gzip 1
+        ForceType "text/javascript; charset=utf-8"
+        Header set Content-Encoding gzip
+        Header append Vary Accept-Encoding
+    </FilesMatch>
+    <FilesMatch "\.css\.gz$">
+        SetEnv no-gzip 1
+        ForceType "text/css; charset=utf-8"
+        Header set Content-Encoding gzip
+        Header append Vary Accept-Encoding
     </FilesMatch>
 </IfModule>

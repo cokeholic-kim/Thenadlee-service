@@ -1,0 +1,25 @@
+{
+    "siteName": "더 나들이",
+    "defaultTitle": "더 나들이 - 여행 일정 플래너",
+    "defaultDescription": "가고 싶은 곳을 지도에 담고 순서를 바꿔 보며 나만의 여행 동선을 만드는 여행 플래너, 더 나들이. 제주·싱가포르·하얼빈·밴쿠버의 추천 장소와 월별 여행 정보, 날씨를 한곳에서 확인하세요.",
+    "cityNames": {
+        "Jeju": "제주",
+        "Singapore": "싱가포르",
+        "Harbin": "하얼빈",
+        "Vancouver": "밴쿠버"
+    },
+    "cityTitle": "{city} 여행 일정 만들기",
+    "cityDescription": "{city} 추천 여행지와 월별 여행 정보, 날씨를 확인하고 지도 위에서 나만의 {city} 여행 동선을 만들어 보세요.",
+    "pages": {
+        "privacy": {
+            "title": "개인정보처리방침",
+            "description": "더 나들이가 처리하는 최소한의 회원 정보(아이디, 닉네임, 암호화된 비밀번호)와 보관·파기 기준을 안내합니다.",
+            "path": "/privacy"
+        },
+        "terms": {
+            "title": "이용약관",
+            "description": "더 나들이 여행 일정 플래너 서비스 이용약관입니다.",
+            "path": "/terms"
+        }
+    }
+}
