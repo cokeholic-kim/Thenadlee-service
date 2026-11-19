@@ -8,6 +8,8 @@ DirectoryIndex index.html
     # (THE_REQUEST 는 브라우저의 원래 요청이라 루트에서 내부 재작성된 요청은 해당되지 않음)
     RewriteCond %{THE_REQUEST} \s/front/?([^\s?]*)
     RewriteRule ^ /%1 [R=301,L]
+    # 미리 압축한 파일(.gz)은 서버 압축(mod_deflate)이 다시 압축하지 않게 표시 (mod_env 가 없는 운영 서버에서도 동작)
+    RewriteRule \.gz$ - [E=no-gzip:1]
 </IfModule>
 
 # HTML(index.html, 미리 만든 페이지)은 항상 새로 받고, 해시가 붙은 정적 파일과 그 압축본(.gz)은 오래 캐시
@@ -31,14 +33,18 @@ DirectoryIndex index.html
 </IfModule>
 <IfModule mod_headers.c>
     <FilesMatch "\.js\.gz$">
-        # 서버 압축(mod_deflate)이 켜져 있어도 이미 압축한 파일을 다시 압축하지 않음
-        SetEnv no-gzip 1
+        # 서버 압축(mod_deflate)이 켜져 있어도 이미 압축한 파일을 다시 압축하지 않음 (운영 서버엔 mod_env 가 없어 반드시 IfModule 로 감쌀 것)
+        <IfModule mod_env.c>
+            SetEnv no-gzip 1
+        </IfModule>
         ForceType "text/javascript; charset=utf-8"
         Header set Content-Encoding gzip
         Header append Vary Accept-Encoding
     </FilesMatch>
     <FilesMatch "\.css\.gz$">
-        SetEnv no-gzip 1
+        <IfModule mod_env.c>
+            SetEnv no-gzip 1
+        </IfModule>
         ForceType "text/css; charset=utf-8"
         Header set Content-Encoding gzip
         Header append Vary Accept-Encoding
