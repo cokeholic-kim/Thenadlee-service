@@ -60,5 +60,5 @@ export const groupApi = {
     unsettle: (id, settlementId) => post(`/groups/${id}/settlements/${settlementId}/delete`),
     addGuest: (id, name) => post(`/groups/${id}/guests`, { name }),
     deleteGuest: (id, guestId) => post(`/groups/${id}/guests/${guestId}/delete`),
-    claimGuest: (id, guestId) => post(`/groups/${id}/guests/${guestId}/claim`),
+    claimGuest: (id, guestId, memberId) => post(`/groups/${id}/guests/${guestId}/claim`, { memberId }),
 };
