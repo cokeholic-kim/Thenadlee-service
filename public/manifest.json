@@ -1,27 +1,25 @@
 {
+  "id": "/",
   "short_name": "더 나들이",
   "name": "더 나들이 - 여행 일정 플래너",
   "description": "가고 싶은 곳을 지도에 담고 나만의 여행 동선을 만드는 여행 플래너",
   "lang": "ko",
+  "dir": "ltr",
+  "categories": ["travel", "navigation"],
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
+    { "src": "/app-icons/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/app-icons/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "/app-icons/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "maskable" },
+    { "src": "/app-icons/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "내 모임", "url": "/groups", "icons": [{ "src": "/app-icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "제주 여행 일정 만들기", "short_name": "제주", "url": "/map/Jeju", "icons": [{ "src": "/app-icons/icon-192.png", "sizes": "192x192" }] }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#FFC288",
+  "orientation": "any",
+  "theme_color": "#3a9ea5",
   "background_color": "#ffffff"
 }

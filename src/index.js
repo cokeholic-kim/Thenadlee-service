@@ -9,6 +9,7 @@ import rooterReducer from './modules';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
+import PwaNotices from './pwa/PwaNotices';
 
 const store = createStore(rooterReducer,composeWithDevTools(applyMiddleware(thunk)))
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -16,6 +17,7 @@ root.render(
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Provider store={store}>
         <App />
+        <PwaNotices />
       </Provider>
     </BrowserRouter>
 );

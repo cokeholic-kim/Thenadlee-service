@@ -1,0 +1,56 @@
+$pwa-accent: #3a9ea5;
+
+.pwa-banner {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    font-size: 14px;
+    line-height: 1.5;
+
+    p {
+        flex: 1;
+        margin: 0;
+        color: #333;
+    }
+
+    button {
+        flex-shrink: 0;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #555;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    &__primary {
+        border-color: $pwa-accent !important;
+        background: $pwa-accent !important;
+        color: #ffffff !important;
+    }
+}
+
+.pwa-offline {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2000;
+    padding: 6px 16px;
+    background: #444;
+    color: #ffffff;
+    font-size: 13px;
+    text-align: center;
+}
