@@ -1,4 +1,6 @@
 # html/front/ 설정 (실제 서비스 주소는 도메인 루트, html/.htaccess 참고)
+# ※ 운영 공유호스팅은 일부 모듈·지시어(mod_env 의 SetEnv, ForceType, RemoveType 등)를 쓰면 폴더 전체가 500 오류가 남.
+#    여기에는 운영에서 동작이 확인된 지시어(Options, DirectoryIndex, RewriteRule, FilesMatch, Header)만 쓸 것
 Options -Indexes
 DirectoryIndex index.html
 
@@ -8,11 +10,12 @@ DirectoryIndex index.html
     # (THE_REQUEST 는 브라우저의 원래 요청이라 루트에서 내부 재작성된 요청은 해당되지 않음)
     RewriteCond %{THE_REQUEST} \s/front/?([^\s?]*)
     RewriteRule ^ /%1 [R=301,L]
-    # 미리 압축한 파일(.gz)은 서버 압축(mod_deflate)이 다시 압축하지 않게 표시 (mod_env 가 없는 운영 서버에서도 동작)
+    # 미리 압축한 파일(.gz)은 서버 압축(mod_deflate)이 다시 압축하지 않게 표시
     RewriteRule \.gz$ - [E=no-gzip:1]
 </IfModule>
 
-# HTML(index.html, 미리 만든 페이지)은 항상 새로 받고, 해시가 붙은 정적 파일과 그 압축본(.gz)은 오래 캐시
+# HTML(index.html, 미리 만든 페이지)·서비스 워커·manifest 는 항상 새로 받고, 해시가 붙은 정적 파일과 압축본(.gz)은 오래 캐시
+# 미리 압축한 JS·CSS(.gz)는 gzip 인코딩으로 알려 줌 (파일 형식도 여기서 지정: 내부 이동을 거치면 RewriteRule 의 [T=] 는 적용되지 않음)
 <IfModule mod_headers.c>
     <FilesMatch "\.html$">
         Header set Cache-Control "no-cache"
@@ -20,32 +23,16 @@ DirectoryIndex index.html
     <FilesMatch "\.(js|css|woff2?)(\.gz)?$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
-    # 서비스 워커·manifest 는 이름이 고정이라 항상 새로 확인 (새 버전이 바로 퍼지도록, 위 규칙보다 뒤에 둬야 덮어씀)
     <FilesMatch "^(service-worker\.js|manifest\.json)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
-</IfModule>
-
-# 미리 압축한 JS·CSS(.gz, html/.htaccess 가 gzip 을 받을 수 있는 브라우저에만 제공)는 원래 형식과 gzip 인코딩으로 알려 줌
-<IfModule mod_mime.c>
-    RemoveType .gz
-    RemoveEncoding .gz
-</IfModule>
-<IfModule mod_headers.c>
     <FilesMatch "\.js\.gz$">
-        # 서버 압축(mod_deflate)이 켜져 있어도 이미 압축한 파일을 다시 압축하지 않음 (운영 서버엔 mod_env 가 없어 반드시 IfModule 로 감쌀 것)
-        <IfModule mod_env.c>
-            SetEnv no-gzip 1
-        </IfModule>
-        ForceType "text/javascript; charset=utf-8"
+        Header set Content-Type "text/javascript; charset=utf-8"
         Header set Content-Encoding gzip
         Header append Vary Accept-Encoding
     </FilesMatch>
     <FilesMatch "\.css\.gz$">
-        <IfModule mod_env.c>
-            SetEnv no-gzip 1
-        </IfModule>
-        ForceType "text/css; charset=utf-8"
+        Header set Content-Type "text/css; charset=utf-8"
         Header set Content-Encoding gzip
         Header append Vary Accept-Encoding
     </FilesMatch>
