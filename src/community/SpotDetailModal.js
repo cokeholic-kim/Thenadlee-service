@@ -32,6 +32,7 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
         </p>
         {spot.description && <p className="spot-detail__description">{spot.description}</p>}
         {spot.credit && <p className="map-modal__hint">자료 제공: {spot.credit}</p>}
+        {spot.imageCredit && <p className="map-modal__hint">사진: {spot.imageCredit}</p>}
         <SpotActions spot={spot} {...actions} />
         <div className="map-modal__actions"><GroupWishButton spot={spot} /></div>
         <GroupSpotComments spot={spot} />
