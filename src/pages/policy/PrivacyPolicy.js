@@ -3,8 +3,14 @@ import PolicyLayout from './PolicyLayout';
 import { CONTACT_EMAIL, SITE_NAME } from '../../config/site';
 import usePageMeta from '../../seo/usePageMeta';
 import { PAGE_META } from '../../seo/pageMeta';
+import { isAdsEnabled } from '../../config/ads';
 
-export const POLICY_EFFECTIVE_DATE = '2026년 11월 17일';
+export const POLICY_EFFECTIVE_DATE = '2026년 11월 21일';
+
+// 애드센스를 켰을 때만 보이는 광고 안내 (광고 사업자의 쿠키 사용)
+const AdsNotice = () => (
+    <p>메인 화면과 공개 일정 페이지에는 Google 애드센스 광고가 표시됩니다. Google 등 광고 사업자는 쿠키를 사용해 이 사이트나 다른 사이트 방문 기록을 바탕으로 광고를 보여 줄 수 있으며, 맞춤 광고는 <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">Google 광고 설정</a>에서 끌 수 있습니다. 서비스는 광고 사업자에게 회원 정보를 제공하지 않습니다.</p>
+);
 
 const PrivacyPolicy = () => {
     usePageMeta(PAGE_META.privacy);
@@ -29,9 +35,10 @@ const PrivacyPolicy = () => {
             </div>
             <p>회원이 올린 사진은 서버에서 다시 저장하면서 촬영 위치·기기 정보(EXIF)를 지웁니다. 장소의 위치는 회원이 지도에서 직접 지정한 좌표만 저장하며, 이용자의 현재 위치는 수집하지 않습니다.</p>
             <p>모임에서 탈퇴하거나 나가면 투표·가능한 날짜는 삭제되고, 남긴 장소 제안은 모임의 공동 계획으로 남되 "나간 멤버"로 표시됩니다. 회원 탈퇴 시에는 참여했던 모임의 활동 내역에서 닉네임이 "탈퇴한 멤버"로 바뀌고, 확정 동선에 남긴 댓글은 내용만 남고 작성자가 "삭제된 회원"으로 표시됩니다(회원 정보와의 연결은 끊김). 초대 링크의 토큰은 원문을 저장하지 않습니다.</p>
-            <p>로그인 상태 유지를 위해 세션 쿠키(THENADLEESESSID)를 사용하며, 로그인 후 1시간이 지나거나 로그아웃하면 만료됩니다. 회원가입 없이 이용하는 여행지 조회·일정 만들기 기능은 어떤 정보도 저장하지 않습니다.</p>
+            <p>로그인 상태 유지를 위해 세션 쿠키(THENADLEESESSID)를 사용하며, 마지막으로 이용한 뒤 1시간("로그인 상태 유지"를 선택하면 14일)이 지나거나 로그아웃하면 만료됩니다. 회원가입 없이 이용하는 여행지 조회·일정 만들기 기능은 어떤 정보도 저장하지 않습니다.</p>
             <h2>2. 제3자 제공 및 처리 위탁</h2>
             <p>회원 정보를 제3자에게 제공하거나 처리를 위탁하지 않습니다. 지도(해외 Google Maps, 국내 카카오맵)와 날씨(OpenWeatherMap) 기능은 이용자의 브라우저가 해당 서비스에 직접 요청하며, 서비스는 회원 정보를 전달하지 않습니다. 국내 길찾기는 서버가 장소 좌표만 카카오에 보내 경로를 받아 옵니다.</p>
+            {isAdsEnabled() && <AdsNotice />}
             <h2>3. 파기 절차 및 방법</h2>
             <p>마이페이지에서 회원 탈퇴를 하면 회원 정보와 게시물, 좋아요·신고 기록이 데이터베이스에서 즉시 삭제되고, 올린 사진 파일도 서버에서 삭제되며 복구할 수 없습니다.</p>
             <h2>4. 이용자의 권리</h2>

@@ -1,134 +1,169 @@
-$main-accent: #ffc288;
-$main-step: #3a9ea5;
-$main-text: #333;
-$main-sub: #666;
+$hero-accent: #3a9ea5;
+$hero-accent-dark: #2b7d83;
+$hero-orange: #ff9f45;
+$hero-text: #1f2d2e;
+$hero-sub: #4f5d5e;
 
 // 고정 헤더 높이는 Header 가 --header-height 로 넣어줌
-.MainTop{
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    padding-top: var(--header-height, 120px);
+.mainHero {
+    word-break: keep-all;
+    padding: calc(var(--header-height, 120px) + 32px) 24px 64px;
+    background: linear-gradient(160deg, #eef8f8 0%, #dff1f2 45%, #fdf3e8 100%);
 
-    .leftMainTop{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    &__inner {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 48px;
         align-items: center;
-        flex: 0 0 40%;
-        background-color: #fff;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
 
-        >*{
-            margin: 10px 0;
+    &__text {
+        color: $hero-text;
+        text-align: left;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        margin: 0 0 16px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(58, 158, 165, 0.12);
+        color: $hero-accent-dark;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    &__title {
+        margin: 0 0 18px;
+        font-size: 44px;
+        font-weight: 800;
+        line-height: 1.3;
+        letter-spacing: -0.5px;
+
+        span {
+            display: block;
         }
-        #startbutton{
-            a {
-                display: inline-block;
-                background-color: $main-accent !important;
-                letter-spacing: 2px;
-                height: 85px;
-                line-height: 85px;
-                padding: 0 !important;
-                margin: 5px 15px;
-                color:#fff;
-                cursor: pointer;
-                border-radius: 2px;
-                width: 280px;
-                text-align: center;
-                font-size: 28px;
+    }
+
+    &__description {
+        max-width: 520px;
+        margin: 0 0 28px;
+        color: $hero-sub;
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 54px;
+            padding: 0 26px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+            &:hover {
+                transform: translateY(-1px);
             }
         }
     }
 
-    .mainVisual{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-        padding: 40px;
-        background: linear-gradient(200deg, #8fc9cc 0%, #b4dde0 55%, #d6edf1 100%);
-    }
-}
-
-// 오른쪽 영역: 소개 문구 + 이용 순서 카드
-.mainGuide{
-    width: 100%;
-    max-width: 520px;
-    color: $main-text;
-    text-align: left;
-
-    .mainGuide__intro{
-        margin-bottom: 28px;
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 1.6;
-        letter-spacing: 0;
+    &__primary {
+        background: $hero-orange;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(255, 159, 69, 0.35);
     }
 
-    .mainGuide__steps{
+    &__secondary {
+        border: 2px solid $hero-accent;
+        background: #fff;
+        color: $hero-accent-dark;
+    }
+
+    &__badges {
         display: flex;
-        flex-direction: column;
-        gap: 14px;
+        flex-wrap: wrap;
+        gap: 8px 16px;
         margin: 0;
         padding: 0;
         list-style: none;
+        color: $hero-sub;
+        font-size: 14px;
+
+        li::before {
+            content: '✓';
+            margin-right: 6px;
+            color: $hero-accent;
+            font-weight: 700;
+        }
     }
 
-    .mainGuide__step{
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 18px 20px;
-        border-radius: 12px;
-        background-color: rgba(255, 255, 255, 0.85);
-        box-shadow: 0 6px 20px rgba(40, 110, 115, 0.12);
+    &__frame {
+        overflow: hidden;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(31, 75, 80, 0.22);
 
-        strong{
+        img {
             display: block;
-            margin-bottom: 4px;
-            font-size: 17px;
-        }
-        p{
-            color: $main-sub;
-            font-size: 14px;
-            line-height: 1.5;
+            width: 100%;
+            height: auto;
         }
     }
 
-    .mainGuide__number{
-        flex: 0 0 auto;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background-color: $main-step;
-        color: #fff;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-}
+    &__frameBar {
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px;
+        background: #f1f4f4;
 
-// 1200px 이하: 제목·시작 버튼 아래에 안내 카드를 이어서 배치
-@media screen and (max-width:1200px) {
-    .MainTop{
-        flex-direction: column;
-        .leftMainTop{
-            flex: 0 0 auto;
-            padding: 60px 16px;
-        }
-        .mainVisual{
-            padding: 40px 16px;
+        span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cfd8d8;
         }
     }
 }
 
-@media screen and (max-width:768px) {
-    .MainTop .leftMainTop #startbutton a{
-        width: 220px;
-        height: 64px;
-        line-height: 64px;
-        font-size: 22px;
+@media screen and (max-width: 1024px) {
+    .mainHero {
+        padding: calc(var(--header-height, 120px) + 24px) 16px 48px;
+
+        &__inner {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        &__title {
+            font-size: 34px;
+        }
     }
-    .mainGuide .mainGuide__intro{
-        font-size: 17px;
+}
+
+@media screen and (max-width: 480px) {
+    .mainHero {
+        &__title {
+            font-size: 28px;
+        }
+
+        &__description {
+            font-size: 16px;
+        }
+
+        &__actions a {
+            flex: 1 1 100%;
+        }
     }
 }

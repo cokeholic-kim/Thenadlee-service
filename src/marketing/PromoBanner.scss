@@ -1,0 +1,112 @@
+$promo-teal: linear-gradient(120deg, #2b7d83 0%, #3a9ea5 100%);
+$promo-orange: linear-gradient(120deg, #f08a3c 0%, #ffb067 100%);
+$promo-navy: linear-gradient(120deg, #1f3557 0%, #3c5a8a 100%);
+
+.promoBanner {
+    position: relative;
+    word-break: keep-all;
+    overflow: hidden;
+    max-width: 1180px;
+    margin: 0 auto 56px;
+    border-radius: 20px;
+
+    &__track {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        transition: transform 0.5s ease;
+    }
+
+    &__slide {
+        flex: 0 0 100%;
+        min-height: 200px;
+        padding: 36px 48px 48px;
+        color: #fff;
+        text-align: left;
+
+        &.is-teal { background: $promo-teal; }
+        &.is-orange { background: $promo-orange; }
+        &.is-navy { background: $promo-navy; }
+
+        h2 {
+            margin: 12px 0 8px;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        p {
+            max-width: 640px;
+            margin: 0 0 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+    }
+
+    &__label {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.22);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    &__link {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: #fff;
+        color: #1f2d2e;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    &__dots {
+        position: absolute;
+        right: 24px;
+        bottom: 18px;
+        display: flex;
+        gap: 8px;
+
+        button {
+            width: 10px;
+            height: 10px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+
+            &.active {
+                width: 26px;
+                border-radius: 5px;
+                background: #fff;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1212px) {
+    .promoBanner {
+        margin: 0 16px 48px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .promoBanner__slide {
+        padding: 28px 24px 48px;
+
+        h2 {
+            font-size: 21px;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .promoBanner__track {
+        transition: none;
+    }
+}

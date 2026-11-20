@@ -5,6 +5,8 @@ import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { CITY_NAMES } from '../seo/pageMeta';
 import { findTravelMode } from '../route/travelModes';
+import AdSenseUnit from '../marketing/AdSenseUnit';
+import { ADSENSE_SLOTS } from '../config/ads';
 import './ItineraryPage.scss';
 
 const SpotCard = ({ item, order }) => (
@@ -56,6 +58,7 @@ const ItineraryPage = () => {
             {!itinerary && !failed && <p className="itinerary-page__message">불러오는 중…</p>}
             {failed && <article className="itinerary-page"><h1>일정을 찾을 수 없습니다</h1><p>비공개로 바뀌었거나 삭제된 일정입니다.</p><Link to="/">메인으로 돌아가기</Link></article>}
             {itinerary && <ItineraryBody itinerary={itinerary} />}
+            {itinerary && <AdSenseUnit slot={ADSENSE_SLOTS.itinerary} />}
         </PageLayout>
     );
 };

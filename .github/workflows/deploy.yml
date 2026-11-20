@@ -81,6 +81,10 @@ jobs:
           # 검색 사이트 소유 확인 값 (네이버 서치어드바이저·구글 서치콘솔에서 발급, 없으면 생략)
           REACT_APP_NAVER_SITE_VERIFICATION: ${{ vars.REACT_APP_NAVER_SITE_VERIFICATION }}
           REACT_APP_GOOGLE_SITE_VERIFICATION: ${{ vars.REACT_APP_GOOGLE_SITE_VERIFICATION }}
+          # 구글 애드센스: 게시자 ID(ca-pub-숫자)와 광고 단위 ID. 없으면 광고를 전혀 불러오지 않음
+          REACT_APP_ADSENSE_CLIENT: ${{ vars.REACT_APP_ADSENSE_CLIENT }}
+          REACT_APP_ADSENSE_SLOT_MAIN: ${{ vars.REACT_APP_ADSENSE_SLOT_MAIN }}
+          REACT_APP_ADSENSE_SLOT_ITINERARY: ${{ vars.REACT_APP_ADSENSE_SLOT_ITINERARY }}
 
       - if: vars.DEPLOY_ENABLED == 'true'
         name: 업로드 - html/ (도메인 루트 .htaccess)

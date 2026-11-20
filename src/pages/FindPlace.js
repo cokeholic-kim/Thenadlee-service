@@ -50,7 +50,7 @@ function FindPlace () {
     }, []);
 
     return (
-        <div className='FindPlace'>
+        <div className='FindPlace' id='places'>
             <div className='FindPlaceP'>
                 <p className='FindPlaceP1'>어디로 여행을 떠나시나요?</p>
                 <p className='FindPlaceP2'>여행지를 목록에서 골라 일정을 만들어 보세요</p>

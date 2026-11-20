@@ -1,0 +1,16 @@
+// 광고가 늦게 떠도 아래 내용이 밀리지 않도록 자리를 미리 잡아 둠
+.adUnit {
+    max-width: 1180px;
+    min-height: 120px;
+    margin: 0 auto 48px;
+    padding: 0 16px;
+    text-align: center;
+
+    &__label {
+        display: block;
+        margin-bottom: 4px;
+        color: #8a9596;
+        font-size: 12px;
+        text-align: left;
+    }
+}

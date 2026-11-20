@@ -6,6 +6,8 @@
     width: 100%;
     max-width: 1000px;
     .FindPlaceP{
+        // "여행지 고르기"로 스크롤할 때 고정 헤더에 가리지 않게
+        scroll-margin-top: var(--header-height, 120px);
         height: 250px;
         display: flex;
         flex-direction: column;

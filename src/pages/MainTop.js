@@ -1,48 +1,39 @@
 import React from 'react';
-import "./MainTop.scss"
+import { Link } from 'react-router-dom';
+import { FILE_URL } from '../config/apiurl';
+import { HERO } from '../marketing/mainContent';
+import './MainTop.scss';
 
-// 이용 순서 안내 (메인 오른쪽 영역 카드)
-const STEPS = [
-    { title: '도시 고르기', description: '아래 여행지 목록에서 떠나고 싶은 도시를 골라요.' },
-    { title: '장소 담기', description: '운영진과 여행자가 추천한 장소를 일차별로 담고 순서를 바꿔요. 지도에 실제 이동 경로가 그려져요.' },
-    { title: '일정 저장·공유', description: '로그인하고 저장하면 언제든 다시 열 수 있고, 공개하면 다른 여행자와 나눌 수 있어요.' },
-];
-
-const StepGuide = () => (
-    <div className='mainGuide'>
-        <p className='mainGuide__intro'>가고 싶은 곳을 지도에 담고 순서를 바꿔 보면서,<br/>나에게 꼭 맞는 여행 동선을 만들어 보세요.</p>
-        <ol className='mainGuide__steps'>
-            {STEPS.map((step, index) => (
-                <li key={step.title} className='mainGuide__step'>
-                    <span className='mainGuide__number'>STEP {index + 1}</span>
-                    <div>
-                        <strong>{step.title}</strong>
-                        <p>{step.description}</p>
-                    </div>
-                </li>
-            ))}
-        </ol>
+// 실제 일정 만들기 화면 캡처를 브라우저 창 모양 안에 보여 줌 (첫 화면에서 서비스가 무엇인지 바로 보이게)
+const HeroVisual = () => (
+    <div className='mainHero__visual'>
+        <div className='mainHero__frame'>
+            <div className='mainHero__frameBar' aria-hidden='true'><span /><span /><span /></div>
+            <img src={`${FILE_URL}${HERO.image.path}`} width={HERO.image.width} height={HERO.image.height}
+                alt={HERO.image.alt} fetchpriority='high' />
+        </div>
     </div>
 );
 
-const MainTop = ({moveto}) => {
-    return (
-        <div className='MainTop'>
-            <div className='leftMainTop'>
-                <div>
-                    <h2>지도 위에서 짜는 나만의 여행</h2>
+// 메인 첫 화면: 서비스 한 줄 소개 + 시작 버튼 + 화면 미리 보기
+const MainTop = ({ moveto }) => (
+    <section className='mainHero'>
+        <div className='mainHero__inner'>
+            <div className='mainHero__text'>
+                <p className='mainHero__eyebrow'>{HERO.eyebrow}</p>
+                <h1 className='mainHero__title'>{HERO.titleLines.map((line) => <span key={line}>{line}</span>)}</h1>
+                <p className='mainHero__description'>{HERO.description}</p>
+                <div className='mainHero__actions'>
+                    <a href='#places' onClick={moveto} className='mainHero__primary'>{HERO.primaryLabel}</a>
+                    <Link to={HERO.secondaryPath} className='mainHero__secondary'>{HERO.secondaryLabel}</Link>
                 </div>
-                <h1><b>THE나들이</b></h1>
-                <div id="startbutton">
-                    <a onClick={moveto} className="mainstartbutton">시작하기</a>
-                </div>
+                <ul className='mainHero__badges'>
+                    {HERO.badges.map((badge) => <li key={badge}>{badge}</li>)}
+                </ul>
             </div>
-            {/* 배경 동영상(57MB)은 트래픽 부담이 커서 그라데이션 배경 + 이용 순서 안내로 대체 */}
-            <div className='mainVisual'>
-                <StepGuide/>
-            </div>
+            <HeroVisual />
         </div>
-    );
-};
+    </section>
+);
 
 export default MainTop;
