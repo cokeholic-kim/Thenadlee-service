@@ -18,6 +18,12 @@ export const adminApi = {
     deleteSpot: (spotId) => post(`/spots/${spotId}/delete`),
     changeSpotStatus: (spotId, status) => post(`/spots/${spotId}/status`, { status }),
 
+    // 장소 영상·후기 큐레이션: 고정(pin)·숨김(hide)·해제(unpick)·다시 검색(refresh)
+    listSpotMedia: (spotId) => get(`/spots/${spotId}/media`),
+    pickSpotMedia: (spotId, action, item) => post(`/spots/${spotId}/media/${action}`, item),
+    unpickSpotMedia: (spotId, url) => post(`/spots/${spotId}/media/unpick`, { url }),
+    refreshSpotMedia: (spotId) => post(`/spots/${spotId}/media/refresh`),
+
     searchTour: (cityId, params) => get(`/cities/${cityId}/tour`, params),
     importTour: (cityId, contentId) => post(`/cities/${cityId}/tour/import`, { contentId }),
 
