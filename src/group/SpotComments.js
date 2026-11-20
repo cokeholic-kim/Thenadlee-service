@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { groupApi } from '../api/groupApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { formatDateTime } from './groupFormat';
+import useForecast, { FORECAST_DAYS } from './useForecast';
 import './SpotComments.scss';
 
 const POLL_INTERVAL_MS = 15000;
@@ -80,13 +81,15 @@ const SpotRow = ({ groupId, spot, canDelete, run }) => {
 /** 모임 계획 탭: 확정 동선을 일차별로 보여 주고 장소마다 댓글 */
 export const PlanComments = ({ group }) => {
     const { data, run } = useSpotComments(group.id);
+    const dayCount = data ? Math.max(0, ...data.days.map((day) => day.dayNo)) : 0;
+    const { byDay, tooFar } = useForecast(group.city?.name, group.startDate, dayCount);
     if (!data || data.days.length === 0) return null;
     return (
         <div className="plan-comments">
-            <p className="group-hint">장소를 누르면 댓글을 볼 수 있어요. 댓글은 방장과 관리자만 지울 수 있어요.</p>
+            <p className="group-hint">장소를 누르면 댓글을 볼 수 있어요. 댓글은 방장과 관리자만 지울 수 있어요.{tooFar ? ` 여행 ${FORECAST_DAYS}일 전부터 일차별 날씨 예보가 보여요.` : ''}</p>
             {data.days.map((day) => (
                 <div key={day.dayNo} className="plan-comments__day">
-                    <h3>{day.dayNo}일차</h3>
+                    <h3>{day.dayNo}일차{byDay[day.dayNo] && <span className="day-weather">{byDay[day.dayNo].date.slice(5).replace('-', '/')} {byDay[day.dayNo].emoji} {byDay[day.dayNo].min}~{byDay[day.dayNo].max}°C</span>}</h3>
                     <ol>{day.spots.map((spot) => <SpotRow key={spot.spotId} groupId={group.id} spot={spot} canDelete={data.canDelete} run={run} />)}</ol>
                 </div>
             ))}

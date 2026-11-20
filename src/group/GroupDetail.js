@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { groupApi } from '../api/groupApi';
 import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { getApiErrorMessage } from '../util/apiError';
+import ChecklistPanel from './ChecklistPanel';
 import CityPanel from './CityPanel';
 import DatePanel from './DatePanel';
 import AlbumTab from './AlbumTab';
@@ -17,14 +18,33 @@ import { formatDateTime, formatPeriod } from './groupFormat';
 import useGroupDetail from './useGroupDetail';
 import './Group.scss';
 
+// seen: 새 소식을 세는 탭 (서버 SeenSection)
 const TABS = [
-    { value: 'plan', label: '계획' },
-    { value: 'expense', label: '정산' },
-    { value: 'album', label: '앨범' },
+    { value: 'plan', label: '계획', seen: 'PLAN' },
+    { value: 'expense', label: '정산', seen: 'EXPENSE' },
+    { value: 'album', label: '앨범', seen: 'ALBUM' },
     { value: 'summary', label: '요약' },
     { value: 'members', label: '멤버' },
     { value: 'activity', label: '활동' },
 ];
+
+// 보고 있는 탭은 확인한 것으로 기록 (화면을 다시 불러올 때마다 갱신, 본인 기록만)
+//   서버 숫자는 다음 갱신 때 바뀌므로, 그 전까지 이번에 본 탭의 배지는 화면에서 바로 숨김
+const useMarkSeen = (group, tab) => {
+    const section = TABS.find((item) => item.value === tab)?.seen;
+    const [viewed, setViewed] = useState({ group, tabs: [tab] });
+    useEffect(() => {
+        if (section) groupApi.markSeen(group.id, section).catch(() => {});
+        setViewed((current) => (current.group === group ? { group, tabs: [...current.tabs, tab] } : { group, tabs: [tab] }));
+    }, [group, section, tab]);
+    return viewed.tabs;
+};
+
+const TabButton = ({ item, active, unread, onClick }) => (
+    <button type="button" className={active ? 'active' : ''} onClick={onClick}>
+        {item.label}{!active && unread > 0 && <span className="tab-badge" aria-label={`새 소식 ${unread}개`}>{unread}</span>}
+    </button>
+);
 
 const GroupHeader = ({ group, run }) => {
     const rename = () => {
@@ -66,12 +86,14 @@ const useLeave = (group) => {
 const GroupBody = ({ group, run }) => {
     const [tab, setTab] = useState('plan');
     const onLeave = useLeave(group);
+    const viewedTabs = useMarkSeen(group, tab);
+    const unread = group.board.unread;
     return (
         <>
             <GroupHeader group={group} run={run} />
-            <nav className="group-tabs">{TABS.map((item) => <button key={item.value} type="button" className={tab === item.value ? 'active' : ''} onClick={() => setTab(item.value)}>{item.label}</button>)}</nav>
-            {tab === 'plan' && <><CityPanel group={group} run={run} /><DatePanel group={group} run={run} /><WishPanel group={group} run={run} /><PlanPanel group={group} run={run} /></>}
-            {tab === 'expense' && <ExpenseTab group={group} />}
+            <nav className="group-tabs">{TABS.map((item) => <TabButton key={item.value} item={item} active={tab === item.value} unread={viewedTabs.includes(item.value) ? 0 : unread[item.value] || 0} onClick={() => setTab(item.value)} />)}</nav>
+            {tab === 'plan' && <><CityPanel group={group} run={run} /><DatePanel group={group} run={run} /><WishPanel group={group} run={run} /><PlanPanel group={group} run={run} /><ChecklistPanel group={group} run={run} /></>}
+            {tab === 'expense' && <ExpenseTab group={group} run={run} />}
             {tab === 'album' && <AlbumTab group={group} />}
             {tab === 'summary' && <SummaryTab group={group} />}
             {tab === 'members' && <MemberPanel group={group} run={run} onLeave={onLeave} />}

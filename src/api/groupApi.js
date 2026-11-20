@@ -50,6 +50,15 @@ export const groupApi = {
     deletePhoto: (id, photoId) => post(`/groups/${id}/photos/${photoId}/delete`),
     featurePhoto: (id, photoId, featured) => post(`/groups/${id}/photos/${photoId}/featured`, { featured }),
     summary: (id) => get(`/groups/${id}/summary`),
+    // 앨범 전체 zip (멤버만, 같은 도메인이라 로그인 쿠키가 함께 감)
+    albumZipUrl: (id) => `${API_URL}/groups/${id}/photos/zip`,
+
+    // 준비: 체크리스트·예산은 바뀐 모임 상세를 돌려줌, 새 소식 확인은 본인 기록만
+    addChecklist: (id, item) => post(`/groups/${id}/checklist`, item),
+    updateChecklist: (id, itemId, item) => post(`/groups/${id}/checklist/${itemId}`, item),
+    deleteChecklist: (id, itemId) => post(`/groups/${id}/checklist/${itemId}/delete`),
+    setBudget: (id, budgetKrw) => post(`/groups/${id}/budget`, { budgetKrw }),
+    markSeen: (id, section) => post(`/groups/${id}/seen`, { section }),
 
     // 정산: 지출·송금 API 는 정산 탭 전체, 참여자 API 는 모임 상세를 돌려줌
     expenses: (id) => get(`/groups/${id}/expenses`),

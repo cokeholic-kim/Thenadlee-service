@@ -4,6 +4,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import ExpenseForm from './ExpenseForm';
 import SettlementPanel from './SettlementPanel';
 import SettlementReport from './SettlementReport';
+import BudgetPanel from './BudgetPanel';
 import QuickExpenseForm from './QuickExpenseForm';
 import { categoryLabel, money, won } from './expenseFormat';
 
@@ -72,11 +73,12 @@ const ExpenseInput = ({ group, run }) => {
 };
 
 // 정산 탭: 정산서(이미지·텍스트), 송금 체크, 지출 기록·목록
-const ExpenseTab = ({ group }) => {
+const ExpenseTab = ({ group, run: runGroup }) => {
     const { overview, run } = useExpenseOverview(group.id);
     if (!overview) return <p>불러오는 중…</p>;
     return (
         <>
+            <BudgetPanel group={group} run={runGroup} spentKrw={overview.totalKrw} />
             <SettlementReport group={group} overview={overview} />
             <SettlementPanel group={group} overview={overview} run={run} />
             <ExpenseInput group={group} run={run} />

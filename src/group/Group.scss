@@ -481,6 +481,111 @@ $group-danger: #d64545;
     color: #191919;
 }
 
+.tab-badge {
+    display: inline-block;
+    min-width: 18px;
+    margin-left: 6px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #e5534b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.checklist {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid $group-line;
+
+    label {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        cursor: pointer;
+    }
+
+    input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    &.is-done span {
+        color: $group-sub;
+        text-decoration: line-through;
+    }
+
+    .group-select {
+        max-width: 130px;
+    }
+}
+
+.checklist-form,
+.budget-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    input {
+        flex: 1 1 180px;
+        min-width: 0;
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font: inherit;
+    }
+}
+
+.budget-bar {
+    height: 10px;
+    margin: 8px 0;
+    overflow: hidden;
+    border-radius: 999px;
+    background: $group-soft;
+
+    span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: $group-primary;
+    }
+
+    &.is-over span {
+        background: $group-danger;
+    }
+}
+
+.budget-text {
+    margin: 0;
+    color: $group-text;
+    font-size: 14px;
+
+    span {
+        color: $group-sub;
+    }
+}
+
+.day-weather {
+    margin-left: 8px;
+    color: $group-sub;
+    font-size: 13px;
+    font-weight: 400;
+}
+
 @media (max-width: 600px) {
     .group-item {
         flex-wrap: wrap;

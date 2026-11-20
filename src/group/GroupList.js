@@ -31,7 +31,7 @@ const CreateForm = ({ onCreated }) => {
 const GroupRow = ({ group }) => (
     <li className="group-card">
         <Link to={`/groups/${group.id}`}>
-            <strong>{group.name}</strong>
+            <strong>{group.name}{group.unreadCount > 0 && <span className="tab-badge" aria-label={`새 소식 ${group.unreadCount}개`}>새 소식 {group.unreadCount}</span>}</strong>
             <span>{group.cityDisplayName || '여행지 미정'} · {formatPeriod(group.startDate, group.endDate)} · {group.memberCount}명{group.myRole === 'OWNER' ? ' · 방장' : ''}</span>
         </Link>
     </li>

@@ -144,6 +144,7 @@ const AlbumTab = ({ group }) => {
                 <div className="report-toolbar">
                     <h2>앨범</h2>
                     {VIEW_MODES.map((item) => <button key={item.value} type="button" className={`group-button is-small${mode === item.value ? ' is-active' : ''}`} onClick={() => setMode(item.value)}>{item.label}</button>)}
+                    {album.count > 0 && <a className="group-button is-small" href={groupApi.albumZipUrl(group.id)} download>전체 내려받기 (zip)</a>}
                 </div>
                 {album.count === 0 ? <p className="group-empty">아직 올린 사진이 없어요.</p> : <PhotoGrid sections={sections} onOpen={setOpenId} />}
             </section>
