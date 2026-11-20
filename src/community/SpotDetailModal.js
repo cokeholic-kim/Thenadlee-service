@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MapModal from './MapModal';
 import SpotMedia from './SpotMedia';
+import SocialLinks from './SocialLinks';
+import LinkManager from './LinkManager';
+import { addSpotLink, removeSpotLink } from '../api/communityApi';
 import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import './Community.scss';
 
@@ -19,6 +22,19 @@ const SpotActions = ({ spot, isAdded, onAdd, onEdit, onDelete, onReport }) => (
     </div>
 );
 
+// 여행자 추천 장소: 등록한 여행자가 붙인 자기 SNS (등록자 본인에게는 관리 상자)
+const SpotLinks = ({ spot }) => {
+    const [links, setLinks] = useState(spot.links || []);
+    if (spot.source !== 'USER') return null;
+    return (
+        <>
+            <SocialLinks title="등록한 여행자의 SNS" links={links} />
+            {spot.isMine && <LinkManager links={links} onChange={setLinks} hint="이 장소를 담은 내 영상이나 게시물을 붙여 보세요."
+                onAdd={(url) => addSpotLink(spot.id, url)} onRemove={(linkId) => removeSpotLink(spot.id, linkId)} />}
+        </>
+    );
+};
+
 // 추천 장소 상세: 사진, 소개, 등록자. 내가 등록한 장소면 수정·삭제, 아니면 신고
 const SpotDetailModal = ({ spot, onClose, ...actions }) => (
     <MapModal title={spot.spotName} onClose={onClose}>
@@ -36,6 +52,7 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
         {spot.imageCredit && <p className="map-modal__hint">사진: {spot.imageCredit}</p>}
         <SpotActions spot={spot} {...actions} />
         <div className="map-modal__actions"><GroupWishButton spot={spot} /></div>
+        <SpotLinks spot={spot} />
         <SpotMedia spotId={spot.id} spotName={spot.spotName} />
         <GroupSpotComments spot={spot} />
     </MapModal>

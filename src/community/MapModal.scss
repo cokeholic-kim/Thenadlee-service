@@ -161,6 +161,11 @@ $modal-danger: #d64545;
         &.is-official {
             background-color: $modal-primary;
         }
+
+        // 작성자 영상(SNS 링크)이 있는 일정
+        &.is-video {
+            background-color: #e53935;
+        }
     }
 
     .map-modal__hint {

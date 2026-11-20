@@ -17,6 +17,7 @@ const ItineraryRow = ({ item, onDelete }) => (
         </div>
         <div className="my-itineraries__actions">
             <Link to={`/map/${item.cityName}?itinerary=${item.id}`}>열기</Link>
+            <Link to={`/itinerary/${item.id}`}>일정 페이지·SNS</Link>
             <button type="button" onClick={() => onDelete(item)}>삭제</button>
         </div>
     </li>
