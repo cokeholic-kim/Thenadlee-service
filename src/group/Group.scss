@@ -475,6 +475,12 @@ $group-danger: #d64545;
     line-height: 1.6;
 }
 
+.group-button.is-kakao {
+    border-color: #fee500;
+    background: #fee500;
+    color: #191919;
+}
+
 @media (max-width: 600px) {
     .group-item {
         flex-wrap: wrap;

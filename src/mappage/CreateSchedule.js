@@ -36,7 +36,7 @@ const ScheduleMap = ({ place, marker, month, provider }) => {
     <>
       <LeftControlbar place={place} month={month}/>
       <div className="map-area">
-        <MapView provider={provider} center={center} markers={markers} lines={lines} onReady={setMapApi}
+        <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} onReady={setMapApi}
           className="map-container" style={MAP_STYLE}/>
         <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
           legs={legs} places={places} loading={loading}/>

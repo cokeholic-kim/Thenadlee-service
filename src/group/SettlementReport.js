@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { number } from './expenseFormat';
 import { buildReport, reportToText } from './reportBuilder';
 import useCardExport from './useCardExport';
+import { isKakaoShareAvailable } from '../share/kakaoShare';
 import './SettlementReport.scss';
 
 const BundleSection = ({ bundle }) => (
@@ -69,25 +70,30 @@ const ReportCard = React.forwardRef(({ report }, ref) => (
     </div>
 ));
 
-const useExport = (cardRef, report) => {
-    const { busy, saveImage } = useCardExport(cardRef, `${report.title}_정산서`);
+// PC 에서 카카오톡 메시지로 보낼 요약 (송금 목록, 글자 수 제한 안에서)
+const shareText = (report) => [`총 ${number(report.totalKrw)}원`, ...report.transfers.map((t) => `${t.fromName} → ${t.toName} ${number(t.amountKrw)}원`)].join('\n');
+
+const useExport = (cardRef, report, groupId) => {
+    const { busy, saveImage, share } = useCardExport(cardRef, `${report.title}_정산서`);
+    const shareReport = () => share({ title: `${report.title} 정산서`, text: shareText(report), path: `/groups/${groupId}` });
     const copyText = () => navigator.clipboard?.writeText(reportToText(report))
         .then(() => alert('정산서를 복사했어요. 카톡방에 붙여 넣어 보세요.'))
         .catch(() => alert('복사하지 못했어요. 브라우저 권한을 확인해 주세요.'));
-    return { busy, saveImage, copyText };
+    return { busy, saveImage, copyText, shareReport };
 };
 
 // 정산서: 함께 낸 묶음별 분류·항목, 1인당 계산식, 개인별 합계, 송금 → 이미지 저장·텍스트 복사
 const SettlementReport = ({ group, overview }) => {
     const report = useMemo(() => buildReport(group, overview), [group, overview]);
     const cardRef = useRef(null);
-    const { busy, saveImage, copyText } = useExport(cardRef, report);
+    const { busy, saveImage, copyText, shareReport } = useExport(cardRef, report, group.id);
     if (overview.expenses.length === 0) return null;
     return (
         <section className="group-section">
             <div className="report-toolbar">
                 <h2>정산서</h2>
                 <button type="button" className="group-button is-small" onClick={copyText}>텍스트 복사</button>
+                {isKakaoShareAvailable() && <button type="button" className="group-button is-small" onClick={shareReport} disabled={busy}>공유하기</button>}
                 <button type="button" className="group-button is-small is-primary" onClick={saveImage} disabled={busy}>{busy ? '만드는 중…' : '이미지로 저장'}</button>
             </div>
             <ReportCard ref={cardRef} report={report} />

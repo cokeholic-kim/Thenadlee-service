@@ -16,11 +16,12 @@ const LogIn = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const [loginData, setLoginData] = useState({ loginId: '', password: '' });
+    const [loginData, setLoginData] = useState({ loginId: '', password: '', remember: false });
+    const expired = searchParams.get('expired') === '1';
 
     const onChange = (e) => {
-        const { name, value } = e.target;
-        setLoginData({ ...loginData, [name]: value });
+        const { name, value, type, checked } = e.target;
+        setLoginData({ ...loginData, [name]: type === 'checkbox' ? checked : value });
     };
 
     const onSubmit = async (e) => {
@@ -38,6 +39,7 @@ const LogIn = () => {
             <div className='container'>
                 <h1 className='text'>LOG IN</h1>
                 <div className='small-text'>지도 위에서 짜는 나만의 여행, 더 나들이</div>
+                {expired && <p className='login-notice'>로그인 시간이 지나 로그아웃됐어요. 다시 로그인하면 보던 화면으로 돌아가요.</p>}
                 <div className='form-container'>
                     <form onSubmit={onSubmit}>
                         <div className='data'>
@@ -50,6 +52,10 @@ const LogIn = () => {
                             <input id='password' type='password' name='password' value={loginData.password}
                                 onChange={onChange} autoComplete='current-password' required />
                         </div>
+                        <label className='remember'>
+                            <input type='checkbox' name='remember' checked={loginData.remember} onChange={onChange} />
+                            로그인 상태 유지 <span>(공용 PC에서는 사용하지 마세요)</span>
+                        </label>
                         <div className='forgot-pass'>
                             <Link to='/findPass'>비밀번호를 잊으셨나요?</Link>
                         </div>

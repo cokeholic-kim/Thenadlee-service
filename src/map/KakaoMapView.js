@@ -2,8 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import './MapView.scss';
 
 const DEFAULT_LEVEL = 8;
+// 여러 장소에 맞출 때 지도 가장자리 여백(px)
+const FIT_PADDING = 60;
 const LINE_WEIGHT = 5;
 const LINE_OPACITY = 0.85;
+
+const NO_POINTS = [];
 
 const toLatLng = (point) => new window.kakao.maps.LatLng(point.lat, point.lng);
 
@@ -61,15 +65,30 @@ const useKakaoMap = (containerRef, center, onReady, onClick) => {
     return map;
 };
 
+// 담은 장소가 바뀌면 모두 보이게 맞춤 (한 곳이면 그 위치로 이동)
+const useFitTo = (map, points) => {
+    useEffect(() => {
+        if (!map || points.length === 0) return;
+        if (points.length === 1) {
+            map.panTo(toLatLng(points[0]));
+            return;
+        }
+        const bounds = new window.kakao.maps.LatLngBounds();
+        points.forEach((point) => bounds.extend(toLatLng(point)));
+        map.setBounds(bounds, FIT_PADDING, FIT_PADDING, FIT_PADDING, FIT_PADDING);
+    }, [map, points]);
+};
+
 /**
  * 카카오 지도. props: center {lat,lng}, markers [{lat,lng,label}], lines [{path,color,dashed}],
- * onReady({ panTo }), onClick({lat,lng}), focus {lat,lng}(바뀌면 그 위치로 이동), className, style
+ * onReady({ panTo }), onClick({lat,lng}), focus {lat,lng}(바뀌면 그 위치로 이동), fitTo [{lat,lng}](바뀌면 모두 보이게 맞춤), className, style
  */
-const KakaoMapView = ({ center, markers = [], lines = [], onReady, onClick, focus, className, style }) => {
+const KakaoMapView = ({ center, markers = [], lines = [], onReady, onClick, focus, fitTo, className, style }) => {
     const containerRef = useRef(null);
     const map = useKakaoMap(containerRef, center, onReady, onClick);
     useOverlays(map, drawMarkers, markers);
     useOverlays(map, drawLines, lines);
+    useFitTo(map, fitTo || NO_POINTS);
     useEffect(() => {
         if (map && focus) map.panTo(toLatLng(focus));
     }, [map, focus]);

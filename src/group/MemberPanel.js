@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { groupApi } from '../api/groupApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { formatDateTime } from './groupFormat';
+import { isKakaoShareAvailable, shareInvite } from '../share/kakaoShare';
 
 const inviteUrl = (token) => `${window.location.origin}/invite/${token}`;
 
@@ -16,13 +17,14 @@ const InviteBox = ({ group, run }) => {
         }
     };
     const copy = () => navigator.clipboard?.writeText(inviteUrl(token)).then(() => alert('초대 링크를 복사했어요.'));
+    const kakao = () => shareInvite({ groupName: group.name, inviteUrl: inviteUrl(token) }).catch((error) => alert(error.message));
     return (
         <div className="invite-box">
             <p className="group-hint">
                 {group.invite.active ? `초대 링크 사용 중 (${formatDateTime(group.invite.expiresAt)}까지)` : '초대 링크가 꺼져 있어요.'}
                 {' '}새로 만들면 이전 링크는 쓸 수 없어요.
             </p>
-            {token && <div className="invite-box__url"><input readOnly value={inviteUrl(token)} onFocus={(e) => e.target.select()} /><button type="button" className="group-button is-small" onClick={copy}>복사</button></div>}
+            {token && <div className="invite-box__url"><input readOnly value={inviteUrl(token)} onFocus={(e) => e.target.select()} /><button type="button" className="group-button is-small" onClick={copy}>복사</button>{isKakaoShareAvailable() && <button type="button" className="group-button is-small is-kakao" onClick={kakao}>카카오톡으로 보내기</button>}</div>}
             <div className="group-actions">
                 <button type="button" className="group-button is-primary" onClick={create}>{group.invite.active ? '새 초대 링크 만들기' : '초대 링크 만들기'}</button>
                 {group.invite.active && <button type="button" className="group-button" onClick={() => { setToken(null); run(() => groupApi.disableInvite(group.id).then(() => groupApi.detail(group.id))); }}>링크 끄기</button>}

@@ -5,6 +5,7 @@ import { number } from './expenseFormat';
 import { nightsLabel } from './reportBuilder';
 import RouteSketch, { dayColor } from './RouteSketch';
 import useCardExport from './useCardExport';
+import { isKakaoShareAvailable } from '../share/kakaoShare';
 import './Summary.scss';
 
 const SummaryStats = ({ summary }) => (
@@ -41,6 +42,13 @@ const SummaryPhotos = ({ photos }) => (
     </ul>
 );
 
+// PC 에서 카카오톡 메시지로 보낼 요약
+const summaryShareMeta = (group, summary) => ({
+    title: `${summary.name} 여행 요약`,
+    text: [summary.city?.displayName, nightsLabel(summary.startDate, summary.endDate), `총비용 ${number(summary.totalKrw)}원 · 1인당 ${number(summary.perPersonKrw)}원`].filter(Boolean).join('\n'),
+    path: `/groups/${group.id}`,
+});
+
 /** 여행 요약 카드 (이미지로 저장되는 영역) */
 const SummaryCard = React.forwardRef(({ summary }, ref) => {
     const period = nightsLabel(summary.startDate, summary.endDate);
@@ -62,7 +70,7 @@ const SummaryCard = React.forwardRef(({ summary }, ref) => {
 const SummaryTab = ({ group }) => {
     const [summary, setSummary] = useState(null);
     const cardRef = useRef(null);
-    const { busy, saveImage } = useCardExport(cardRef, `${group.name}_여행요약`);
+    const { busy, saveImage, share } = useCardExport(cardRef, `${group.name}_여행요약`);
     useEffect(() => {
         groupApi.summary(group.id).then(setSummary).catch((error) => alert(getApiErrorMessage(error)));
     }, [group.id]);
@@ -71,6 +79,7 @@ const SummaryTab = ({ group }) => {
         <section className="group-section">
             <div className="report-toolbar">
                 <h2>여행 요약</h2>
+                {isKakaoShareAvailable() && <button type="button" className="group-button is-small" onClick={() => share(summaryShareMeta(group, summary))} disabled={busy}>공유하기</button>}
                 <button type="button" className="group-button is-small is-primary" onClick={saveImage} disabled={busy}>{busy ? '만드는 중…' : '이미지로 저장'}</button>
             </div>
             <p className="group-hint">대표 사진은 앨범에서 방장이 고를 수 있어요(없으면 최근 사진). 1인당 비용은 지출을 함께 나눈 사람 수 기준이에요.</p>
