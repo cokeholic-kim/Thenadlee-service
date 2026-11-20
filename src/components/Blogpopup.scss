@@ -1,88 +1,31 @@
-.blogModal{
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 3;
-        overflow: hidden;
-        -webkit-overflow-scrolling: touch;
-        background: rgba(0, 0, 0, 0.6);
-        opacity: 1;
-        transition: opacity 0.15s linear;
-        padding:30px;
+// 여행기 목록 (원문은 새 창)
+.travel-posts {
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
 
-        &.hidden{
-            display: none;
+    li + li {
+        margin-top: 8px;
+    }
+
+    a {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 12px 14px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        color: #222;
+        text-decoration: none;
+
+        &:hover {
+            border-color: #3a9ea5;
         }
-        .blogpopup{
-            display: flex;
-        }
+    }
 
-        .categorybuttons{
-            width: 200px;
-            /* height: 500px; */
-            padding-left: 20px;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-
-            .categorybutton{
-                width: 100%;
-                height: 60px;
-                min-height: 60px;
-                background-color: #000;
-                margin: 8px;
-                border-radius: 4px;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: center;
-                cursor: pointer;
-
-                div{
-                    color: #fff;
-                    font-size: 0.8rem;
-                    font-weight: 700;
-                    padding-left: 8px;
-                }
-            }
-        }
-        .posts{
-            position: relative;
-            margin: 5px 0;
-            width: 80vw;
-            background: #fff;
-            padding: 16px;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            .close{
-                position: absolute;
-                z-index: 5;
-                top: 0;
-                right: 4px;
-                color: #000;
-                cursor: pointer;
-                font-size: 1.4rem;
-            }
-            #blogframe{
-                width: 100%;
-                padding: 4px;
-                iframe{
-                    display: block;
-                    border: none;
-                    height: 65vh;
-                    width: 100%;
-                }
-            }
-        }
+    span {
+        color: #777;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
 }
-

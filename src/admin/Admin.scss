@@ -378,3 +378,65 @@ $admin-radius: 6px;
         align-items: stretch;
     }
 }
+
+// 장소별 영상·후기 큐레이션 (추천 장소 목록 안에서 펼침)
+.admin-list .admin-list__panel {
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: $admin-bg-soft;
+}
+
+.admin-media {
+    h4 {
+        margin: 14px 0 6px;
+
+        span {
+            color: $admin-sub;
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+    }
+
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: $admin-sub;
+        font-size: 0.85rem;
+    }
+
+    &__list {
+        margin: 0 0 8px;
+        padding: 0;
+        list-style: none;
+
+        li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid $admin-line;
+
+            &.is-muted {
+                opacity: 0.6;
+            }
+        }
+
+        a {
+            flex: 1 1 260px;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        span {
+            color: $admin-sub;
+            font-size: 0.8rem;
+        }
+    }
+
+    &__empty {
+        color: $admin-sub;
+    }
+}

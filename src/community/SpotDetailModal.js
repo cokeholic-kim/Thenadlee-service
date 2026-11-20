@@ -1,5 +1,6 @@
 import React from 'react';
 import MapModal from './MapModal';
+import SpotMedia from './SpotMedia';
 import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import './Community.scss';
 
@@ -35,6 +36,7 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
         {spot.imageCredit && <p className="map-modal__hint">사진: {spot.imageCredit}</p>}
         <SpotActions spot={spot} {...actions} />
         <div className="map-modal__actions"><GroupWishButton spot={spot} /></div>
+        <SpotMedia spotId={spot.id} spotName={spot.spotName} />
         <GroupSpotComments spot={spot} />
     </MapModal>
 );

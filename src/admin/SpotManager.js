@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import ImageUploadField from './ImageUploadField';
+import SpotMediaManager from './SpotMediaManager';
 
 const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '' };
 const toSpotForm = (spot) => ({ name: spot.name, lat: spot.lat, lng: spot.lon, description: spot.description || '', imageUrl: spot.imageUrl || '' });
@@ -39,18 +40,23 @@ const SpotLabel = ({ spot }) => (
 
 const SpotRow = ({ spot, onSave, onDelete, onToggleStatus }) => {
     const [editing, setEditing] = useState(false);
+    const [mediaOpen, setMediaOpen] = useState(false);
     if (editing) {
         return <li><SpotForm initial={toSpotForm(spot)} submitLabel="수정 저장" onCancel={() => setEditing(false)}
             onSubmit={async (form) => { if (await onSave(spot.id, form)) setEditing(false); }} /></li>;
     }
     return (
-        <li className={`admin-list__item${spot.status === 'HIDDEN' ? ' is-muted' : ''}`}>
-            {spot.imageUrl ? <img src={spot.imageUrl} alt="" /> : <div className="admin-list__noimg" />}
-            <SpotLabel spot={spot} />
-            <button type="button" className="admin-button" onClick={() => setEditing(true)}>수정</button>
-            <button type="button" className="admin-button" onClick={() => onToggleStatus(spot)}>{spot.status === 'HIDDEN' ? '다시 공개' : '숨기기'}</button>
-            <button type="button" className="admin-button is-danger" onClick={() => onDelete(spot)}>삭제</button>
-        </li>
+        <>
+            <li className={`admin-list__item${spot.status === 'HIDDEN' ? ' is-muted' : ''}`}>
+                {spot.imageUrl ? <img src={spot.imageUrl} alt="" /> : <div className="admin-list__noimg" />}
+                <SpotLabel spot={spot} />
+                <button type="button" className="admin-button" aria-expanded={mediaOpen} onClick={() => setMediaOpen(!mediaOpen)}>영상·후기</button>
+                <button type="button" className="admin-button" onClick={() => setEditing(true)}>수정</button>
+                <button type="button" className="admin-button" onClick={() => onToggleStatus(spot)}>{spot.status === 'HIDDEN' ? '다시 공개' : '숨기기'}</button>
+                <button type="button" className="admin-button is-danger" onClick={() => onDelete(spot)}>삭제</button>
+            </li>
+            {mediaOpen && <li className="admin-list__panel"><SpotMediaManager spotId={spot.id} /></li>}
+        </>
     );
 };
 
