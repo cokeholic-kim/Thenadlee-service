@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { fetchItinerary } from '../api/itineraryApi';
+import { addItineraryLink, fetchItinerary, removeItineraryLink } from '../api/itineraryApi';
+import SocialLinks from '../community/SocialLinks';
+import LinkManager from '../community/LinkManager';
 import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { CITY_NAMES } from '../seo/pageMeta';
@@ -19,6 +21,18 @@ const SpotCard = ({ item, order }) => (
     </li>
 );
 
+// 작성자의 영상·SNS (누구나 보기), 작성자 본인에게는 링크 관리 상자
+const ItineraryLinks = ({ itinerary }) => {
+    const [links, setLinks] = useState(itinerary.links || []);
+    return (
+        <>
+            <SocialLinks title="작성자의 영상·SNS" links={links} />
+            {itinerary.isOwner && <LinkManager links={links} onChange={setLinks} hint="이 일정으로 다녀온 영상이나 게시물이 있나요? 붙이면 추천 일정에서 '영상' 표시와 함께 위쪽에 보여요."
+                onAdd={(url) => addItineraryLink(itinerary.id, url)} onRemove={(linkId) => removeItineraryLink(itinerary.id, linkId)} />}
+        </>
+    );
+};
+
 const ItineraryBody = ({ itinerary }) => {
     const cityName = CITY_NAMES[itinerary.cityName] || itinerary.cityName;
     return (
@@ -27,6 +41,7 @@ const ItineraryBody = ({ itinerary }) => {
             <h1>{itinerary.title}</h1>
             <p className="itinerary-page__author">{itinerary.authorNickName}님의 일정</p>
             {itinerary.description && <p className="itinerary-page__description">{itinerary.description}</p>}
+            <ItineraryLinks itinerary={itinerary} />
             {itinerary.days.map((day) => (
                 <section key={day.dayNo}>
                     <h2>{day.dayNo}일차</h2>

@@ -12,6 +12,7 @@ const ItineraryItem = ({ item, onOpen, onLike, onReport }) => (
     <li className="itinerary-list__item">
         <div className="itinerary-list__title">
             {item.isFeatured && <span className="map-modal__badge is-official">운영진 추천</span>}
+            {item.hasVideo && <span className="map-modal__badge is-video">▶ 영상</span>}
             <span>{item.title}</span>
         </div>
         <p className="itinerary-list__meta">{item.authorNickName} · {item.dayCount}일 · 장소 {item.spotCount}곳 · 좋아요 {item.likeCount}</p>

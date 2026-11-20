@@ -23,6 +23,13 @@ export const fetchMySpots = () =>
 export const fetchSpotMedia = (spotId) =>
     axios.get(`${API_URL}/spots/${spotId}/media`).then(unwrap);
 
+// 내가 등록한 추천 장소에 내 SNS 게시물 링크 붙이기·지우기 (등록자 본인만)
+export const addSpotLink = (spotId, url) =>
+    axios.post(`${API_URL}/spots/${spotId}/links`, { url }).then(unwrap);
+
+export const removeSpotLink = (spotId, linkId) =>
+    axios.post(`${API_URL}/spots/${spotId}/links/${linkId}/delete`).then(unwrap);
+
 export const fetchCityItineraries = (cityName) =>
     axios.get(`${API_URL}/cities/${cityName}/itineraries`).then(unwrap);
 
