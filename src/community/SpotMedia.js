@@ -23,7 +23,7 @@ const VideoPlayer = ({ video }) => (
 );
 
 // 유튜브 영상은 그 자리에서 재생, 그 밖의 영상은 원래 사이트를 새 창으로
-const VideoCard = ({ video }) => {
+export const VideoCard = ({ video }) => {
     const [playing, setPlaying] = useState(false);
     const play = () => (video.youtubeId ? setPlaying(true) : window.open(video.url, '_blank', 'noopener,noreferrer'));
     return (

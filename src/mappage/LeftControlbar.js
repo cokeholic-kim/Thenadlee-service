@@ -111,7 +111,7 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
                     </ul>
                 </div>
                 </div>
-                {recommend && <MonthDesc recommenddesc={recommend.description}/>}
+                <MonthDesc recommenddesc={recommend?.description} cityName={place.name} month={monthInfo}/>
                 
             </div>            
     );
