@@ -32,10 +32,14 @@ async function fetchBody(url) {
 async function loadCities(apiUrl) {
     try {
         const cities = await fetchBody(`${apiUrl}/cities`);
-        return Promise.all(cities.map(async (city) => ({ ...city, spots: await fetchBody(`${apiUrl}/place/spot/${encodeURIComponent(city.name)}`) })));
+        return Promise.all(cities.map(async (city) => ({
+            ...city,
+            spots: await fetchBody(`${apiUrl}/place/spot/${encodeURIComponent(city.name)}`),
+            itineraries: await fetchBody(`${apiUrl}/cities/${encodeURIComponent(city.name)}/itineraries`).catch(() => []),
+        })));
     } catch (error) {
         console.warn(`[prerender] 운영 API 를 읽지 못해 제목·설명만 만듭니다: ${error.message}`);
-        return Object.keys(seo.cityNames).map((name) => ({ name, displayName: seo.cityNames[name], description: '', spots: [] }));
+        return Object.keys(seo.cityNames).map((name) => ({ name, displayName: seo.cityNames[name], description: '', spots: [], itineraries: [] }));
     }
 }
 
@@ -61,12 +65,15 @@ function cityPage(siteUrl, city) {
     const title = seo.cityTitle.replaceAll('{city}', cityName);
     const url = `${siteUrl}/map/${encodeURIComponent(city.name)}`;
     const spots = city.spots.map((spot) => `<li><strong>${escapeHtml(spot.spotName)}</strong> ${escapeHtml(summary(spot.description, SPOT_SUMMARY_LENGTH))}</li>`).join('');
+    // 공개 추천 일정 링크 (검색 로봇이 /itinerary/{id} 페이지를 찾아가도록)
+    const plans = city.itineraries.map((plan) => `<li><a href="/itinerary/${plan.id}">${escapeHtml(plan.title)}</a> ${plan.dayCount}일 · ${escapeHtml(plan.authorNickName)}</li>`).join('');
     return {
         file: `map/${city.name}.html`, url, title: `${title} | ${seo.siteName}`, image: absolute(siteUrl, city.titleImageUrl),
         description: seo.cityDescription.replaceAll('{city}', cityName),
         jsonLd: cityJsonLd(city, url, absolute(siteUrl, city.titleImageUrl)),
         body: `<main class="prerender"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(city.description)}</p>`
-            + (spots ? `<h2>${escapeHtml(cityName)} 추천 여행지</h2><ul>${spots}</ul>` : '') + `<p><a href="/">${escapeHtml(seo.siteName)} 홈</a></p></main>`,
+            + (spots ? `<h2>${escapeHtml(cityName)} 추천 여행지</h2><ul>${spots}</ul>` : '')
+            + (plans ? `<h2>${escapeHtml(cityName)} 추천 일정</h2><ul>${plans}</ul>` : '') + `<p><a href="/">${escapeHtml(seo.siteName)} 홈</a></p></main>`,
     };
 }
 

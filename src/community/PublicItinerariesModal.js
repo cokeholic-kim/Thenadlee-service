@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { changeItineraryLike, fetchCityItineraries } from '../api/communityApi';
 import { clearDay, setLeftAll } from '../modules/add';
 import { getApiErrorMessage } from '../util/apiError';
@@ -18,6 +18,7 @@ const ItineraryItem = ({ item, onOpen, onLike, onReport }) => (
         {item.description && <p className="itinerary-list__description">{item.description}</p>}
         <div className="itinerary-list__actions">
             <button type="button" className="map-modal__button is-small is-mint" onClick={() => onOpen(item)}>지도에서 보기</button>
+            <Link className="map-modal__button is-small" to={`/itinerary/${item.id}`}>일정 페이지</Link>
             {!item.isMine && (
                 <button type="button" className={`map-modal__button is-small like-button${item.likedByMe ? ' is-liked' : ''}`}
                     onClick={() => onLike(item)}>{item.likedByMe ? '♥ 좋아요 취소' : '♡ 좋아요'}</button>

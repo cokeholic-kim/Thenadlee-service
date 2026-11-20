@@ -12,6 +12,7 @@ const FindPass = lazy(() => import('./loginmodule/FindPass'));
 const MyPage = lazy(() => import('./pages/MyPage'));
 const PrivacyPolicy = lazy(() => import('./pages/policy/PrivacyPolicy'));
 const Terms = lazy(() => import('./pages/policy/Terms'));
+const ItineraryPage = lazy(() => import('./pages/ItineraryPage'));
 const GroupList = lazy(() => import('./group/GroupList'));
 const GroupDetail = lazy(() => import('./group/GroupDetail'));
 const InvitePage = lazy(() => import('./group/InvitePage'));
@@ -34,6 +35,7 @@ function App() {
           <Route path="/mypage" element={<MyPage/>}/>
           <Route path="/privacy" element={<PrivacyPolicy/>}/>
           <Route path="/terms" element={<Terms/>}/>
+          <Route path="/itinerary/:id" element={<ItineraryPage/>}/>
           <Route path="/groups" element={<GroupList/>}/>
           <Route path="/groups/:id" element={<GroupDetail/>}/>
           <Route path="/invite/:token" element={<InvitePage/>}/>

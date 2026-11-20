@@ -78,6 +78,9 @@ jobs:
           REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
           REACT_APP_WHEATHER_API_KEY: ${{ secrets.REACT_APP_WHEATHER_API_KEY }}
           REACT_APP_KAKAO_JS_KEY: ${{ secrets.REACT_APP_KAKAO_JS_KEY }}
+          # 검색 사이트 소유 확인 값 (네이버 서치어드바이저·구글 서치콘솔에서 발급, 없으면 생략)
+          REACT_APP_NAVER_SITE_VERIFICATION: ${{ vars.REACT_APP_NAVER_SITE_VERIFICATION }}
+          REACT_APP_GOOGLE_SITE_VERIFICATION: ${{ vars.REACT_APP_GOOGLE_SITE_VERIFICATION }}
 
       - if: vars.DEPLOY_ENABLED == 'true'
         name: 업로드 - html/ (도메인 루트 .htaccess)

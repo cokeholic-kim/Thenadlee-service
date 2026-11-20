@@ -1,49 +1,41 @@
 /**
- * 빌드 후 build/robots.txt, build/sitemap.xml 생성 (npm run build 의 postbuild 단계)
- * 사이트 주소는 REACT_APP_SITE_URL (환경변수 또는 .env.production) 기준
+ * 빌드 후 build/robots.txt 생성, 검색 사이트 소유 확인 태그를 build/index.html 에 넣음 (npm run build 의 postbuild 단계)
+ *   사이트맵(/sitemap.xml)은 서버(PHP)가 요청할 때마다 DB 기준으로 만듦 (back SitemapService) → 여행지·공개 일정이 바뀌면 바로 반영
+ *   사이트 주소는 REACT_APP_SITE_URL (환경변수 또는 .env.production) 기준
  */
 const fs = require('fs');
 const path = require('path');
 const { BUILD_DIR, resolveSiteUrl } = require('./site-url');
 
-// 검색엔진에 알릴 공개 페이지 (src/seo/pageMeta.js 의 색인 대상과 맞출 것)
-const SITEMAP_PAGES = [
-    { path: '/', changefreq: 'weekly', priority: '1.0' },
-    { path: '/map/Jeju', changefreq: 'weekly', priority: '0.9' },
-    { path: '/map/Singapore', changefreq: 'weekly', priority: '0.9' },
-    { path: '/map/Harbin', changefreq: 'weekly', priority: '0.9' },
-    { path: '/map/Vancouver', changefreq: 'weekly', priority: '0.9' },
-    { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
-    { path: '/terms', changefreq: 'yearly', priority: '0.3' },
-];
-
 // 검색 결과에 나올 필요 없는 경로 (API, 회원 화면)
 const DISALLOW_PATHS = ['/back/', '/login', '/join', '/findPass', '/mypage', '/admin', '/groups', '/invite'];
+// 검색 사이트 소유 확인 값 (GitHub Variables → 빌드 환경변수, 없으면 넣지 않음)
+const VERIFICATION_TAGS = [
+    { env: 'REACT_APP_NAVER_SITE_VERIFICATION', name: 'naver-site-verification' },
+    { env: 'REACT_APP_GOOGLE_SITE_VERIFICATION', name: 'google-site-verification' },
+];
 
 function buildRobots(siteUrl) {
     const disallow = DISALLOW_PATHS.map((rule) => `Disallow: ${rule}`);
     return ['User-agent: *', 'Allow: /', ...disallow, '', `Sitemap: ${siteUrl}/sitemap.xml`, ''].join('\n');
 }
 
-function buildSitemap(siteUrl, lastmod) {
-    const urls = SITEMAP_PAGES.map((page) => [
-        '  <url>',
-        `    <loc>${siteUrl}${page.path}</loc>`,
-        `    <lastmod>${lastmod}</lastmod>`,
-        `    <changefreq>${page.changefreq}</changefreq>`,
-        `    <priority>${page.priority}</priority>`,
-        '  </url>',
-    ].join('\n'));
-    return ['<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ...urls, '</urlset>', ''].join('\n');
+// 값에 따옴표·꺾쇠가 섞여도 태그가 깨지지 않게 영문·숫자·-_ 만 허용
+function addVerificationTags() {
+    const tags = VERIFICATION_TAGS
+        .map((tag) => ({ ...tag, value: (process.env[tag.env] || '').replace(/[^A-Za-z0-9_-]/g, '') }))
+        .filter((tag) => tag.value)
+        .map((tag) => `<meta name="${tag.name}" content="${tag.value}">`);
+    if (tags.length === 0) return 0;
+    const indexPath = path.join(BUILD_DIR, 'index.html');
+    fs.writeFileSync(indexPath, fs.readFileSync(indexPath, 'utf8').replace('</head>', `${tags.join('')}</head>`));
+    return tags.length;
 }
 
 function main() {
     const siteUrl = resolveSiteUrl();
-    const lastmod = new Date().toISOString().slice(0, 10);
     fs.writeFileSync(path.join(BUILD_DIR, 'robots.txt'), buildRobots(siteUrl));
-    fs.writeFileSync(path.join(BUILD_DIR, 'sitemap.xml'), buildSitemap(siteUrl, lastmod));
-    console.log(`robots.txt, sitemap.xml 생성 완료 (${siteUrl})`);
+    console.log(`robots.txt 생성 완료 (${siteUrl}), 검색 사이트 소유 확인 태그 ${addVerificationTags()}개`);
 }
 
 main();

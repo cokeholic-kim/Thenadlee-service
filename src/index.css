@@ -1,5 +1,11 @@
+/* 화면은 밝은 색 기준으로 디자인됨 → 기기가 어두운 모드여도 배경·글자색이 섞여 읽기 어려워지지 않게 고정 */
+html {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
+  background-color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,4 +16,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* 화면에는 보이지 않고 검색엔진·화면 낭독기에만 읽히는 글자 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

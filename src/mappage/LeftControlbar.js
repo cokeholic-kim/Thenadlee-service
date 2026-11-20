@@ -1,3 +1,4 @@
+import { cityPageMeta } from '../seo/pageMeta';
 import React,{useEffect, useState} from 'react';
 import { MdAirplaneTicket } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -64,7 +65,8 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
         <div className='LeftControlbar'>
             <div className='background'>
                 <div className='Place'>
-                    <div id="korCityname">{place.name}</div>
+                    {/* 페이지 제목: 화면에는 도시 영문 이름, 검색엔진·화면 낭독기에는 "제주 여행 일정 만들기" */}
+                    <h1 id="korCityname"><span aria-hidden="true">{place.name}</span><span className="sr-only">{cityPageMeta(place.name).title}</span></h1>
                     {/* <div id="engCityname">{place.cityname}</div> */}
                     <Wrapper className='wheather' cold={cold}>
                         <GlobalStyle/>

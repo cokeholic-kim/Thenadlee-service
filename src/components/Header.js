@@ -65,7 +65,8 @@ function Header({ moveto }) {
             <div className="header_top">
                 <div className="header_top_left">
                     <Link to="/">
-                        <h1>The나들이 <span>떠나 나들이</span></h1>
+                        {/* 로고는 페이지 제목(h1)이 아님: 페이지마다 고유한 h1 을 둠 */}
+                        <p className="header-logo">The나들이 <span>떠나 나들이</span></p>
                     </Link>
                 </div>
                 <ul className="header_top_right">
