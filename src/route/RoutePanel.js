@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { TRAVEL_MODES, findTravelMode } from './travelModes';
 import { formatDistance, formatDuration, summarizeLegs } from './formatRoute';
 import './RoutePanel.scss';
@@ -14,6 +15,9 @@ const ModeSelector = ({ travelMode, onChange }) => (
         ))}
     </div>
 );
+
+// 로그인 후 지금 보던 화면으로 돌아오도록 next 를 붙임
+const loginPath = () => `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
 
 const legLabel = (leg) => (leg.straight ? '경로 없음(직선)' : findTravelMode(leg.mode)?.label);
 
@@ -43,6 +47,7 @@ const RouteSummary = ({ legs, places, loading }) => {
             </button>
             {summary.hasFallback && <p className="route-panel__note">선택한 수단의 경로가 없는 구간은 다른 수단으로 표시했어요.</p>}
             {summary.hasStraight && <p className="route-panel__note">경로를 찾지 못한 구간은 점선으로 표시했어요.</p>}
+            {summary.needsLogin && <p className="route-panel__note">오늘 비로그인 길찾기 사용량을 다 써서 일부 구간을 직선으로 표시했어요. <Link to={loginPath()}>로그인</Link>하면 계속 볼 수 있어요.</p>}
             {open && <LegList legs={legs} places={places} />}
         </>
     );

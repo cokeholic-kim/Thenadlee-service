@@ -17,9 +17,16 @@ export const formatDistance = (distanceMeters) => {
 };
 
 // 직선 구간은 실제 이동 시간을 알 수 없어 합계에서 시간은 제외
+// 시간을 아는 구간이 하나도 없으면(모두 직선) 합계 시간도 비움 → 화면에 "-"
+const sumDurations = (legs) => {
+    const timedLegs = legs.filter((leg) => leg.durationMillis != null);
+    return timedLegs.length === 0 ? null : timedLegs.reduce((sum, leg) => sum + leg.durationMillis, 0);
+};
+
 export const summarizeLegs = (legs) => ({
-    durationMillis: legs.reduce((sum, leg) => sum + (leg.durationMillis || 0), 0),
+    durationMillis: sumDurations(legs),
     distanceMeters: legs.reduce((sum, leg) => sum + (leg.distanceMeters || 0), 0),
     hasFallback: legs.some((leg) => leg.fallback && !leg.straight),
     hasStraight: legs.some((leg) => leg.straight),
+    needsLogin: legs.some((leg) => leg.needsLogin),
 });

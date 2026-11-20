@@ -7,6 +7,9 @@ const GOOGLE_ROUTE_FIELDS = ['distanceMeters', 'durationMillis', 'path'];
 const TRANSIT_MODE = 'TRANSIT';
 const SECOND_MILLIS = 1000;
 const EARTH_RADIUS_METERS = 6371000;
+// 서버가 비로그인 길찾기 몫을 다 썼다고 알려 준 경우 (로그인하면 계속 사용 가능)
+const LOGIN_REQUIRED_REASON = 'LOGIN_REQUIRED';
+const LOGIN_REQUIRED = Symbol('login-required');
 
 // 같은 구간·수단은 다시 요청하지 않도록 세션 동안 결과를 보관 (Google 은 요청당 과금, 카카오는 서버에서도 캐시)
 const routeCache = new Map();
@@ -37,7 +40,9 @@ const fetchGoogleRoute = async (origin, destination, mode, departureTime) => {
 const fetchKakaoRoute = async (origin, destination, mode) => {
     const params = { mode, from: `${origin.lat},${origin.lng}`, to: `${destination.lat},${destination.lng}` };
     const body = (await axios.get(`${API_URL}/routes`, { params })).data.body;
-    if (!body.available) throw new Error('국내 길찾기를 지금은 사용할 수 없습니다.');
+    if (!body.available) {
+        throw Object.assign(new Error('국내 길찾기를 지금은 사용할 수 없습니다.'), { needsLogin: body.limitReason === LOGIN_REQUIRED_REASON });
+    }
     if (!body.found) return null;
     return {
         mode,
@@ -56,7 +61,7 @@ const requestRoute = (origin, destination, mode, departureTime, provider) => {
         const pending = fetcher(origin, destination, mode, departure).catch((error) => {
             console.warn('경로 요청 실패', mode, error?.message);
             routeCache.delete(key);
-            return null;
+            return error?.needsLogin ? LOGIN_REQUIRED : null;
         });
         routeCache.set(key, pending);
     }
@@ -72,10 +77,11 @@ const straightDistance = (origin, destination) => {
     return 2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a));
 };
 
-const straightLeg = (origin, destination) => ({
+const straightLeg = (origin, destination, needsLogin) => ({
     mode: null,
     straight: true,
     fallback: true,
+    needsLogin,
     distanceMeters: straightDistance(origin, destination),
     durationMillis: null,
     path: [origin, destination],
@@ -87,9 +93,11 @@ const straightLeg = (origin, destination) => ({
  */
 export const computeLeg = async (origin, destination, preferredMode, departureTime = null, provider = MAP_PROVIDERS.GOOGLE) => {
     const candidates = [preferredMode, ...FALLBACK_ORDER.filter((mode) => mode !== preferredMode)];
+    let needsLogin = false;
     for (const mode of candidates) {
         const route = await requestRoute(origin, destination, mode, departureTime, provider);
-        if (route) return { ...route, straight: false, fallback: mode !== preferredMode };
+        if (route === LOGIN_REQUIRED) needsLogin = true;
+        else if (route) return { ...route, straight: false, fallback: mode !== preferredMode };
     }
-    return straightLeg(origin, destination);
+    return straightLeg(origin, destination, needsLogin);
 };
