@@ -6,7 +6,13 @@
         "Jeju": "제주",
         "Singapore": "싱가포르",
         "Harbin": "하얼빈",
-        "Vancouver": "밴쿠버"
+        "Vancouver": "밴쿠버",
+        "Seoul": "서울",
+        "Busan": "부산",
+        "Gyeongju": "경주",
+        "Gangneung": "강릉",
+        "Yeosu": "여수",
+        "Jeonju": "전주"
     },
     "cityTitle": "{city} 여행 일정 만들기",
     "cityDescription": "{city} 추천 여행지와 월별 여행 정보, 날씨를 확인하고 지도 위에서 나만의 {city} 여행 동선을 만들어 보세요.",
