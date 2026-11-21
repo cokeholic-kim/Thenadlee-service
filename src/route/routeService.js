@@ -2,11 +2,11 @@ import axios from 'axios';
 import { API_URL } from '../config/apiurl';
 import { MAP_PROVIDERS } from '../map/mapProvider';
 import { FALLBACK_ORDER } from './travelModes';
+import { straightDistance } from './geoDistance';
 
 const GOOGLE_ROUTE_FIELDS = ['distanceMeters', 'durationMillis', 'path'];
 const TRANSIT_MODE = 'TRANSIT';
 const SECOND_MILLIS = 1000;
-const EARTH_RADIUS_METERS = 6371000;
 // 서버가 비로그인 길찾기 몫을 다 썼다고 알려 준 경우 (로그인하면 계속 사용 가능)
 const LOGIN_REQUIRED_REASON = 'LOGIN_REQUIRED';
 const LOGIN_REQUIRED = Symbol('login-required');
@@ -66,15 +66,6 @@ const requestRoute = (origin, destination, mode, departureTime, provider) => {
         routeCache.set(key, pending);
     }
     return routeCache.get(key);
-};
-
-// 두 지점 사이 직선거리(m, 하버사인 공식) — 지도 라이브러리와 무관하게 계산
-const straightDistance = (origin, destination) => {
-    const toRadian = (degree) => (degree * Math.PI) / 180;
-    const dLat = toRadian(destination.lat - origin.lat);
-    const dLng = toRadian(destination.lng - origin.lng);
-    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRadian(origin.lat)) * Math.cos(toRadian(destination.lat)) * Math.sin(dLng / 2) ** 2;
-    return 2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a));
 };
 
 const straightLeg = (origin, destination, needsLogin) => ({

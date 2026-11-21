@@ -10,6 +10,7 @@ import DayTabs from '../itinerary/DayTabs';
 import Calendar from './Calendar';
 import Weather from './Weather';
 import MapPartnerLink from './MapPartnerLink';
+import OptimizeRouteButton from './OptimizeRouteButton';
 import MonthDesc from './MonthDesc';
 import { MAP_PANELS, requestMapPanel } from './mapPanelEvents';
 import { toast } from '../ui/feedback';
@@ -102,7 +103,7 @@ const LeftControlbar = ({ place, monthList, mobileHidden }) => {
                 <div className="left_bottom_ul">
                     {startDate && endDate && <p name='start' className="trip-term">{startDate} ~ {endDate}</p>}
                     <PlanList spots={places.left}/>
-                    <div className="center2"><ClearDayButton activeDay={places.activeDay} spots={places.left}/></div>
+                    <div className="center2"><OptimizeRouteButton activeDay={places.activeDay} spots={places.left}/><ClearDayButton activeDay={places.activeDay} spots={places.left}/></div>
                 </div>
             </div>
         </div>

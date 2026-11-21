@@ -77,7 +77,24 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        gap: 8px;
         padding: 4px 0 12px;
+        // 동선 정리: 장소가 3곳 이상일 때, 주 색 테두리 버튼 (되돌리기 알림이 뜸)
+        .OptimizeBtn {
+            padding: 6px 14px;
+            border: 1px solid var(--color-secondary);
+            border-radius: 999px;
+            background-color: #fff;
+            color: var(--color-secondary-strong);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+                background-color: var(--color-secondary-soft);
+            }
+        }
         // 비우기: 담은 장소가 있을 때만, 눈에 덜 띄는 글자 버튼 (되돌리기 알림이 뜸)
         .Clearbtn {
             padding: 6px 12px;
@@ -195,8 +212,14 @@
                 flex-direction: column;
             }
             .center2{
+                // 동선 정리·비우기를 반씩 나눠 한 줄로
+                .OptimizeBtn{
+                    flex: 1;
+                    white-space: nowrap;
+                }
                 .Clearbtn{
-                    width: 100%;
+                    flex: 1;
+                    white-space: nowrap;
                     h6{
                         font-size: 13px;
                     }

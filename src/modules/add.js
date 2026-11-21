@@ -14,6 +14,7 @@ const CLEAR_DAY = 'CLEAR_DAY';
 const RESTORE_DAY = 'RESTORE_DAY';
 const MOVE_SPOT = 'MOVE_SPOT';
 const REORDER_SPOT = 'REORDER_SPOT';
+const REORDER_DAY = 'REORDER_DAY';
 const SET_DAY_COUNT = 'SET_DAY_COUNT';
 const SET_ACTIVE_DAY = 'SET_ACTIVE_DAY';
 const LOAD_DAYS = 'LOAD_DAYS';
@@ -30,6 +31,7 @@ export const clearDay = () => ({ type: CLEAR_DAY });                    // 현�
 export const restoreDay = (dayIndex, spots) => ({ type: RESTORE_DAY, dayIndex, spots }); // 비우기 되돌리기
 export const moveSpot = (index, offset) => ({ type: MOVE_SPOT, index, offset });
 export const reorderSpot = (from, to) => ({ type: REORDER_SPOT, from, to });   // 끌어서 순서 바꾸기
+export const reorderDay = (dayIndex, ids) => ({ type: REORDER_DAY, dayIndex, ids }); // 동선 정렬·되돌리기 (장소 번호 순서대로)
 export const setDayCount = (dayCount) => ({ type: SET_DAY_COUNT, dayCount });
 export const setActiveDay = (dayIndex) => ({ type: SET_ACTIVE_DAY, dayIndex });
 export const loadDays = (days) => ({ type: LOAD_DAYS, days });          // 저장된 일정 불러오기
@@ -117,6 +119,17 @@ const restoreDayInState = (state, dayIndex, spots) => {
     return withDerived({ ...state, days });
 };
 
+// 받은 번호 순서대로 다시 배열 (그사이 빠진 장소는 무시, 새로 담은 장소는 뒤에 그대로)
+const reorderDayInState = (state, dayIndex, ids) => {
+    if (dayIndex >= state.days.length) return state;
+    const rank = new Map(ids.map((id, index) => [id, index]));
+    const sortKey = (spot, index) => (rank.has(spot.id) ? rank.get(spot.id) : ids.length + index);
+    const days = state.days.map((spots, index) => (index === dayIndex
+        ? spots.map((spot, order) => ({ spot, key: sortKey(spot, order) })).sort((a, b) => a.key - b.key).map((item) => item.spot)
+        : spots));
+    return withDerived({ ...state, days });
+};
+
 // 5. 리듀서
 export default function adds(state = initialState, action) {
     switch (action.type) {
@@ -136,6 +149,8 @@ export default function adds(state = initialState, action) {
             return updateActiveDay(state, (spots) => moveInList(spots, action.index, action.offset));
         case REORDER_SPOT:
             return updateActiveDay(state, (spots) => reorderInList(spots, action.from, action.to));
+        case REORDER_DAY:
+            return reorderDayInState(state, action.dayIndex, action.ids);
         case SET_DAY_COUNT:
             return resizeDays(state, action.dayCount);
         case SET_ACTIVE_DAY:
