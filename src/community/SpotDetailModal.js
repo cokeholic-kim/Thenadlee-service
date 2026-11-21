@@ -5,6 +5,7 @@ import SocialLinks from './SocialLinks';
 import LinkManager from './LinkManager';
 import { addSpotLink, removeSpotLink } from '../api/communityApi';
 import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
+import { categoryLabel } from './spotCategories';
 import './Community.scss';
 
 export const SourceBadge = ({ spot }) => (spot.source === 'USER'
@@ -45,6 +46,7 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
         )}
         <p className="spot-detail__meta">
             <SourceBadge spot={spot} />
+            {spot.category && <span className="map-modal__badge is-category">{categoryLabel(spot.category)}</span>}
             {spot.source === 'USER' && <span>{spot.authorNickName || '탈퇴한 회원'} 님이 등록</span>}
         </p>
         {spot.description && <p className="spot-detail__description">{spot.description}</p>}

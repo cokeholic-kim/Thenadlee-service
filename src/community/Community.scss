@@ -220,7 +220,16 @@ $community-like: #e0575b;
         width: 100%;
     }
 
+    .spot-toolbar__categories {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+    }
+
     .spot-toolbar__filters button,
+    .spot-toolbar__categories button,
     .spot-toolbar__register {
         display: inline-block;
         flex: 0 0 auto;
@@ -235,7 +244,21 @@ $community-like: #e0575b;
         cursor: pointer;
     }
 
-    .spot-toolbar__filters button.is-active {
+    .spot-toolbar__categories button {
+        padding: 3px 8px;
+        font-size: 11px;
+
+        span {
+            color: #999;
+        }
+    }
+
+    .spot-toolbar__categories button.is-active span {
+        color: #fff;
+    }
+
+    .spot-toolbar__filters button.is-active,
+    .spot-toolbar__categories button.is-active {
         border-color: $community-primary;
         background-color: $community-primary;
         color: #fff;
@@ -262,6 +285,12 @@ $community-like: #e0575b;
     font-size: 11px !important;
     white-space: nowrap;
     text-align: left;
+
+    // 운영진 장소는 종류만 연한 색으로
+    &.is-category {
+        background-color: #e8f4f3;
+        color: #2f7d79 !important;
+    }
 }
 
 .map .RightControlbar_contents_li .spot-card__info {

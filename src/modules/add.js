@@ -44,7 +44,9 @@ export const toSpot = (item) => ({
     images: item.images || [],
     isMine: Boolean(item.isMine),
     credit: item.credit || null,
-    imageCredit: item.imageCredit || null
+    imageCredit: item.imageCredit || null,
+    category: item.category || null,
+    links: item.links || []
 });
 
 // 3. 초기값

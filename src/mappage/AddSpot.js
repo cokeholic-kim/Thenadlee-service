@@ -3,9 +3,16 @@ import { FaPlus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { setLeft } from "../modules/add";
 import { setENTER } from "../modules/hover";
+import { categoryLabel } from '../community/spotCategories';
 import './AddSpot.scss' ;
 
-// 데이터 카드(li)에 대한 컴포넌트 (여행자 추천 장소는 배지 표시, i 버튼으로 상세 보기)
+// 데이터 카드(li)에 대한 컴포넌트 (여행자 추천·장소 종류 배지, i 버튼으로 상세 보기)
+
+const SpotBadge = ({ spot }) => {
+    const text = [spot.source === 'USER' && '여행자 추천', categoryLabel(spot.category)].filter(Boolean).join(' · ');
+    if (!text) return null;
+    return <span className={`spot-card__badge${spot.source === 'USER' ? '' : ' is-category'}`}>{text}</span>;
+};
 
 const AddSpot = ({spot, map, onOpen}) => {
     const { spotName: spotname, lat: p_lat, lon: p_lng, imageUrl: img } = spot;
@@ -27,7 +34,7 @@ const AddSpot = ({spot, map, onOpen}) => {
                 {img && <img className='RightControlbar_contents_img_i' src={img} referrerPolicy="no-referrer" alt=""></img>}
             </div>
             <div className=" RightControlbar_contents_p">
-                {spot.source === 'USER' && <span className="spot-card__badge">여행자 추천</span>}
+                <SpotBadge spot={spot} />
                 <div className='RightControlbar_contents_p_left'>
                     <p><span>{spotname}</span></p>
                 </div>
