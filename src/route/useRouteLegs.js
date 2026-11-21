@@ -17,6 +17,7 @@ const useRouteLegs = (places, travelMode, enabled, departureTime = null, provide
         const points = places.map(toPoint);
         if (!enabled || points.length < 2) {
             setLegs([]);
+            setLoading(false);
             return undefined;
         }
         let cancelled = false;

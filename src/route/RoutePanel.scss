@@ -61,6 +61,25 @@
         font-weight: 600;
         cursor: pointer;
     }
+    .route-panel__loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-sub);
+        font-weight: 500;
+    }
+    .route-panel__spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--color-line);
+        border-top-color: var(--color-secondary);
+        border-radius: 50%;
+        animation: route-panel-spin 0.8s linear infinite;
+    }
+    // 새 경로를 찾는 동안 이전 구간 목록은 흐리게
+    .is-stale {
+        opacity: 0.45;
+    }
     .route-panel__toggle {
         font-size: 12px;
         font-weight: normal;
@@ -106,5 +125,17 @@
         left: 8px;
         width: auto;
         max-height: 45%;
+    }
+}
+
+@keyframes route-panel-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .route-panel .route-panel__spinner {
+        animation-duration: 2.4s;
     }
 }
