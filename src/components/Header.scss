@@ -125,3 +125,13 @@ header {
         }
     }
 }
+
+// 확인하지 않은 문의 답변이 있을 때
+.header-badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background-color: var(--color-primary-strong);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+}

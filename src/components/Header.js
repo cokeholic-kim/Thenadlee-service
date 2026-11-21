@@ -5,6 +5,7 @@ import { logout } from "../api/userApi";
 import { loadLoginUser, setLogout } from "../modules/logincheck";
 import { getApiErrorMessage } from "../util/apiError";
 import { toastError } from "../ui/feedback";
+import useUnreadAnswers from "../inquiry/useUnreadAnswers";
 import { canEdit } from "../admin/roles";
 import './Header.scss';
 
@@ -30,6 +31,7 @@ const useLogout = () => {
 const LoginMenu = () => {
     const { isLogin, user } = useSelector((state) => state.logincheck);
     const onLogout = useLogout();
+    const unreadAnswers = useUnreadAnswers(isLogin);
     if (!isLogin) {
         return <MenuLink to="/login">로그인</MenuLink>;
     }
@@ -38,6 +40,7 @@ const LoginMenu = () => {
             <MenuLink to="/itineraries">내 일정</MenuLink>
             <MenuLink to="/groups">내 모임</MenuLink>
             {canEdit(user.role) && <MenuLink to="/admin">관리자</MenuLink>}
+            {unreadAnswers > 0 && <MenuLink to="/inquiries"><span className="header-badge">문의 답변 {unreadAnswers}</span></MenuLink>}
             <MenuLink to="/mypage">{user.nickName}님</MenuLink>
             <li><a href="/" onClick={onLogout}>로그아웃</a></li>
         </>

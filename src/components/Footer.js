@@ -9,7 +9,8 @@ function Footer() {
             <div className="inner">
                 <div className="describe">
                     <Link to="/terms">이용약관</Link>|
-                    <Link to="/privacy"><b>개인정보처리방침</b></Link>
+                    <Link to="/privacy"><b>개인정보처리방침</b></Link>|
+                    <Link to="/inquiries">고객 문의</Link>
                 </div>
                 <div className="brief">
                     <p>{SITE_NAME} · 여행 일정 플래너</p>

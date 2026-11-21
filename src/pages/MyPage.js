@@ -38,6 +38,7 @@ const Shortcuts = () => (
     <nav className="mypage-shortcuts" aria-label="바로가기">
         <Link to="/itineraries">내 일정</Link>
         <Link to="/groups">내 모임</Link>
+        <Link to="/inquiries">고객 문의</Link>
     </nav>
 );
 

@@ -13,6 +13,8 @@ const JoinPage = lazy(() => import('./loginmodule/JoinPage'));
 const FindPass = lazy(() => import('./loginmodule/FindPass'));
 const MyPage = lazy(() => import('./pages/MyPage'));
 const MyItinerariesPage = lazy(() => import('./pages/MyItinerariesPage'));
+const InquiryPage = lazy(() => import('./inquiry/InquiryPage'));
+const AdminInquiries = lazy(() => import('./admin/AdminInquiries'));
 const PrivacyPolicy = lazy(() => import('./pages/policy/PrivacyPolicy'));
 const Terms = lazy(() => import('./pages/policy/Terms'));
 const ItineraryPage = lazy(() => import('./pages/ItineraryPage'));
@@ -39,6 +41,7 @@ function App() {
           <Route path="/findPass" element={<FindPass/>}/>
           <Route path="/mypage" element={<MyPage/>}/>
           <Route path="/itineraries" element={<MyItinerariesPage/>}/>
+          <Route path="/inquiries" element={<InquiryPage/>}/>
           <Route path="/privacy" element={<PrivacyPolicy/>}/>
           <Route path="/terms" element={<Terms/>}/>
           <Route path="/itinerary/:id" element={<ItineraryPage/>}/>
@@ -51,6 +54,7 @@ function App() {
           <Route path="/admin/itineraries" element={<AdminItineraries/>}/>
           <Route path="/admin/users" element={<AdminUsers/>}/>
           <Route path="/admin/reports" element={<AdminReports/>}/>
+          <Route path="/admin/inquiries" element={<AdminInquiries/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
       </Suspense>
