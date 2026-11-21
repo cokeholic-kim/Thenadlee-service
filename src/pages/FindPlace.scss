@@ -44,145 +44,131 @@
             }
         }
     }
-    .FindPlace_country{
-        display: flex;
-        flex-direction: column;
+}
+
+// 여행지 카드 목록: PC 2열, 휴대폰 1열
+.FindPlace .city-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+    padding: 0 16px 60px;
+}
+
+// 카드: 사진 칸이 글 칸 높이에 맞춰 늘어남 (사진은 잘라서 채움)
+.city-card {
+    display: flex;
+    min-height: 220px;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: #fff;
+    transition: box-shadow 0.2s, transform 0.2s;
+
+    &:hover {
+        box-shadow: 0 10px 24px rgba(31, 75, 80, 0.12);
+        transform: translateY(-2px);
+    }
+}
+
+.city-card__image {
+    position: relative;
+    flex: 0 0 42%;
+    background-color: var(--color-secondary-soft);
+
+    img {
+        position: absolute;
+        inset: 0;
         width: 100%;
-        .FindPlace_country_detail{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            .FindPlace_country_detail_left{
-                width: 40%;
-                height: 500px;
-                .FindPlace_country_detail_left_img{
-                    width: 100%;
-                     img{
-                        width: 100%;
-                    }
-                }
-            }
-            .FindPlace_country_detail_right{
-                width: 55%;
-                display: flex;
-                height: 400px;
-                flex-direction: column;
-                .FindPlace_country_detail_right_title{
-                    letter-spacing: 3px;
-                    margin-bottom: 20px;
-                    p:nth-child(1){
-                        font-size: 32px ;
-                        font-weight: bold;
-                        margin-bottom: 10px;
-                    }
-                    p:nth-child(2){
-                        font-size: 20px ;
-                        font-weight: lighter;
-                    }
-                    }
-                .FindPlace_country_detail_right_p{
-                    color: gray;
-                    letter-spacing: 2px;
-                    margin-bottom: 10px;
-                }
-                .FindPlace_country_detail_right_button button {
-                    background-color: #ff888a ;
-                    border-color: #ff888a ;
-                    border-style: none;
-                    font-size: 17px;
-                    height: 50px;
-                    padding: 0 !important;
-                    margin: 5px 10px;
-                    color: #fff;
-                    cursor: pointer;
-                    width: 150px;
-                    text-align: center;
-                    border-radius: 5px;
-                    }
-                    .FindPlace_country_detail_right_button button:hover {
-                        background-color: #fc6d70 ;
-                        border-color: #fc6d70   ;
-                    }
-                }
-        }
+        height: 100%;
+        object-fit: cover;
     }
 }
 
-@media screen and (max-width:768px) {
-    .FindPlace{
-        .FindPlaceP{
-            height: 150px;
-        }    
-        .FindPlace_country{
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            .FindPlace_country_detail{
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: center;
-                .FindPlace_country_detail_left{
-                    width: 90%;
-                    height: 400px;
-                    margin: 30px;
-                    .FindPlace_country_detail_left_img{
-                        width: 100%;
-                        height: 100%;
-                         img{
-                            width: 100%;
-                            height: 100%;
-                        }
-                    }
-                }
-                .FindPlace_country_detail_right{
-                    width: 55%;
-                    display: flex;
-                    height: 400px;
-                    flex-direction: column;
-                    .FindPlace_country_detail_right_title{
-                        letter-spacing: 3px;
-                        margin-bottom: 20px;
-                        p:nth-child(1){
-                            font-size: 32px ;
-                            font-weight: bold;
-                            margin-bottom: 10px;
-                        }
-                        p:nth-child(2){
-                            font-size: 20px ;
-                            font-weight: lighter;
-                        }
-                        }
-                    .FindPlace_country_detail_right_p{
-                        color: gray;
-                        letter-spacing: 2px;
-                        margin-bottom: 10px;
-                    }
-                    .FindPlace_country_detail_right_button button {
-                        background-color: #98dde3 ;
-                        border-color: #98dde3 ;
-                        border-style: none;
-                        font-size: 18px;
-                        height: 50px;
-                        padding: 0 !important;
-                        margin: 5px 10px;
-                        color: #fff;
-                        cursor: pointer;
-                        width: 150px;
-                        text-align: center;
-                        }
-                        .FindPlace_country_detail_right_button button:hover {
-                            background-color: #7dd3db ;
-                            border-color: #7dd3db   ;
-                        }
-                    }
-            }
-        }
-    }
-    
+.city-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    padding: 18px 18px 16px;
 }
 
-    
-        
+.city-card__name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
 
+.city-card__display {
+    margin: 2px 0 10px;
+    color: var(--color-secondary-strong);
+    font-size: 14px;
+    font-weight: 600;
+}
 
+// 설명은 4줄까지만 (카드 높이를 고르게)
+.city-card__description {
+    display: -webkit-box;
+    margin: 0 0 14px;
+    overflow: hidden;
+    color: var(--color-sub);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
 
+.city-card__button {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    margin-top: auto;
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background-color: var(--color-primary-strong);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus-visible {
+        background-color: #c96a1d;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .FindPlace .FindPlaceP {
+        height: 150px;
+    }
+
+    .FindPlace .city-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .city-card {
+        min-height: 180px;
+    }
+
+    .city-card__image {
+        flex-basis: 38%;
+    }
+
+    .city-card__body {
+        padding: 14px 14px 12px;
+    }
+
+    .city-card__name {
+        font-size: 19px;
+    }
+
+    .city-card__description {
+        font-size: 13px;
+        -webkit-line-clamp: 3;
+    }
+}
