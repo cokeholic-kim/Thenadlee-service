@@ -11,6 +11,8 @@ import AdSenseUnit from '../marketing/AdSenseUnit';
 import { ADSENSE_SLOTS } from '../config/ads';
 import ItineraryMap from './ItineraryMap';
 import ItineraryShare from './ItineraryShare';
+import ItineraryReactions from './ItineraryReactions';
+import { toggleItineraryVisibility } from '../itinerary/visibilityToggle';
 import './ItineraryPage.scss';
 
 const SpotCard = ({ item, order }) => (
@@ -35,13 +37,27 @@ const ItineraryLinks = ({ itinerary }) => {
     );
 };
 
-const ItineraryBody = ({ itinerary }) => {
+// 작성자에게만: 공개 상태와 공개·비공개 전환
+const OwnerBar = ({ itinerary, onVisibility }) => {
+    if (!itinerary.isOwner) return null;
+    const isPublic = itinerary.visibility === 'PUBLIC';
+    const toggle = async () => { const visibility = await toggleItineraryVisibility(itinerary); if (visibility) onVisibility(visibility); };
+    return (
+        <div className="itinerary-owner-bar">
+            <span>내 일정 · <strong className={isPublic ? 'is-public' : ''}>{isPublic ? '공개 중' : '나만 보기'}</strong></span>
+            <button type="button" onClick={toggle}>{isPublic ? '비공개로 바꾸기' : '공개하기'}</button>
+        </div>
+    );
+};
+
+const ItineraryBody = ({ itinerary, onVisibility }) => {
     const cityName = CITY_NAMES[itinerary.cityName] || itinerary.cityName;
     return (
         <article className="itinerary-page">
             <p className="itinerary-page__place">📍 {cityName} · {itinerary.dayCount}일 · {findTravelMode(itinerary.travelMode).label}</p>
             <h1>{itinerary.title}</h1>
             <p className="itinerary-page__author">{itinerary.authorNickName}님의 일정</p>
+            <OwnerBar itinerary={itinerary} onVisibility={onVisibility} />
             <ItineraryShare itinerary={itinerary} title={itinerary.title} description={`${itinerary.authorNickName}님의 ${cityName} ${itinerary.dayCount}일 여행 일정`} />
             {itinerary.description && <p className="itinerary-page__description">{itinerary.description}</p>}
             <ItineraryMap itinerary={itinerary} />
@@ -52,6 +68,7 @@ const ItineraryBody = ({ itinerary }) => {
                     <ol>{day.items.map((item, index) => <SpotCard key={item.spotId} item={item} order={index + 1} />)}</ol>
                 </section>
             ))}
+            <ItineraryReactions key={itinerary.visibility} itineraryId={itinerary.id} />
             <div className="itinerary-page__actions">
                 <Link className="itinerary-page__primary" to={`/map/${itinerary.cityName}?itinerary=${itinerary.id}`}>지도에서 이 일정 보기</Link>
                 <Link to={`/map/${itinerary.cityName}`}>{cityName} 여행 일정 직접 만들기</Link>
@@ -76,7 +93,7 @@ const ItineraryPage = () => {
         <PageLayout>
             {!itinerary && !failed && <p className="itinerary-page__message">불러오는 중…</p>}
             {failed && <article className="itinerary-page"><h1>일정을 찾을 수 없습니다</h1><p>비공개로 바뀌었거나 삭제된 일정입니다.</p><Link to="/">메인으로 돌아가기</Link></article>}
-            {itinerary && <ItineraryBody itinerary={itinerary} />}
+            {itinerary && <ItineraryBody itinerary={itinerary} onVisibility={(visibility) => setState({ itinerary: { ...itinerary, visibility }, failed: false })} />}
             {itinerary && <AdSenseUnit slot={ADSENSE_SLOTS.itinerary} />}
         </PageLayout>
     );

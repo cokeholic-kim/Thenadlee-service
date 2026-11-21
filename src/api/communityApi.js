@@ -48,3 +48,13 @@ export const uploadPhoto = (file) => {
     formData.append('image', file);
     return axios.post(`${API_URL}/uploads`, formData).then(unwrap);
 };
+
+// 공개 일정 좋아요 수·댓글 → { likeCount, liked, canLike, canComment, isPublic, comments }
+export const fetchItineraryReactions = (itineraryId) =>
+    axios.get(`${API_URL}/itineraries/${itineraryId}/reactions`).then(unwrap);
+
+export const addItineraryComment = (itineraryId, content) =>
+    axios.post(`${API_URL}/itineraries/${itineraryId}/comments`, { content }).then(unwrap);
+
+export const deleteItineraryComment = (itineraryId, commentId) =>
+    axios.post(`${API_URL}/itineraries/${itineraryId}/comments/${commentId}/delete`).then(unwrap);

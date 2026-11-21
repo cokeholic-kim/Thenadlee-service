@@ -25,3 +25,7 @@ export const addItineraryLink = (id, url) =>
 
 export const removeItineraryLink = (id, linkId) =>
     axios.post(`${API_URL}/itineraries/${id}/links/${linkId}/delete`).then(unwrap);
+
+// 내 일정 공개·비공개 전환 (작성자만) → { id, visibility }
+export const changeItineraryVisibility = (id, visibility) =>
+    axios.post(`${API_URL}/itineraries/${id}/visibility`, { visibility }).then(unwrap);
