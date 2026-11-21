@@ -11,6 +11,7 @@ export const PAGE_META = {
     myPage: { title: '마이페이지', path: '/mypage', noindex: true },
     myItineraries: { title: '내 일정', path: '/itineraries', noindex: true },
     inquiries: { title: '고객 문의', path: '/inquiries', noindex: true },
+    explore: seo.pages.explore,
     privacy: seo.pages.privacy,
     terms: seo.pages.terms,
     notFound: { title: '페이지를 찾을 수 없습니다', noindex: true }

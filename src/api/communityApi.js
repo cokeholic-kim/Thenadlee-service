@@ -58,3 +58,7 @@ export const addItineraryComment = (itineraryId, content) =>
 
 export const deleteItineraryComment = (itineraryId, commentId) =>
     axios.post(`${API_URL}/itineraries/${itineraryId}/comments/${commentId}/delete`).then(unwrap);
+
+// 공개 일정 둘러보기 → { items, page, hasMore }. params: { city, days: '1'|'2-3'|'4+', sort: 'popular'|'recent', page }
+export const fetchExplore = (params) =>
+    axios.get(`${API_URL}/explore/itineraries`, { params }).then(unwrap);

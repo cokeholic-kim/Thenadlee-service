@@ -56,6 +56,7 @@ function FindPlace () {
                 {visible?.length === 0 && <p>준비된 여행지가 없어요.</p>}
                 {visible?.map((city) => <CityCard key={city.name} city={city} />)}
             </div>
+            <Link to='/explore' className='FindPlace__explore'>다른 여행자 일정 둘러보기 →</Link>
         </div>
     );
 };

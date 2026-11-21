@@ -47,6 +47,21 @@
 }
 
 // 여행지 카드 목록: PC 2열, 휴대폰 1열
+// 공개 일정 둘러보기로 가는 링크
+.FindPlace__explore {
+    display: table;
+    margin: 28px auto 0;
+    padding: 12px 22px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 999px;
+    color: var(--color-secondary-strong);
+    font-weight: 700;
+
+    &:hover {
+        background-color: var(--color-secondary-soft);
+    }
+}
+
 .FindPlace .city-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

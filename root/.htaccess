@@ -2,7 +2,7 @@
 # 주소창은 도메인 그대로 두고, 실제 파일은 html/front/ 에서 제공
 #   /back/...  -> PHP API (html/back/)
 #   /file/...  -> 정적 파일 (html/file/)
-#   /, /map/도시, /privacy, /terms -> 빌드 때 미리 만든 페이지별 HTML (html/front/prerender/, 검색엔진·링크 미리보기용)
+#   /, /map/도시, /explore, /privacy, /terms -> 빌드 때 미리 만든 페이지별 HTML (html/front/prerender/, 검색엔진·링크 미리보기용)
 #   React 앱 화면 주소 -> html/front/index.html
 #   그 외 없는 주소 -> 404 상태로 React 앱의 "페이지를 찾을 수 없습니다" 화면
 # ※ React 에 새 화면 주소(App.js 의 Route)를 추가하면 아래 APP_ROUTES 줄에도 추가할 것
@@ -28,7 +28,7 @@ ErrorDocument 404 /front/index.html
     # 빌드 때 미리 만든 페이지별 HTML
     RewriteRule ^$ front/prerender/index.html [L]
     RewriteCond %{DOCUMENT_ROOT}/front/prerender/$1.html -f
-    RewriteRule ^(map/[^/]+|privacy|terms)/?$ front/prerender/$1.html [L]
+    RewriteRule ^(map/[^/]+|explore|privacy|terms)/?$ front/prerender/$1.html [L]
 
     # 브라우저가 gzip 을 받을 수 있으면 미리 압축한 JS·CSS(.gz) 제공 (형식·인코딩 헤더는 front/.htaccess 가 붙임, mod_headers 가 있을 때만)
     <IfModule mod_headers.c>
@@ -42,5 +42,5 @@ ErrorDocument 404 /front/index.html
     RewriteRule ^(.+)$ front/$1 [L]
 
     # APP_ROUTES: React 앱 화면 주소만 index.html 로 (여기 없는 주소는 404)
-    RewriteRule ^(login|join|findPass|mypage|itineraries|inquiries|privacy|terms|map|groups|invite|admin|itinerary)(/.*)?$ front/index.html [L]
+    RewriteRule ^(login|join|findPass|mypage|itineraries|inquiries|privacy|terms|map|groups|invite|admin|itinerary|explore)(/.*)?$ front/index.html [L]
 </IfModule>
