@@ -15,10 +15,12 @@ const doNotTrack = () => navigator.doNotTrack === '1' || window.doNotTrack === '
 
 export const isAnalyticsEnabled = () => process.env.NODE_ENV === 'production' && GA_ID_PATTERN.test(GA_ID) && !doNotTrack();
 
-const gtag = (...args) => {
+// gtag.js 는 dataLayer 에 arguments 객체로 넣은 명령만 처리함 (배열로 넣으면 무시되어 아무것도 전송되지 않음)
+function gtag() {
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(args);
-};
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer.push(arguments);
+}
 
 // 처음 한 번 스크립트를 붙이고, 화면 이동은 직접 보냄(send_page_view: false)
 const ensureLoaded = () => {
