@@ -10,6 +10,8 @@ import { VISIBILITY_OPTIONS, buildItineraryPayload, countSpots, defaultTitle } f
 import './SaveItineraryModal.scss';
 import { toast, toastError } from '../ui/feedback';
 import { trackEvent } from '../analytics/analytics';
+import { loginPathHere } from '../session/loginPath';
+import { markResumeSave } from './mapDraft';
 
 const ModalFrame = ({ title, onClose, children }) => (
     <div className="save-itinerary" role="dialog" aria-modal="true" aria-label={title}>
@@ -92,7 +94,8 @@ const SaveItineraryModal = ({ cityName, onClose }) => {
         return (
             <ModalFrame title="일정 저장" onClose={onClose}>
                 <p className="save-itinerary__message">일정을 저장하려면 로그인이 필요해요.</p>
-                <Link to="/login" className="save-itinerary__primary">로그인하기</Link>
+                <p className="save-itinerary__message">담아 둔 장소는 그대로 두었다가, 로그인하고 돌아오면 저장 창을 다시 열어 드려요.</p>
+                <Link to={loginPathHere()} onClick={markResumeSave} className="save-itinerary__primary">로그인하기</Link>
             </ModalFrame>
         );
     }

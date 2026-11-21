@@ -1,10 +1,9 @@
 import './RightControlbar.scss' ;
 import { useParams } from 'react-router-dom';
 import AddSpot from './AddSpot';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useMemo, useState } from 'react';
 import { providerFor } from '../map/mapProvider';
-import { setRedo } from '../modules/add';
 import useSpotActions from '../community/useSpotActions';
 import SpotModals from '../community/SpotModals';
 import { GroupMapBanner } from '../group/GroupMapContext';
@@ -60,13 +59,9 @@ const RightControlbar = ({ marker, place, onLocate, highlightId, mobileHidden })
 export default RightControlbar;
 
 // 오른쪽 추천 장소 목록: 운영진 추천 / 여행자 추천 구분, 여행자 장소 등록
-function RightControlPage({ data, place, onLocate, highlightId, mobileHidden }) {
-    const dispatch = useDispatch()
+function RightControlPage({ place, onLocate, highlightId, mobileHidden }) {
     const { places } = useParams()
     const actions = useSpotActions(places)
-    useEffect(()=>{
-        dispatch(setRedo(data))
-    },[])
     const rightdata = useSelector(state=>state.add.right)
     const center = useMemo(() => ({ lat: place.lat, lng: place.lon }), [place.lat, place.lon])
     const filters = useSpotFilters(rightdata)

@@ -7,6 +7,7 @@ import useRouteLegs from '../route/useRouteLegs';
 import { legsToLines } from '../route/legsToLines';
 import { formatDistance, formatDuration, summarizeLegs } from '../route/formatRoute';
 import { findTravelMode } from '../route/travelModes';
+import { loginPathHere } from '../session/loginPath';
 
 const MAP_STYLE = { width: '100%', height: '360px' };
 
@@ -20,7 +21,7 @@ const RouteSummary = ({ legs, loading, travelMode, placeCount }) => {
         <div className="itinerary-map__summary">
             <strong>{findTravelMode(travelMode).label} · 총 {formatDuration(summary.durationMillis) || '-'} · {formatDistance(summary.distanceMeters)}</strong>
             {summary.hasStraight && <p className="itinerary-map__note">경로를 찾지 못한 구간은 점선으로 표시했어요.</p>}
-            {summary.needsLogin && <p className="itinerary-map__note">오늘 비로그인 길찾기 사용량을 다 써서 일부 구간을 직선으로 표시했어요. <Link to="/login">로그인</Link>하면 실제 경로를 볼 수 있어요.</p>}
+            {summary.needsLogin && <p className="itinerary-map__note">오늘 비로그인 길찾기 사용량을 다 써서 일부 구간을 직선으로 표시했어요. <Link to={loginPathHere()}>로그인</Link>하면 실제 경로를 볼 수 있어요.</p>}
         </div>
     );
 };

@@ -23,6 +23,16 @@ const JoinBox = ({ preview, token }) => {
     return <button type="button" className="group-button is-primary" onClick={join}>모임 참여하기</button>;
 };
 
+const InviteError = ({ message }) => {
+    const isLogin = useSelector((state) => state.logincheck.isLogin);
+    return (
+        <>
+            <p className="group-empty">{message}</p>
+            <Link className="group-button is-primary" to={isLogin ? '/groups' : '/'}>{isLogin ? '내 모임 보기' : '메인으로 가기'}</Link>
+        </>
+    );
+};
+
 // 초대 링크로 들어온 화면: 모임 확인 → 로그인 → 참여 (모임 안에서는 닉네임만 공개됨)
 const InvitePage = () => {
     const { token } = useParams();
@@ -34,7 +44,7 @@ const InvitePage = () => {
         <PageLayout>
             <div className="group-page group-page--narrow">
                 <h1>모임 초대</h1>
-                {error && <p className="group-empty">{error}</p>}
+                {error && <InviteError message={error} />}
                 {preview && (
                     <section className="group-section">
                         <h2>{preview.groupName}</h2>

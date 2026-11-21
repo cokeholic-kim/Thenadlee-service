@@ -17,7 +17,7 @@ const store = createStore(rooterReducer,composeWithDevTools(applyMiddleware(thun
 installSessionExpiryHandler(store);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={process.env.PUBLIC_URL} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Provider store={store}>
         <App />
         <PwaNotices />

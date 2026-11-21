@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { checkLoginId, join } from '../api/userApi';
 import { getApiErrorMessage } from '../util/apiError';
 import RecoveryCodeNotice from '../components/RecoveryCodeNotice';
@@ -115,9 +115,11 @@ const JoinFields = ({ form, onChange, onCheckId }) => (
 const JoinPage = () => {
     usePageMeta(PAGE_META.join);
     const navigate = useNavigate();
+    // 로그인 화면에서 넘어왔다면 가입 후 로그인하고 원래 보던 화면으로 돌아가도록 ?next 를 이어 줌
+    const { search } = useLocation();
     const { form, agree, recoveryCode, idCheck, onChange, onAgree, onAgreeAll, onSubmit } = useJoinForm();
     if (recoveryCode) {
-        return <RecoveryCodeNotice title="가입 완료" recoveryCode={recoveryCode} onConfirm={() => navigate('/login')} />;
+        return <RecoveryCodeNotice title="가입 완료" recoveryCode={recoveryCode} onConfirm={() => navigate(`/login${search}`)} />;
     }
     return (
         <AuthLayout title="회원가입" subtitle="아이디·닉네임·비밀번호만으로 가입해요. 이메일·실명은 받지 않아요.">
@@ -126,7 +128,7 @@ const JoinPage = () => {
                 <JoinAgreements agree={agree} onAgree={onAgree} onAgreeAll={onAgreeAll} />
                 <button type="submit" className="auth-primary">가입하기</button>
             </form>
-            <div className="auth-links">이미 회원이라면 <Link to="/login">로그인</Link></div>
+            <div className="auth-links">이미 회원이라면 <Link to={`/login${search}`}>로그인</Link></div>
         </AuthLayout>
     );
 };

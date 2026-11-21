@@ -72,9 +72,9 @@ const PublicItinerariesModal = ({ cityName, onClose }) => {
         return <ReportModal target={{ type: 'ITINERARY', id: reporting.id, title: reporting.title }} onClose={() => setReporting(null)} />;
     }
     return (
-        <MapModal title="추천일정" onClose={onClose} wide>
+        <MapModal title="추천 일정" onClose={onClose} wide>
             <div className="itinerary-list__toolbar">
-                <p className="map-modal__message">여행자들이 공개한 일정이에요. 열어 보고 "일정저장"으로 내 일정에 담을 수 있어요.</p>
+                <p className="map-modal__message">여행자들이 공개한 일정이에요. 열어 보고 "일정 저장"으로 내 일정에 담을 수 있어요.</p>
                 <SelectAllButton />
             </div>
             <ItineraryList items={items} onOpen={openItinerary} onLike={like} onReport={setReporting} />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../api/userApi';
 import { setLogin } from '../modules/logincheck';
@@ -36,6 +36,7 @@ const useLoginForm = () => {
 const LogIn = () => {
     usePageMeta(PAGE_META.login);
     const { loginData, onChange, onSubmit, expired } = useLoginForm();
+    const { search } = useLocation();
     return (
         <AuthLayout title="로그인" subtitle="지도 위에서 짜는 나만의 여행, 더 나들이">
             {expired && <p className="auth-notice">로그인 시간이 지나 로그아웃됐어요. 다시 로그인하면 보던 화면으로 돌아가요.</p>}
@@ -57,7 +58,7 @@ const LogIn = () => {
             <div className="auth-links">
                 <Link to="/findPass">비밀번호 재설정</Link>
                 <span aria-hidden="true">·</span>
-                <Link to="/join">회원가입</Link>
+                <Link to={`/join${search}`}>회원가입</Link>
             </div>
         </AuthLayout>
     );
