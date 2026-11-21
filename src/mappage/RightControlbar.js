@@ -53,12 +53,14 @@ const useSpotFilters = (spots) => {
     return { source, setSource, category, setCategory, categories, visible };
 };
 
-const RightControlbar = ({ map, marker, place }) => <RightControlPage data={marker} map={map} place={place} />;
+const RightControlbar = ({ marker, place, onLocate, highlightId }) => (
+    <RightControlPage data={marker} place={place} onLocate={onLocate} highlightId={highlightId} />
+);
 
 export default RightControlbar;
 
 // 오른쪽 추천 장소 목록: 운영진 추천 / 여행자 추천 구분, 여행자 장소 등록
-function RightControlPage({ data, map, place }) {
+function RightControlPage({ data, place, onLocate, highlightId }) {
     const dispatch = useDispatch()
     const { places } = useParams()
     const actions = useSpotActions(places)
@@ -78,7 +80,7 @@ function RightControlPage({ data, map, place }) {
                 <GroupMapBanner />
                 <SpotToolbar filters={filters} onRegister={() => actions.open('form')} />
                 <ul className=" RightControlbar_contents">
-                    {filters.visible.map((d)=><AddSpot key={d.id} spot={d} map={map} onOpen={(spot) => actions.open('detail', spot)}/>)}
+                    {filters.visible.map((d)=><AddSpot key={d.id} spot={d} onLocate={onLocate} isLocated={highlightId === d.id} onOpen={(spot) => actions.open('detail', spot)}/>)}
                 </ul>
             </div>
             <SpotModals cityName={places} center={center} provider={providerFor(place.region)} actions={actions} />

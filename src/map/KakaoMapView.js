@@ -8,6 +8,9 @@ const LINE_WEIGHT = 5;
 const LINE_OPACITY = 0.85;
 
 const NO_POINTS = [];
+// 지도에서 보기로 고른 장소: 이보다 멀리 보고 있으면 이 단계까지 확대, 다른 표시보다 위에
+const FOCUS_LEVEL = 5;
+const HIGHLIGHT_Z_INDEX = 10;
 
 const toLatLng = (point) => new window.kakao.maps.LatLng(point.lat, point.lng);
 
@@ -26,6 +29,30 @@ const drawMarkers = (map, markers) => markers.flatMap((marker) => {
     const label = new window.kakao.maps.CustomOverlay({ map, position, content: labelContent(marker.label), yAnchor: 2.6 });
     return [pin, label];
 });
+
+// 고른 장소 표시: 파동 점 + 이름표 (이름은 textContent 로만 넣음)
+const highlightContent = (label) => {
+    const root = document.createElement('div');
+    root.className = 'map-highlight';
+    ['map-highlight__pulse', 'map-highlight__dot', 'map-highlight__label'].forEach((name) => {
+        const part = document.createElement(name.endsWith('label') ? 'div' : 'span');
+        part.className = name;
+        root.appendChild(part);
+    });
+    root.lastChild.textContent = label;
+    return root;
+};
+
+const useHighlight = (map, highlight) => {
+    useEffect(() => {
+        if (!map || !highlight) return undefined;
+        const position = toLatLng(highlight);
+        const overlay = new window.kakao.maps.CustomOverlay({ map, position, content: highlightContent(highlight.label), zIndex: HIGHLIGHT_Z_INDEX });
+        if (map.getLevel() > FOCUS_LEVEL) map.setLevel(FOCUS_LEVEL);
+        map.panTo(position);
+        return () => overlay.setMap(null);
+    }, [map, highlight]);
+};
 
 const drawLines = (map, lines) => lines.map((line) => new window.kakao.maps.Polyline({
     map,
@@ -81,14 +108,16 @@ const useFitTo = (map, points) => {
 
 /**
  * 카카오 지도. props: center {lat,lng}, markers [{lat,lng,label}], lines [{path,color,dashed}],
- * onReady({ panTo }), onClick({lat,lng}), focus {lat,lng}(바뀌면 그 위치로 이동), fitTo [{lat,lng}](바뀌면 모두 보이게 맞춤), className, style
+ * onReady({ panTo }), onClick({lat,lng}), focus {lat,lng}(바뀌면 그 위치로 이동), fitTo [{lat,lng}](바뀌면 모두 보이게 맞춤),
+ * highlight {lat,lng,label}(그 위치로 이동해 강조 표시), className, style
  */
-const KakaoMapView = ({ center, markers = [], lines = [], onReady, onClick, focus, fitTo, className, style }) => {
+const KakaoMapView = ({ center, markers = [], lines = [], onReady, onClick, focus, fitTo, highlight, className, style }) => {
     const containerRef = useRef(null);
     const map = useKakaoMap(containerRef, center, onReady, onClick);
     useOverlays(map, drawMarkers, markers);
     useOverlays(map, drawLines, lines);
     useFitTo(map, fitTo || NO_POINTS);
+    useHighlight(map, highlight);
     useEffect(() => {
         if (map && focus) map.panTo(toLatLng(focus));
     }, [map, focus]);

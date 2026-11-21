@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RightControlbar from "./RightControlbar";
 import LeftControlbar from "./LeftControlbar";
@@ -23,25 +23,47 @@ const useDayRoute = (places, provider) => {
   return { travelMode, legs, loading };
 };
 
-const ScheduleMap = ({ place, marker, month, provider }) => {
+// 지도가 화면 절반 이상 벗어나 있으면(휴대폰에서 목록을 보던 중) 지도까지 스크롤
+const scrollMapIntoView = (element) => {
+  const rect = element?.getBoundingClientRect();
+  if (rect && (rect.top < -rect.height / 2 || rect.top > window.innerHeight / 2)) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+// 추천 장소 "지도에서 보기": 그 좌표로 이동해 강조 표시 (같은 장소를 다시 누르면 표시 끄기)
+const useSpotHighlight = (mapAreaRef) => {
+  const [highlight, setHighlight] = useState(null);
+  const locate = useCallback((spot) => {
+    setHighlight((current) => (current?.id === spot.id ? null : { id: spot.id, lat: spot.lat, lng: spot.lon, label: spot.spotName }));
+    scrollMapIntoView(mapAreaRef.current);
+  }, [mapAreaRef]);
+  return { highlight, locate };
+};
+
+const MapArea = ({ provider, center, places, highlight, areaRef }) => {
   const dispatch = useDispatch();
-  const places = useSelector(state => state.add.left);
-  const [mapApi, setMapApi] = useState(null);
-  const center = useMemo(() => ({ lat: place.lat, lng: place.lon }), [place.lat, place.lon]);
   const markers = useMemo(() => places.map((spot) => ({ lat: spot.lat, lng: spot.lon, label: spot.spotName })), [places]);
   const { travelMode, legs, loading } = useDayRoute(places, provider);
   const lines = useMemo(() => legsToLines(legs), [legs]);
+  return (
+    <div className="map-area" ref={areaRef}>
+      <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} highlight={highlight}
+        className="map-container" style={MAP_STYLE}/>
+      <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
+        legs={legs} places={places} loading={loading}/>
+    </div>
+  );
+};
 
+const ScheduleMap = ({ place, marker, month, provider }) => {
+  const places = useSelector(state => state.add.left);
+  const center = useMemo(() => ({ lat: place.lat, lng: place.lon }), [place.lat, place.lon]);
+  const areaRef = useRef(null);
+  const { highlight, locate } = useSpotHighlight(areaRef);
   return (
     <>
       <LeftControlbar place={place} month={month}/>
-      <div className="map-area">
-        <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} onReady={setMapApi}
-          className="map-container" style={MAP_STYLE}/>
-        <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
-          legs={legs} places={places} loading={loading}/>
-      </div>
-      <RightControlbar map={mapApi} marker={marker} place={place}/>
+      <MapArea provider={provider} center={center} places={places} highlight={highlight} areaRef={areaRef}/>
+      <RightControlbar marker={marker} place={place} onLocate={locate} highlightId={highlight?.id}/>
     </>
   );
 };

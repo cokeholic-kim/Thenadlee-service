@@ -4,10 +4,9 @@
 import { combineReducers} from "redux";
 import add from "./add";
 import logincheck from "./logincheck";
-import  Marker  from "./hover";
 import itinerary from "./itinerary";
 
 
-const rooterReducer = combineReducers({ add ,logincheck,Marker, itinerary }) ;
+const rooterReducer = combineReducers({ add ,logincheck, itinerary }) ;
 
 export default rooterReducer ;
