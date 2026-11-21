@@ -16,10 +16,10 @@ const ItineraryItem = ({ item, onOpen, onLike, onReport }) => (
             {item.hasVideo && <span className="map-modal__badge is-video">▶ 영상</span>}
             <span>{item.title}</span>
         </div>
-        <p className="itinerary-list__meta">{item.authorNickName} · {item.dayCount}일 · 장소 {item.spotCount}곳 · 좋아요 {item.likeCount}</p>
+        <p className="itinerary-list__meta">{item.authorNickName} · {item.dayCount}일 · 장소 {item.spotCount}곳 · 좋아요 {item.likeCount}{item.copyCount > 0 ? ` · ${item.copyCount}명이 가져감` : ''}</p>
         {item.description && <p className="itinerary-list__description">{item.description}</p>}
         <div className="itinerary-list__actions">
-            <button type="button" className="map-modal__button is-small is-mint" onClick={() => onOpen(item)}>지도에서 보기</button>
+            <button type="button" className="map-modal__button is-small is-mint" onClick={() => onOpen(item)}>{item.isMine ? '지도에서 보기' : '이 일정으로 시작하기'}</button>
             <Link className="map-modal__button is-small" to={`/itinerary/${item.id}`}>일정 페이지</Link>
             {!item.isMine && (
                 <button type="button" className={`map-modal__button is-small like-button${item.likedByMe ? ' is-liked' : ''}`}

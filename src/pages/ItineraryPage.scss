@@ -171,3 +171,10 @@ $page-line: #eee;
     color: var(--color-sub);
     font-size: 13px;
 }
+
+.itinerary-page__copies {
+    margin: 4px 0 -8px;
+    color: var(--color-secondary-strong);
+    font-size: 14px;
+    font-weight: 600;
+}

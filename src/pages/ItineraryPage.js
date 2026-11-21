@@ -12,6 +12,7 @@ import { ADSENSE_SLOTS } from '../config/ads';
 import ItineraryMap from './ItineraryMap';
 import ItineraryShare from './ItineraryShare';
 import ItineraryReactions from './ItineraryReactions';
+import { trackEvent } from '../analytics/analytics';
 import { toggleItineraryVisibility } from '../itinerary/visibilityToggle';
 import './ItineraryPage.scss';
 
@@ -69,8 +70,11 @@ const ItineraryBody = ({ itinerary, onVisibility }) => {
                 </section>
             ))}
             <ItineraryReactions key={itinerary.visibility} itineraryId={itinerary.id} />
+            {itinerary.copyCount > 0 && <p className="itinerary-page__copies">{itinerary.copyCount}명이 이 일정으로 시작했어요</p>}
             <div className="itinerary-page__actions">
-                <Link className="itinerary-page__primary" to={`/map/${itinerary.cityName}?itinerary=${itinerary.id}`}>지도에서 이 일정 보기</Link>
+                {/* 남의 일정은 불러와 고쳐서 내 일정으로 저장, 내 일정은 그대로 열기 */}
+                <Link className="itinerary-page__primary" to={`/map/${itinerary.cityName}?itinerary=${itinerary.id}`}
+                    onClick={() => { if (!itinerary.isOwner) trackEvent('start_from_itinerary'); }}>{itinerary.isOwner ? '지도에서 열기' : '이 일정으로 시작하기'}</Link>
                 <Link to={`/map/${itinerary.cityName}`}>{cityName} 여행 일정 직접 만들기</Link>
             </div>
         </article>

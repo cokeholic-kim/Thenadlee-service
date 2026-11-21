@@ -19,4 +19,6 @@ export const buildItineraryPayload = ({ cityName, days, itinerary, form }) => ({
     travelMode: itinerary.travelMode,
     visibility: form.visibility,
     days: days.map((spots) => ({ items: spots.map((spot) => ({ spotId: spot.id })) })),
+    // 남의 공개 일정을 불러와 새로 저장하면 원본 기록 ("○명이 이 일정으로 시작했어요")
+    ...(itinerary.id && !itinerary.isOwner ? { sourceItineraryId: itinerary.id } : {}),
 });

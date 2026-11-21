@@ -40,6 +40,7 @@ const loadSaved = (dispatch, itineraryId, isCancelled) => fetchItinerary(itinera
         if (isCancelled()) return;
         dispatch(setItineraryInfo(toItineraryInfo(detail)));
         dispatch(loadDays(detail.days.map((day) => day.items)));
+        if (!detail.isOwner) toast(`${detail.authorNickName}님의 일정을 불러왔어요. 장소를 빼거나 더해 내 일정으로 저장해 보세요.`);
     })
     .catch((error) => toastError(getApiErrorMessage(error)));
 
