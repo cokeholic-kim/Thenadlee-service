@@ -11,6 +11,11 @@ const ALLOWED_PARAMS = ['city', 'day_count', 'spot_count', 'method', 'tab', 'cat
 
 let loaded = false;
 
+export const maskPath = (pathname) => MASKED_PATHS.reduce((path, [pattern, replacement]) => path.replace(pattern, replacement), pathname);
+
+// 주소 뒤 ?… 값(모임·일정 번호 등)과 비밀 값을 뺀 전체 주소
+const maskedLocation = (pathname) => `${window.location.origin}${maskPath(pathname)}`;
+
 const doNotTrack = () => navigator.doNotTrack === '1' || window.doNotTrack === '1';
 
 export const isAnalyticsEnabled = () => process.env.NODE_ENV === 'production' && GA_ID_PATTERN.test(GA_ID) && !doNotTrack();
@@ -32,10 +37,10 @@ const ensureLoaded = () => {
     document.head.appendChild(script);
     window.gtag = gtag;
     gtag('js', new Date());
-    gtag('config', GA_ID, { send_page_view: false });
+    // 자동 수집 이벤트(스크롤 등)도 가린 주소를 쓰도록 처음부터 기본 주소를 지정
+    gtag('config', GA_ID, { send_page_view: false, page_location: maskedLocation(window.location.pathname) });
 };
 
-export const maskPath = (pathname) => MASKED_PATHS.reduce((path, [pattern, replacement]) => path.replace(pattern, replacement), pathname);
 
 const deviceType = () => (window.matchMedia?.(MOBILE_QUERY).matches ? 'mobile' : 'desktop');
 
@@ -43,8 +48,10 @@ const deviceType = () => (window.matchMedia?.(MOBILE_QUERY).matches ? 'mobile' :
 export const trackPage = (pathname) => {
     if (!isAnalyticsEnabled()) return;
     ensureLoaded();
-    const path = maskPath(pathname);
-    gtag('event', 'page_view', { page_path: path, page_location: `${window.location.origin}${path}`, page_title: document.title });
+    const location = maskedLocation(pathname);
+    // 이후의 모든 이벤트(자동 수집 포함)가 이 주소를 쓰도록 먼저 기본값을 바꿈
+    gtag('set', { page_location: location, page_title: document.title });
+    gtag('event', 'page_view', { page_location: location, page_title: document.title });
 };
 
 const pickAllowed = (params) => Object.fromEntries(Object.entries(params).filter(([key]) => ALLOWED_PARAMS.includes(key)));
