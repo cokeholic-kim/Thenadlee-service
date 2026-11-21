@@ -58,14 +58,21 @@ const useMyItineraries = () => {
     return { items, onDelete };
 };
 
-// 마이페이지 "내 일정" 목록 (카드형: 사진, 제목, 요약 한 줄, 열기 + ⋯ 메뉴)
+const EmptyItineraries = () => (
+    <div className="my-itineraries__empty">
+        <p className="my-itineraries__empty-title">아직 일정이 없어요</p>
+        <p>여행지를 고르고 가고 싶은 장소를 담은 뒤 "일정 저장"을 누르면 여기에 모여요.</p>
+        <Link className="my-itineraries__empty-button" to="/#places">일정 만들러 가기</Link>
+    </div>
+);
+
+// "내 일정" 목록 (카드형: 사진, 제목, 요약 한 줄, 열기 + ⋯ 메뉴)
 const MyItineraries = () => {
     const { items, onDelete } = useMyItineraries();
     return (
-        <section className="mypage-section my-itineraries">
-            <h2>내 일정</h2>
+        <section className="mypage-section my-itineraries" aria-label="저장한 일정">
             {items === null && <p>불러오는 중…</p>}
-            {items?.length === 0 && <p>저장한 일정이 없어요. 여행지에서 장소를 담고 "일정 저장"을 눌러 보세요.</p>}
+            {items?.length === 0 && <EmptyItineraries />}
             {items?.length > 0 && (
                 <ul>{items.map((item) => <ItineraryCard key={item.id} item={item} onDelete={onDelete} />)}</ul>
             )}

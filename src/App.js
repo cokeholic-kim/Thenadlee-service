@@ -12,6 +12,7 @@ const Map = lazy(() => import('./mappage/Map.js'));
 const JoinPage = lazy(() => import('./loginmodule/JoinPage'));
 const FindPass = lazy(() => import('./loginmodule/FindPass'));
 const MyPage = lazy(() => import('./pages/MyPage'));
+const MyItinerariesPage = lazy(() => import('./pages/MyItinerariesPage'));
 const PrivacyPolicy = lazy(() => import('./pages/policy/PrivacyPolicy'));
 const Terms = lazy(() => import('./pages/policy/Terms'));
 const ItineraryPage = lazy(() => import('./pages/ItineraryPage'));
@@ -37,6 +38,7 @@ function App() {
           <Route path="/join" element={<JoinPage/>}/>
           <Route path="/findPass" element={<FindPass/>}/>
           <Route path="/mypage" element={<MyPage/>}/>
+          <Route path="/itineraries" element={<MyItinerariesPage/>}/>
           <Route path="/privacy" element={<PrivacyPolicy/>}/>
           <Route path="/terms" element={<Terms/>}/>
           <Route path="/itinerary/:id" element={<ItineraryPage/>}/>

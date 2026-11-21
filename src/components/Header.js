@@ -35,6 +35,7 @@ const LoginMenu = () => {
     }
     return (
         <>
+            <MenuLink to="/itineraries">내 일정</MenuLink>
             <MenuLink to="/groups">내 모임</MenuLink>
             {canEdit(user.role) && <MenuLink to="/admin">관리자</MenuLink>}
             <MenuLink to="/mypage">{user.nickName}님</MenuLink>

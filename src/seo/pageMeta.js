@@ -9,6 +9,7 @@ export const PAGE_META = {
     join: { title: '회원가입', path: '/join', noindex: true },
     resetPassword: { title: '비밀번호 재설정', path: '/findPass', noindex: true },
     myPage: { title: '마이페이지', path: '/mypage', noindex: true },
+    myItineraries: { title: '내 일정', path: '/itineraries', noindex: true },
     privacy: seo.pages.privacy,
     terms: seo.pages.terms,
     notFound: { title: '페이지를 찾을 수 없습니다', noindex: true }

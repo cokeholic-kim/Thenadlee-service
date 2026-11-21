@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
-import MyItineraries from '../itinerary/MyItineraries';
 import MySpots from '../community/MySpots';
 import { withdraw } from '../api/userApi';
 import { setLogout } from '../modules/logincheck';
@@ -37,8 +36,8 @@ const WithdrawSection = ({ onWithdraw }) => {
 
 const Shortcuts = () => (
     <nav className="mypage-shortcuts" aria-label="바로가기">
+        <Link to="/itineraries">내 일정</Link>
         <Link to="/groups">내 모임</Link>
-        <Link to="/#places">새 일정 만들기</Link>
     </nav>
 );
 
@@ -73,7 +72,6 @@ const MyPage = () => {
                     </section>
                 )}
                 {user && <Shortcuts />}
-                {user && <MyItineraries />}
                 {user && <MySpots />}
                 <WithdrawSection onWithdraw={onWithdraw} />
             </div>

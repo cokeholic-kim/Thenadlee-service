@@ -9,7 +9,7 @@ import { CITY_NAMES } from '../seo/pageMeta';
 import { findTravelMode } from '../route/travelModes';
 import AdSenseUnit from '../marketing/AdSenseUnit';
 import { ADSENSE_SLOTS } from '../config/ads';
-import RouteSketch, { dayColor } from '../group/RouteSketch';
+import ItineraryMap from './ItineraryMap';
 import ItineraryShare from './ItineraryShare';
 import './ItineraryPage.scss';
 
@@ -35,19 +35,6 @@ const ItineraryLinks = ({ itinerary }) => {
     );
 };
 
-// 동선 미리보기: 일차별 색으로 장소 순서를 이은 그림 (공개 일정에 이미 보이는 장소만 사용)
-const RoutePreview = ({ days }) => {
-    const sketchDays = days.map((day) => ({ dayNo: day.dayNo, spots: day.items.map((item) => ({ lat: item.lat, lng: item.lon, name: item.spotName })) }));
-    if (!sketchDays.some((day) => day.spots.length > 0)) return null;
-    return (
-        <section className="itinerary-page__route">
-            <h2>동선 미리보기</h2>
-            <RouteSketch days={sketchDays} />
-            <ul className="itinerary-page__legend">{days.map((day) => <li key={day.dayNo}><span style={{ backgroundColor: dayColor(day.dayNo) }} />{day.dayNo}일차</li>)}</ul>
-        </section>
-    );
-};
-
 const ItineraryBody = ({ itinerary }) => {
     const cityName = CITY_NAMES[itinerary.cityName] || itinerary.cityName;
     return (
@@ -57,7 +44,7 @@ const ItineraryBody = ({ itinerary }) => {
             <p className="itinerary-page__author">{itinerary.authorNickName}님의 일정</p>
             <ItineraryShare itinerary={itinerary} title={itinerary.title} description={`${itinerary.authorNickName}님의 ${cityName} ${itinerary.dayCount}일 여행 일정`} />
             {itinerary.description && <p className="itinerary-page__description">{itinerary.description}</p>}
-            <RoutePreview days={itinerary.days} />
+            <ItineraryMap itinerary={itinerary} />
             <ItineraryLinks itinerary={itinerary} />
             {itinerary.days.map((day) => (
                 <section key={day.dayNo}>
