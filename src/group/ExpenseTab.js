@@ -7,13 +7,14 @@ import SettlementReport from './SettlementReport';
 import BudgetPanel from './BudgetPanel';
 import QuickExpenseForm from './QuickExpenseForm';
 import { categoryLabel, money, won } from './expenseFormat';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 const POLL_INTERVAL_MS = 15000;
 
 // 정산 탭 데이터: 지출·잔액·정산안 (보고 있는 동안 자동 갱신), run 은 변경 후 돌려받은 전체로 갱신
 const useExpenseOverview = (groupId) => {
     const [overview, setOverview] = useState(null);
-    const reload = useCallback(() => groupApi.expenses(groupId).then(setOverview).catch((error) => alert(getApiErrorMessage(error))), [groupId]);
+    const reload = useCallback(() => groupApi.expenses(groupId).then(setOverview).catch((error) => toastError(getApiErrorMessage(error))), [groupId]);
     useEffect(() => {
         reload();
         const timer = setInterval(() => { if (document.visibilityState === 'visible') reload(); }, POLL_INTERVAL_MS);
@@ -24,7 +25,7 @@ const useExpenseOverview = (groupId) => {
             setOverview(await action());
             return true;
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
             return false;
         }
     };
@@ -46,7 +47,7 @@ const ExpenseRow = ({ group, expense, run }) => {
             </div>
             {expense.canEdit && <button type="button" className="group-button is-small" onClick={() => setEditing(true)}>수정</button>}
             {expense.canEdit && <button type="button" className="group-button is-small is-danger"
-                onClick={() => window.confirm('이 지출을 지울까요?') && run(() => groupApi.deleteExpense(group.id, expense.id))}>삭제</button>}
+                onClick={async () => await confirmDialog('이 지출을 지울까요?') && run(() => groupApi.deleteExpense(group.id, expense.id))}>삭제</button>}
         </li>
     );
 };

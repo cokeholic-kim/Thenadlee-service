@@ -1,0 +1,219 @@
+// 로그인·회원가입·비밀번호 재설정·복구 코드 화면 공통 (가운데 카드, 다른 화면과 같은 입력칸·버튼)
+.auth-page {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 48px 16px;
+    background-color: var(--color-surface);
+}
+
+.auth-card {
+    width: min(420px, 100%);
+    height: fit-content;
+    padding: 32px 24px;
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+
+    h1 {
+        font-size: 26px;
+        text-align: center;
+    }
+}
+
+.auth-home {
+    display: block;
+    margin-bottom: 18px;
+    color: var(--color-text);
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.auth-subtitle {
+    margin: 6px 0 24px;
+    color: var(--color-sub);
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.auth-notice {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--color-primary-soft);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.auth-field {
+    margin-bottom: 14px;
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .auth-hint {
+        margin-top: 4px;
+        color: var(--color-sub);
+        font-size: 12px;
+    }
+}
+
+.auth-input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    background-color: #fff;
+    font-size: 15px;
+
+    &:focus {
+        border-color: var(--color-secondary);
+        outline: 2px solid var(--color-secondary-soft);
+    }
+}
+
+.auth-input-row {
+    display: flex;
+    gap: 8px;
+
+    .auth-input {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+// 체크 항목: 누를 수 있는 영역을 줄 전체·24px 이상으로
+.auth-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    font-size: 14px;
+    cursor: pointer;
+
+    input {
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        accent-color: var(--color-primary-strong);
+    }
+
+    em {
+        color: var(--color-danger);
+        font-size: 12px;
+        font-style: normal;
+    }
+
+    &.is-all {
+        margin-bottom: 4px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-line);
+        font-weight: 700;
+    }
+}
+
+.auth-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    a {
+        padding: 8px;
+        color: var(--color-sub);
+        font-size: 13px;
+        text-decoration: underline;
+    }
+}
+
+.auth-agree-table {
+    width: 100%;
+    margin: 4px 0 8px;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    td {
+        padding: 6px 8px;
+        border: 1px solid var(--color-line);
+    }
+
+    td:first-child {
+        width: 74px;
+        background-color: var(--color-surface);
+        color: var(--color-sub);
+    }
+}
+
+.auth-primary,
+.auth-secondary {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.auth-primary {
+    border: 0;
+    background-color: var(--color-primary-strong);
+    color: #fff;
+
+    &:disabled {
+        background-color: #ddd;
+        color: #888;
+        cursor: not-allowed;
+    }
+}
+
+.auth-secondary,
+.auth-inline-button {
+    border: 1px solid var(--color-line);
+    background-color: #fff;
+    color: var(--color-text);
+}
+
+.auth-inline-button {
+    flex: 0 0 auto;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.auth-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    color: var(--color-sub);
+    font-size: 14px;
+
+    a {
+        color: var(--color-secondary-strong);
+        font-weight: 600;
+    }
+}
+
+.auth-footnote {
+    margin-top: 14px;
+    color: var(--color-sub);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+// 약관 동의 묶음 (fieldset 기본 테두리 없앰)
+.auth-agree {
+    margin: 4px 0 8px;
+    padding: 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+}

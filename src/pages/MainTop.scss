@@ -167,3 +167,17 @@ $hero-sub: #4f5d5e;
         }
     }
 }
+
+// 휴대폰: 세로로 긴 휴대폰 화면 캡처를 휴대폰 크기 틀에 (창 모양 막대는 숨김)
+@media screen and (max-width: 600px) {
+    .mainHero__frame {
+        max-width: 260px;
+        margin: 0 auto;
+        border: 6px solid #263238;
+        border-radius: 28px;
+    }
+
+    .mainHero__frameBar {
+        display: none;
+    }
+}

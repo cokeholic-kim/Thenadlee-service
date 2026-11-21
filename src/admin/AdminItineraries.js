@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
+import { toastError } from '../ui/feedback';
 
 const STATUS_FILTERS = [
     { value: 'ALL', label: '전체' },
@@ -33,12 +34,12 @@ const ItineraryPanel = () => {
     const [status, setStatus] = useState('ALL');
     const [items, setItems] = useState(null);
     const load = useCallback(() => {
-        adminApi.listItineraries(status).then(setItems).catch((error) => alert(getApiErrorMessage(error)));
+        adminApi.listItineraries(status).then(setItems).catch((error) => toastError(getApiErrorMessage(error)));
     }, [status]);
     useEffect(load, [load]);
 
     const onAction = async (action) => {
-        try { await action(); load(); } catch (error) { alert(getApiErrorMessage(error)); }
+        try { await action(); load(); } catch (error) { toastError(getApiErrorMessage(error)); }
     };
 
     return (

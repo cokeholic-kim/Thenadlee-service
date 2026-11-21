@@ -1,4 +1,5 @@
 import { KAKAO_JS_KEY } from '../map/mapProvider';
+import { trackEvent } from '../analytics/analytics';
 
 // 카카오 JavaScript SDK (버전 고정 + 무결성 확인, 지도 SDK 와 같은 JS 키 사용)
 const SDK_URL = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
@@ -35,6 +36,7 @@ const shorten = (text) => (text.length > TEXT_MAX_LENGTH ? `${text.slice(0, TEXT
 
 /** 모임 초대 링크를 카카오톡으로 보냄 (받은 사람도 로그인해야 참여할 수 있음) */
 export const shareInvite = async ({ groupName, inviteUrl }) => {
+    trackEvent('share', { method: 'kakao_invite' });
     const Kakao = await loadSdk();
     const link = { mobileWebUrl: inviteUrl, webUrl: inviteUrl };
     Kakao.Share.sendDefault({
@@ -50,6 +52,7 @@ export const shareInvite = async ({ groupName, inviteUrl }) => {
  *   그 외(PC): 카카오톡 메시지로 요약 글과 모임 링크를 보냄 (링크는 모임 멤버만 열 수 있음)
  */
 export const shareCard = async ({ blob, fileName, title, text, path }) => {
+    trackEvent('share', { method: 'card' });
     const file = new File([blob], fileName, { type: 'image/png' });
     if (isTouchDevice() && navigator.canShare?.({ files: [file] })) {
         try {
@@ -63,3 +66,17 @@ export const shareCard = async ({ blob, fileName, title, text, path }) => {
     const url = absoluteUrl(path);
     Kakao.Share.sendDefault({ objectType: 'text', text: shorten(`${title}\n${text}`), link: { mobileWebUrl: url, webUrl: url }, buttonTitle: '모임에서 보기' });
 };
+
+/** 공개 일정 페이지 공유: 카카오톡 피드(사진·제목·링크). 링크는 누구나 볼 수 있는 공개 일정만 */
+export const shareItinerary = async ({ title, description, path, imageUrl }) => {
+    trackEvent('share', { method: 'kakao_itinerary' });
+    const Kakao = await loadSdk();
+    const url = absoluteUrl(path);
+    const link = { mobileWebUrl: url, webUrl: url };
+    Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: { title, description: shorten(description), imageUrl: imageUrl || absoluteUrl(INVITE_IMAGE_PATH), link },
+        buttons: [{ title: '일정 보기', link }],
+    });
+};
+

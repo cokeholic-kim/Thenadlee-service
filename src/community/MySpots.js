@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { deleteSpot, fetchMySpots } from '../api/communityApi';
 import { CITY_NAMES } from '../seo/pageMeta';
 import { getApiErrorMessage } from '../util/apiError';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 const STATUS_LABELS = { ACTIVE: '공개 중', HIDDEN: '숨김(신고 검토 중)' };
 
@@ -25,17 +26,17 @@ const SpotRow = ({ spot, onDelete }) => (
 const MySpots = () => {
     const [spots, setSpots] = useState(null);
     const load = useCallback(() => {
-        fetchMySpots().then(setSpots).catch((error) => alert(getApiErrorMessage(error)));
+        fetchMySpots().then(setSpots).catch((error) => toastError(getApiErrorMessage(error)));
     }, []);
     useEffect(load, [load]);
 
     const onDelete = async (spot) => {
-        if (!window.confirm(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 다른 여행자의 일정에서도 빠져요.`)) return;
+        if (!await confirmDialog(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 다른 여행자의 일정에서도 빠져요.`)) return;
         try {
             await deleteSpot(spot.id);
             load();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
 

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { FiX } from "react-icons/fi";
 import './AddTurning.scss' ;
 import { setRight } from '../modules/add';
+import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
 
 // 끌 수 있다는 표시: 가로줄 3줄
 const GripLines = () => (
@@ -42,7 +43,7 @@ const AddTurning = ({ adds, index, onKeyMove, dragProps }) => {
         <li className="AddTurning_contents_li" {...dragProps}>
             <div className="AddTurning_contents_img">
                 {adds.imageUrl ? <img className='AddTurning_contents_img_i' src={adds.imageUrl} alt="" draggable="false" referrerPolicy="no-referrer" />
-                    : <div className='AddTurning_contents_img_i AddTurning_noimg' />}
+                    : <SpotThumbPlaceholder category={adds.category} className='AddTurning_contents_img_i AddTurning_noimg' />}
             </div>
             <div className="AddTurning_contents_p">
                 <div className='AddTurning_contents_p_left'>

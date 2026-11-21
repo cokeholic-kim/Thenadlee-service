@@ -9,6 +9,7 @@ import PostManager from './PostManager';
 import SpotManager from './SpotManager';
 import TourImportPanel from './TourImportPanel';
 import { isAdmin } from './roles';
+import { toast, toastError, confirmDialog } from '../ui/feedback';
 
 const NEW_ID = 'new';
 
@@ -20,26 +21,26 @@ const CityEditPanel = () => {
     const [city, setCity] = useState(null);
 
     const load = useCallback(() => {
-        if (!isNew) adminApi.getCity(id).then(setCity).catch((error) => alert(getApiErrorMessage(error)));
+        if (!isNew) adminApi.getCity(id).then(setCity).catch((error) => toastError(getApiErrorMessage(error)));
     }, [id, isNew]);
     useEffect(load, [load]);
 
     const onSave = async (form) => {
         try {
             const saved = isNew ? await adminApi.createCity(form) : await adminApi.updateCity(id, form);
-            alert(isNew ? '여행지를 추가했어요.' : '저장했어요.');
+            toast(isNew ? '여행지를 추가했어요.' : '저장했어요.');
             if (isNew) navigate(`/admin/cities/${saved.id}`, { replace: true }); else setCity(saved);
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
     const onDelete = async () => {
-        if (!window.confirm(`"${city.displayName}" 여행지를 삭제할까요? 추천 장소·월별 정보·여행기도 함께 삭제됩니다.`)) return;
+        if (!await confirmDialog(`"${city.displayName}" 여행지를 삭제할까요? 추천 장소·월별 정보·여행기도 함께 삭제됩니다.`)) return;
         try {
-            alert((await adminApi.deleteCity(id)).message);
+            toast((await adminApi.deleteCity(id)).message);
             navigate('/admin/cities', { replace: true });
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { groupApi } from '../api/groupApi';
+import { confirmDialog } from '../ui/feedback';
 
 // trip_checklist.title 길이와 같음
 const TITLE_MAX_LENGTH = 100;
@@ -21,7 +22,7 @@ const ChecklistItem = ({ group, item, run }) => {
             </label>
             <AssigneeSelect group={group} value={item.assigneeId} label={`${item.title} 담당자`} onChange={(assigneeId) => save({ assigneeId })} />
             {item.canDelete && <button type="button" className="group-button is-small is-danger" aria-label={`${item.title} 삭제`}
-                onClick={() => window.confirm(`"${item.title}"을(를) 지울까요?`) && run(() => groupApi.deleteChecklist(group.id, item.id))}>삭제</button>}
+                onClick={async () => await confirmDialog(`"${item.title}"을(를) 지울까요?`) && run(() => groupApi.deleteChecklist(group.id, item.id))}>삭제</button>}
         </li>
     );
 };

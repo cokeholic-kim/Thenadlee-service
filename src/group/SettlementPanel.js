@@ -2,6 +2,7 @@ import React from 'react';
 import { groupApi } from '../api/groupApi';
 import { formatDateTime } from './groupFormat';
 import { won } from './expenseFormat';
+import { confirmDialog } from '../ui/feedback';
 
 const BalanceRow = ({ member }) => (
     <tr>
@@ -21,7 +22,7 @@ const TransferRow = ({ group, transfer, run }) => {
         <li className="group-item">
             <div className="group-item__text"><strong>{transfer.fromName} → {transfer.toName}</strong><span>{won(transfer.amountKrw)}</span></div>
             {canMark && <button type="button" className="group-button is-small is-primary"
-                onClick={() => window.confirm(`${transfer.fromName}님에게서 ${won(transfer.amountKrw)}을 받았나요?`) && run(() => groupApi.settle(group.id, transfer.fromId, transfer.toId, transfer.amountKrw))}>받았어요</button>}
+                onClick={async () => await confirmDialog(`${transfer.fromName}님에게서 ${won(transfer.amountKrw)}을 받았나요?`) && run(() => groupApi.settle(group.id, transfer.fromId, transfer.toId, transfer.amountKrw))}>받았어요</button>}
         </li>
     );
 };

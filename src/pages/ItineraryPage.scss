@@ -101,3 +101,62 @@ $page-line: #eee;
         text-align: center;
     }
 }
+
+// 공유 버튼
+.itinerary-share {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0 4px;
+
+    button {
+        min-height: 40px;
+        padding: 0 16px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        background-color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .itinerary-share__kakao {
+        border-color: #fee500;
+        background-color: #fee500;
+        color: #191919;
+        font-weight: 700;
+    }
+}
+
+// 동선 미리보기
+.itinerary-page__route {
+    margin: 20px 0;
+    padding: 16px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+
+    .route-sketch {
+        display: block;
+        width: 100%;
+        max-height: 260px;
+    }
+}
+
+.itinerary-page__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 13px;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+}

@@ -4,6 +4,7 @@ import { sendReport } from '../api/communityApi';
 import { getApiErrorMessage } from '../util/apiError';
 import LoginRequired from './LoginRequired';
 import MapModal from './MapModal';
+import { toast, toastError } from '../ui/feedback';
 
 // 서버 신고 사유와 같은 값
 const REPORT_REASONS = [
@@ -30,10 +31,10 @@ const useReportSubmit = (target, onDone) => {
     const submit = async (reason, detail) => {
         setSending(true);
         try {
-            alert((await sendReport({ targetType: target.type, targetId: target.id, reason, detail })).message);
+            toast((await sendReport({ targetType: target.type, targetId: target.id, reason, detail })).message);
             onDone();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
             setSending(false);
         }
     };

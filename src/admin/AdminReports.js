@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
+import { toast, toastError, confirmDialog } from '../ui/feedback';
 
 const TARGET_LABELS = { SPOT: '추천 장소', ITINERARY: '공개 일정' };
 const STATUS_LABELS = { ACTIVE: '공개 중', HIDDEN: '숨김' };
@@ -37,16 +38,16 @@ const ReportRow = ({ row, onResolve }) => (
 const ReportPanel = () => {
     const [rows, setRows] = useState(null);
     const load = useCallback(() => {
-        adminApi.listReports().then(setRows).catch((error) => alert(getApiErrorMessage(error)));
+        adminApi.listReports().then(setRows).catch((error) => toastError(getApiErrorMessage(error)));
     }, []);
     useEffect(load, [load]);
     const onResolve = async (row, action) => {
-        if (!window.confirm(action.confirm)) return;
+        if (!await confirmDialog(action.confirm)) return;
         try {
-            alert((await adminApi.resolveReport(row.targetType, row.targetId, action.value)).message);
+            toast((await adminApi.resolveReport(row.targetType, row.targetId, action.value)).message);
             load();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
     return (

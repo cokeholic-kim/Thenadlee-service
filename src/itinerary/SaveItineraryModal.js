@@ -8,6 +8,8 @@ import { groupApi } from '../api/groupApi';
 import { useGroupMap } from '../group/GroupMapContext';
 import { VISIBILITY_OPTIONS, buildItineraryPayload, countSpots, defaultTitle } from './itineraryPayload';
 import './SaveItineraryModal.scss';
+import { toast, toastError } from '../ui/feedback';
+import { trackEvent } from '../analytics/analytics';
 
 const ModalFrame = ({ title, onClose, children }) => (
     <div className="save-itinerary" role="dialog" aria-modal="true" aria-label={title}>
@@ -66,10 +68,11 @@ const useSaveItinerary = (cityName, onClose) => {
             dispatch(setItineraryInfo({ id: saved.id, title: payload.title, description: payload.description, visibility: payload.visibility, isOwner: true }));
             const groupQuery = groupContext ? `&group=${groupContext.group.id}` : '';
             navigate(`/map/${cityName}?itinerary=${saved.id}${groupQuery}`, { replace: true });
-            alert(saved.message + await linkToGroup(groupContext, saved.id));
+            toast(saved.message + await linkToGroup(groupContext, saved.id));
+            trackEvent('save_itinerary', { city: cityName, day_count: days.length, spot_count: days.flat().length });
             onClose();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
 };

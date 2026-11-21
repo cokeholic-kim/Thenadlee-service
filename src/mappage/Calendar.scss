@@ -25,3 +25,23 @@
         margin: 0 auto;
     }
 }
+
+.calHint {
+    margin: 4px 0 8px;
+    color: var(--color-sub);
+    font-size: 12px;
+}
+
+// 달력 글자가 9~11px 로 작아 읽기 어려워 12px 이상으로
+.LeftControlbar .react-datepicker {
+    font-size: 12px;
+
+    .react-datepicker__current-month {
+        font-size: 13px;
+    }
+
+    .react-datepicker__day-name,
+    .react-datepicker__day {
+        font-size: 12px;
+    }
+}

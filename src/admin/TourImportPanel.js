@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { categoryLabel } from '../community/spotCategories';
+import { toastError } from '../ui/feedback';
 
 // TourAPI 관광정보 종류 (contentTypeId)
 const CONTENT_TYPES = [
@@ -23,7 +24,7 @@ const useTourSearch = (cityId) => {
             const result = await adminApi.searchTour(cityId, { ...params, page });
             setState((current) => ({ ...result, items: page === 1 ? result.items : [...current.items, ...result.items] }));
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         } finally {
             setLoading(false);
         }
@@ -55,7 +56,7 @@ const TourImportPanel = ({ cityId, onImported }) => {
             tour.markAdded(item.contentId);
             onImported();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
     return (

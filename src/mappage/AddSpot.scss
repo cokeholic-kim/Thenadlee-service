@@ -336,3 +336,20 @@
         }
     }
 }
+
+// PC(1201px 이상): 버튼 줄을 글자 칸 오른쪽에 붙여 사진과 겹치지 않게
+@media ( min-width: 1201px ) {
+    .map .RightControlbar .RightControlbar_inner .RightControlbar_contents .RightControlbar_contents_li .RightControlbar_contents_p .RightControlbar_contents_p_right {
+        justify-content: flex-start;
+        gap: 4px;
+        width: 100%;
+        margin-left: 0;
+
+        .spot-card__locate,
+        .spot-card__info,
+        .spot-card__add {
+            margin-right: 0;
+            padding: 0 3px;
+        }
+    }
+}

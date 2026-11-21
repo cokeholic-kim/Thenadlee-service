@@ -11,6 +11,7 @@ const SET_LEFT = 'SET_LEFT';
 const SET_RIGHT = 'SET_RIGHT';
 const SET_LEFTALL = 'SET_LEFTALL';
 const CLEAR_DAY = 'CLEAR_DAY';
+const RESTORE_DAY = 'RESTORE_DAY';
 const MOVE_SPOT = 'MOVE_SPOT';
 const REORDER_SPOT = 'REORDER_SPOT';
 const SET_DAY_COUNT = 'SET_DAY_COUNT';
@@ -26,6 +27,7 @@ export const setLeft = (spot) => ({ type: SET_LEFT, spot });            // 현�
 export const setRight = (spot) => ({ type: SET_RIGHT, spot });          // 현재 일차에서 장소 빼기
 export const setLeftAll = (spots) => ({ type: SET_LEFTALL, spots });    // 추천 장소 모두 담기
 export const clearDay = () => ({ type: CLEAR_DAY });                    // 현재 일차 비우기
+export const restoreDay = (dayIndex, spots) => ({ type: RESTORE_DAY, dayIndex, spots }); // 비우기 되돌리기
 export const moveSpot = (index, offset) => ({ type: MOVE_SPOT, index, offset });
 export const reorderSpot = (from, to) => ({ type: REORDER_SPOT, from, to });   // 끌어서 순서 바꾸기
 export const setDayCount = (dayCount) => ({ type: SET_DAY_COUNT, dayCount });
@@ -106,6 +108,15 @@ const replaceData = (state, list) => {
     return withDerived({ ...state, data, days });
 };
 
+// 비운 뒤 새로 담은 장소가 있으면 되돌린 장소 뒤에 이어 붙임 (같은 장소는 한 번만)
+const restoreDayInState = (state, dayIndex, spots) => {
+    if (dayIndex >= state.days.length) return state;
+    const restoredIds = new Set(spots.map((spot) => spot.id));
+    const days = state.days.map((current, index) => (index === dayIndex
+        ? [...spots, ...current.filter((spot) => !restoredIds.has(spot.id))] : current));
+    return withDerived({ ...state, days });
+};
+
 // 5. 리듀서
 export default function adds(state = initialState, action) {
     switch (action.type) {
@@ -119,6 +130,8 @@ export default function adds(state = initialState, action) {
             return updateActiveDay(state, (spots) => spots.filter((spot) => spot.id !== toSpot(action.spot).id));
         case CLEAR_DAY:
             return updateActiveDay(state, () => []);
+        case RESTORE_DAY:
+            return restoreDayInState(state, action.dayIndex, action.spots);
         case MOVE_SPOT:
             return updateActiveDay(state, (spots) => moveInList(spots, action.index, action.offset));
         case REORDER_SPOT:

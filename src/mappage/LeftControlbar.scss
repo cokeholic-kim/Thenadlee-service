@@ -70,29 +70,58 @@
         #seletedSpotsCount {
             font-size: 1.64rem;
             color: #ffa500;
-            font-family: 'Montserrat';
+            font-family: inherit;
         }
     }
     .center2{
         width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 4px 0 12px;
+        // 비우기: 담은 장소가 있을 때만, 눈에 덜 띄는 글자 버튼 (되돌리기 알림이 뜸)
         .Clearbtn {
-            width: 70%;
-            line-height: 0;
-            height: 36px;
-            box-shadow: none;
-            background-color: #ff1744 !important;
-            color: #fff;
-            border: none;
-            h6{
-                font-size: 16px;
+            padding: 6px 12px;
+            border: 1px solid var(--color-line);
+            border-radius: 999px;
+            background-color: #fff;
+            color: var(--color-danger);
+            font-size: 13px;
+            cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+                border-color: var(--color-danger);
+                background-color: var(--color-danger-soft);
             }
         }
     }
     // 담은 장소가 없을 때 안내 문구
     .empty-cart-guide{
-        font-size: 12px ;
+        font-size: 13px ;
         line-height: 1.6;
-        color: #aaa;
+        color: var(--color-sub);
+    }
+    .empty-cart-button{
+        margin-top: 10px;
+        padding: 8px 14px;
+        border: 1px solid var(--color-primary-strong);
+        border-radius: 999px;
+        background-color: #fff;
+        color: var(--color-primary-strong);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-primary-soft);
+        }
+    }
+    .trip-term{
+        margin: 4px 0 0;
+        color: var(--color-sub);
+        font-size: 13px;
+        text-align: center;
     }
     .ul-style{
     margin-top: 20px;
@@ -284,3 +313,39 @@
 //         }
 //     }
 // }
+
+// 지도 화면 제휴 링크 (주소가 있을 때만 보임)
+.LeftControlbar .map-partner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 6px auto 0;
+    padding: 6px 10px;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--color-text);
+    font-size: 18px;
+
+    img {
+        width: 80px;
+    }
+
+    .map-partner__ad {
+        padding: 1px 5px;
+        border-radius: 4px;
+        background-color: #eee;
+        color: var(--color-sub);
+        font-size: 10px;
+    }
+}
+
+.LeftControlbar .planeticketing {
+    display: flex;
+    justify-content: center;
+}
+
+// 비우기 버튼은 글자 크기만큼 (예전 폭 지정 규칙 덮어씀)
+.LeftControlbar .background .left_bottom_ul .center2 .Clearbtn {
+    width: auto;
+}

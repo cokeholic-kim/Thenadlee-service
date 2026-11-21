@@ -6,6 +6,7 @@ import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { getApiErrorMessage } from '../util/apiError';
 import './Group.scss';
+import { toastError } from '../ui/feedback';
 
 const JoinBox = ({ preview, token }) => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const JoinBox = ({ preview, token }) => {
         try {
             navigate(`/groups/${(await groupApi.join(token)).groupId}`, { replace: true });
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
     if (preview.isMember) return <Link className="group-button is-primary" to={`/groups/${preview.groupId}`}>모임으로 가기</Link>;

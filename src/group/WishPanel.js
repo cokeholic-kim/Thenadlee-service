@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { groupApi } from '../api/groupApi';
+import { confirmDialog } from '../ui/feedback';
 
 const Wish = ({ group, wish, run }) => (
     <li className="group-item">
@@ -12,7 +13,7 @@ const Wish = ({ group, wish, run }) => (
         <button type="button" className={`group-button is-small${wish.votedByMe ? ' is-active' : ''}`}
             onClick={() => run(() => groupApi.voteWish(group.id, wish.id, !wish.votedByMe))}>👍 {wish.voteCount}</button>
         {wish.canDelete && <button type="button" className="group-button is-small is-danger"
-            onClick={() => window.confirm('이 제안을 지울까요?') && run(() => groupApi.removeWish(group.id, wish.id))}>삭제</button>}
+            onClick={async () => await confirmDialog('이 제안을 지울까요?') && run(() => groupApi.removeWish(group.id, wish.id))}>삭제</button>}
     </li>
 );
 

@@ -4,13 +4,14 @@ import MapModal from '../community/MapModal';
 import { getApiErrorMessage } from '../util/apiError';
 import { PhotoTagFields, groupPhotos, VIEW_MODES } from './albumFormat';
 import './Album.scss';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 const POLL_INTERVAL_MS = 15000;
 
 // 앨범 데이터 (보고 있는 동안 자동 갱신), run 은 변경 후 돌려받은 앨범으로 갱신
 const useAlbum = (groupId) => {
     const [album, setAlbum] = useState(null);
-    const reload = useCallback(() => groupApi.album(groupId).then(setAlbum).catch((error) => alert(getApiErrorMessage(error))), [groupId]);
+    const reload = useCallback(() => groupApi.album(groupId).then(setAlbum).catch((error) => toastError(getApiErrorMessage(error))), [groupId]);
     useEffect(() => {
         reload();
         const timer = setInterval(() => { if (document.visibilityState === 'visible') reload(); }, POLL_INTERVAL_MS);
@@ -21,7 +22,7 @@ const useAlbum = (groupId) => {
             setAlbum(await action());
             return true;
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
             return false;
         }
     };
@@ -90,7 +91,7 @@ const PhotoActions = ({ group, album, photo, run, onEdit, onClose }) => (
             onClick={() => run(() => groupApi.featurePhoto(group.id, photo.id, !photo.featured))}>{photo.featured ? '★ 대표 사진' : '☆ 대표 사진으로'}</button>}
         {photo.canEdit && <button type="button" className="group-button is-small" onClick={onEdit}>정보 수정</button>}
         {photo.canDelete && <button type="button" className="group-button is-small is-danger"
-            onClick={async () => window.confirm('이 사진을 지울까요? 파일도 함께 삭제돼요.') && await run(() => groupApi.deletePhoto(group.id, photo.id)) && onClose()}>삭제</button>}
+            onClick={async () => await confirmDialog('이 사진을 지울까요? 파일도 함께 삭제돼요.') && await run(() => groupApi.deletePhoto(group.id, photo.id)) && onClose()}>삭제</button>}
     </div>
 );
 

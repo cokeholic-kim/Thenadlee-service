@@ -10,6 +10,7 @@ import PlaceSearch from './PlaceSearch';
 import { MAP_PROVIDERS } from '../map/mapProvider';
 import { SPOT_CATEGORIES } from './spotCategories';
 import './Community.scss';
+import { toast, toastError } from '../ui/feedback';
 
 // 서버 설정(community.maxSpotImages)과 같은 값
 const MAX_PHOTOS = 3;
@@ -25,15 +26,15 @@ const toForm = (spot) => ({
 const useSpotSave = (cityName, spot, onSaved) => {
     const [saving, setSaving] = useState(false);
     const save = async (form) => {
-        if (!form.position) return alert('지도를 눌러 장소 위치를 정해 주세요.');
+        if (!form.position) return toast('지도를 눌러 장소 위치를 정해 주세요.');
         setSaving(true);
         const payload = { name: form.name, category: form.category, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
         try {
             await (spot ? updateSpot(spot.id, payload) : createSpot(cityName, payload));
-            alert(spot ? '장소를 수정했어요.' : '장소를 등록했어요. 다른 여행자에게 바로 보여요.');
+            toast(spot ? '장소를 수정했어요.' : '장소를 등록했어요. 다른 여행자에게 바로 보여요.');
             onSaved();
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
             setSaving(false);
         }
         return undefined;

@@ -4,6 +4,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import ImageUploadField from './ImageUploadField';
 import SpotMediaManager from './SpotMediaManager';
 import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '' };
 const toSpotForm = (spot) => ({
@@ -86,10 +87,10 @@ const SpotManager = ({ cityId, spots, onChanged }) => {
     const [onlyUnclassified, setOnlyUnclassified] = useState(false);
     const unclassified = spots.filter((spot) => !spot.category);
     const run = async (action) => {
-        try { const result = await action(); onChanged(); return result ?? true; } catch (error) { alert(getApiErrorMessage(error)); return false; }
+        try { const result = await action(); onChanged(); return result ?? true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
     };
-    const onDelete = (spot) => {
-        if (window.confirm(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 회원 일정에서도 빠집니다.`)) {
+    const onDelete = async (spot) => {
+        if (await confirmDialog(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 회원 일정에서도 빠집니다.`)) {
             run(() => adminApi.deleteSpot(spot.id));
         }
     };

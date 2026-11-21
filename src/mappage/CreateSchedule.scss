@@ -48,3 +48,75 @@
     position: relative;
     width: 100%;
 }
+
+// 휴대폰 아래 탭: PC 에서는 숨김
+.map-mobile-tabs {
+    display: none;
+}
+
+.descdiv.is-mobile-only {
+    display: none;
+}
+
+// 휴대폰 지도 화면: 지도(+탭)를 화면 위에 고정하고, 아래에는 고른 탭의 목록 하나만
+@media (max-width: 600px) {
+    .map > .map-area {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .map .map-area .map-container {
+        height: 46vh !important;
+    }
+
+    .map-mobile-tabs {
+        display: flex;
+        border-top: 1px solid var(--color-line);
+
+        button {
+            flex: 1;
+            min-height: 46px;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            background-color: #fff;
+            color: var(--color-sub);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+
+            &.is-active {
+                border-bottom-color: var(--color-primary-strong);
+                color: var(--color-text);
+            }
+        }
+    }
+
+    .map-mobile-tabs__count {
+        display: inline-block;
+        min-width: 20px;
+        margin-left: 6px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background-color: var(--color-primary-strong);
+        color: #fff;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .map > .is-mobile-hidden {
+        display: none !important;
+    }
+
+    .descdiv.is-desktop-only {
+        display: none;
+    }
+
+    .descdiv.is-mobile-only {
+        display: flex;
+        margin: 0 0 12px;
+    }
+
+}

@@ -7,6 +7,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import MapModal from './MapModal';
 import ReportModal from './ReportModal';
 import './Community.scss';
+import { confirmDialog, toast, toastError } from '../ui/feedback';
 
 const ItineraryItem = ({ item, onOpen, onLike, onReport }) => (
     <li className="itinerary-list__item">
@@ -32,7 +33,7 @@ const ItineraryItem = ({ item, onOpen, onLike, onReport }) => (
 const useCityItineraries = (cityName) => {
     const [items, setItems] = useState(null);
     const load = useCallback(() => {
-        fetchCityItineraries(cityName).then(setItems).catch((error) => alert(getApiErrorMessage(error)));
+        fetchCityItineraries(cityName).then(setItems).catch((error) => toastError(getApiErrorMessage(error)));
     }, [cityName]);
     useEffect(load, [load]);
     const like = async (item) => {
@@ -40,7 +41,7 @@ const useCityItineraries = (cityName) => {
             const result = await changeItineraryLike(item.id, !item.likedByMe);
             setItems((list) => list.map((row) => (row.id === item.id ? { ...row, likedByMe: result.liked, likeCount: result.likeCount } : row)));
         } catch (error) {
-            alert(error.response?.status === 401 ? '좋아요는 로그인 후 누를 수 있어요.' : getApiErrorMessage(error));
+            toast(error.response?.status === 401 ? '좋아요는 로그인 후 누를 수 있어요.' : getApiErrorMessage(error));
         }
     };
     return { items, like };
@@ -62,8 +63,8 @@ const PublicItinerariesModal = ({ cityName, onClose }) => {
     const hasSpots = useSelector((state) => state.add.days.some((spots) => spots.length > 0));
     const { items, like } = useCityItineraries(cityName);
     const [reporting, setReporting] = useState(null);
-    const openItinerary = (item) => {
-        if (hasSpots && !window.confirm('지금 담아 둔 장소 대신 이 일정을 불러올까요? 저장하지 않은 내용은 사라져요.')) return;
+    const openItinerary = async (item) => {
+        if (hasSpots && !await confirmDialog('지금 담아 둔 장소 대신 이 일정을 불러올까요? 저장하지 않은 내용은 사라져요.')) return;
         navigate(`/map/${cityName}?itinerary=${item.id}`);
         onClose();
     };

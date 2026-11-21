@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 // 여행기(블로그 포스팅) 링크 목록·추가·삭제. 지도 화면 "여행기" 팝업에 순서대로 표시
 const PostManager = ({ cityId, posts, onChanged }) => {
     const [postUrl, setPostUrl] = useState('');
     const run = async (action) => {
-        try { await action(); onChanged(); return true; } catch (error) { alert(getApiErrorMessage(error)); return false; }
+        try { await action(); onChanged(); return true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
     };
     const onAdd = async (e) => {
         e.preventDefault();
@@ -21,7 +22,7 @@ const PostManager = ({ cityId, posts, onChanged }) => {
                     <li key={post.id} className="admin-list__item">
                         <a className="admin-list__text" href={post.postUrl} target="_blank" rel="noreferrer">{post.postUrl}</a>
                         <button type="button" className="admin-button is-danger"
-                            onClick={() => window.confirm('이 여행기 링크를 삭제할까요?') && run(() => adminApi.deletePost(post.id))}>삭제</button>
+                            onClick={async () => await confirmDialog('이 여행기 링크를 삭제할까요?') && run(() => adminApi.deletePost(post.id))}>삭제</button>
                     </li>
                 ))}
             </ul>

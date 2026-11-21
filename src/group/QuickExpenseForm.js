@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { groupApi } from '../api/groupApi';
 import { BASE_CURRENCY, CATEGORIES, number } from './expenseFormat';
 import { toDateString } from './groupFormat';
+import { toast } from '../ui/feedback';
 
 // 한 줄에 "항목 금액" (금액은 맨 뒤, 쉼표·원 허용). 예: 신라제면 80,000
 const LINE_PATTERN = /^(.+?)\s+([\d,]+)\s*원?$/;
@@ -49,7 +50,7 @@ const QuickExpenseForm = ({ group, run }) => {
     const set = (key, value) => setCommon((current) => ({ ...current, [key]: value }));
     const submit = async (e) => {
         e.preventDefault();
-        if (rows.some((row) => row.error)) return alert('"항목 금액" 형식이 아닌 줄이 있어요.');
+        if (rows.some((row) => row.error)) return toast('"항목 금액" 형식이 아닌 줄이 있어요.');
         if (await save(valid, common)) setText('');
         return undefined;
     };

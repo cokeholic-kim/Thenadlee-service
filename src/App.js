@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Main from './pages/Main';
 import NotFound from './pages/NotFound';
+import FeedbackHost from './ui/FeedbackHost';
+import usePageTracking from './analytics/usePageTracking';
 
 // 첫 화면(메인)만 바로 불러오고, 나머지 화면은 들어갈 때 불러옴 (첫 로딩 JS 크기를 줄여 검색엔진 속도 평가 개선)
 const LogIn = lazy(() => import('./loginmodule/LogIn'));
@@ -23,8 +25,10 @@ const AdminUsers = lazy(() => import('./admin/AdminUsers'));
 const AdminReports = lazy(() => import('./admin/AdminReports'));
 
 function App() {
+  usePageTracking();
   return (
     <div className="App">
+      <FeedbackHost/>
       <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Main/>}/>

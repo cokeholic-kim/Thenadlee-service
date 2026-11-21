@@ -4,6 +4,7 @@ import { buildReport, reportToText } from './reportBuilder';
 import useCardExport from './useCardExport';
 import { isKakaoShareAvailable } from '../share/kakaoShare';
 import './SettlementReport.scss';
+import { toast } from '../ui/feedback';
 
 const BundleSection = ({ bundle }) => (
     <section className="report-bundle">
@@ -77,8 +78,8 @@ const useExport = (cardRef, report, groupId) => {
     const { busy, saveImage, share } = useCardExport(cardRef, `${report.title}_정산서`);
     const shareReport = () => share({ title: `${report.title} 정산서`, text: shareText(report), path: `/groups/${groupId}` });
     const copyText = () => navigator.clipboard?.writeText(reportToText(report))
-        .then(() => alert('정산서를 복사했어요. 카톡방에 붙여 넣어 보세요.'))
-        .catch(() => alert('복사하지 못했어요. 브라우저 권한을 확인해 주세요.'));
+        .then(() => toast('정산서를 복사했어요. 카톡방에 붙여 넣어 보세요.'))
+        .catch(() => toast('복사하지 못했어요. 브라우저 권한을 확인해 주세요.'));
     return { busy, saveImage, copyText, shareReport };
 };
 

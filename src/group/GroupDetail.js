@@ -5,18 +5,15 @@ import { groupApi } from '../api/groupApi';
 import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { getApiErrorMessage } from '../util/apiError';
-import ChecklistPanel from './ChecklistPanel';
-import CityPanel from './CityPanel';
-import DatePanel from './DatePanel';
 import AlbumTab from './AlbumTab';
 import ExpenseTab from './ExpenseTab';
 import MemberPanel from './MemberPanel';
-import PlanPanel from './PlanPanel';
+import PlanTab from './PlanTab';
 import SummaryTab from './SummaryTab';
-import WishPanel from './WishPanel';
 import { formatDateTime, formatPeriod } from './groupFormat';
 import useGroupDetail from './useGroupDetail';
 import './Group.scss';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 // seen: 새 소식을 세는 탭 (서버 SeenSection)
 const TABS = [
@@ -73,12 +70,12 @@ const useLeave = (group) => {
     const navigate = useNavigate();
     return async () => {
         const deleting = group.myRole === 'OWNER' && group.members.filter((member) => !member.isGuest).length === 1;
-        if (!window.confirm(deleting ? '모임을 삭제할까요? 계획 내용이 모두 지워져요.' : '모임에서 나갈까요?')) return;
+        if (!await confirmDialog(deleting ? '모임을 삭제할까요? 계획 내용이 모두 지워져요.' : '모임에서 나갈까요?')) return;
         try {
             await groupApi.leave(group.id);
             navigate('/groups', { replace: true });
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
 };
@@ -92,7 +89,7 @@ const GroupBody = ({ group, run }) => {
         <>
             <GroupHeader group={group} run={run} />
             <nav className="group-tabs">{TABS.map((item) => <TabButton key={item.value} item={item} active={tab === item.value} unread={viewedTabs.includes(item.value) ? 0 : unread[item.value] || 0} onClick={() => setTab(item.value)} />)}</nav>
-            {tab === 'plan' && <><CityPanel group={group} run={run} /><DatePanel group={group} run={run} /><WishPanel group={group} run={run} /><PlanPanel group={group} run={run} /><ChecklistPanel group={group} run={run} /></>}
+            {tab === 'plan' && <PlanTab group={group} run={run} />}
             {tab === 'expense' && <ExpenseTab group={group} run={run} />}
             {tab === 'album' && <AlbumTab group={group} />}
             {tab === 'summary' && <SummaryTab group={group} />}

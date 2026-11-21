@@ -85,6 +85,8 @@ jobs:
           REACT_APP_ADSENSE_CLIENT: ${{ vars.REACT_APP_ADSENSE_CLIENT }}
           REACT_APP_ADSENSE_SLOT_MAIN: ${{ vars.REACT_APP_ADSENSE_SLOT_MAIN }}
           REACT_APP_ADSENSE_SLOT_ITINERARY: ${{ vars.REACT_APP_ADSENSE_SLOT_ITINERARY }}
+          # 구글 애널리틱스(GA4) 측정 ID(G-로 시작). 없으면 분석 스크립트를 전혀 불러오지 않음
+          REACT_APP_GA_ID: ${{ vars.REACT_APP_GA_ID }}
 
       - if: vars.DEPLOY_ENABLED == 'true'
         name: 업로드 - html/ (도메인 루트 .htaccess)

@@ -9,8 +9,11 @@ const HeroVisual = () => (
     <div className='mainHero__visual'>
         <div className='mainHero__frame'>
             <div className='mainHero__frameBar' aria-hidden='true'><span /><span /><span /></div>
-            <img src={`${FILE_URL}${HERO.image.path}`} width={HERO.image.width} height={HERO.image.height}
-                alt={HERO.image.alt} fetchpriority='high' />
+            <picture>
+                <source media='(max-width: 600px)' srcSet={`${FILE_URL}${HERO.image.mobilePath}`} width={HERO.image.mobileWidth} height={HERO.image.mobileHeight} />
+                <img src={`${FILE_URL}${HERO.image.path}`} width={HERO.image.width} height={HERO.image.height}
+                    alt={HERO.image.alt} fetchpriority='high' />
+            </picture>
         </div>
     </div>
 );

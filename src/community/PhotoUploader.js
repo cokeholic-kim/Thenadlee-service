@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { uploadPhoto } from '../api/communityApi';
 import { resizeImage } from '../admin/resizeImage';
 import { getApiErrorMessage } from '../util/apiError';
+import { toast } from '../ui/feedback';
 
 const ACCEPT_TYPES = 'image/jpeg,image/png,image/webp';
 
@@ -17,7 +18,7 @@ const PhotoUploader = ({ images, onChange, max }) => {
         try {
             for (const file of files) uploaded.push((await uploadPhoto(await resizeImage(file))).url);
         } catch (error) {
-            alert(error.response ? getApiErrorMessage(error) : error.message);
+            toast(error.response ? getApiErrorMessage(error) : error.message);
         } finally {
             onChange(uploaded);
             setUploading(false);

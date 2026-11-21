@@ -1,0 +1,144 @@
+// 화면 알림(토스트): 화면 아래 가운데, 여러 개면 위로 쌓임
+.toast-stack {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: min(480px, calc(100% - 32px));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 12px 12px 16px;
+    border-radius: 10px;
+    background-color: #263238;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.45;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    pointer-events: auto;
+    animation: toast-in 0.18s ease-out;
+
+    &.is-error {
+        background-color: #8e2a2a;
+    }
+}
+
+.toast__message {
+    flex: 1;
+    white-space: pre-line;
+}
+
+.toast__action {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 6px;
+    background-color: var(--color-primary);
+    color: #1f2d2e;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.toast__close {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #cfd8dc;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: rgba(255, 255, 255, 0.12);
+        color: #fff;
+    }
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+// 확인 창
+.confirm-dialog__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 3100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-dialog {
+    width: min(400px, 100%);
+    padding: 22px 20px 16px;
+    border-radius: var(--radius-card);
+    background-color: #fff;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+
+    h2 {
+        margin-bottom: 8px;
+        font-size: 17px;
+    }
+
+    p {
+        color: var(--color-sub);
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-line;
+    }
+}
+
+.confirm-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.confirm-dialog__button {
+    min-width: 72px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+
+    &.is-primary {
+        border-color: var(--color-primary-strong);
+        background-color: var(--color-primary-strong);
+        color: #fff;
+        font-weight: 700;
+    }
+
+    &.is-danger {
+        border-color: var(--color-danger);
+        background-color: var(--color-danger);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        animation: none;
+    }
+}
+

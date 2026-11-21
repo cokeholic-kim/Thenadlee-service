@@ -11,22 +11,11 @@
         border: 2px dashed #FFC288;
         border-radius: 6px;
         background-color: #fffaf4;
-        font-family: "Consolas", "Courier New", monospace;
+        font-family: "Consolas", "Courier New", monospace; // 복구 코드는 글자 구분이 쉬운 고정폭
         font-size: 22px;
         font-weight: 700;
         letter-spacing: 2px;
         text-align: center;
         user-select: all;
-    }
-    .recovery-check {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-top: 16px;
-        font-size: 13px;
-    }
-    .auth-btn:disabled {
-        background-color: #ddd;
-        cursor: not-allowed;
     }
 }

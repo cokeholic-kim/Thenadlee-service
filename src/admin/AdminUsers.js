@@ -4,6 +4,7 @@ import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
 import { ROLE_OPTIONS } from './roles';
+import { toast, toastError, confirmDialog } from '../ui/feedback';
 
 const UserRow = ({ user, isSelf, onChangeRole }) => (
     <tr>
@@ -25,17 +26,17 @@ const UserPanel = () => {
     const [keyword, setKeyword] = useState('');
     const [users, setUsers] = useState(null);
     const search = useCallback((q) => {
-        adminApi.searchUsers(q).then(setUsers).catch((error) => alert(getApiErrorMessage(error)));
+        adminApi.searchUsers(q).then(setUsers).catch((error) => toastError(getApiErrorMessage(error)));
     }, []);
     useEffect(() => search(''), [search]);
 
     const onChangeRole = async (user, role) => {
-        if (!window.confirm(`${user.nickName} 님의 권한을 바꿀까요?`)) return;
+        if (!await confirmDialog(`${user.nickName} 님의 권한을 바꿀까요?`)) return;
         try {
-            alert((await adminApi.changeUserRole(user.id, role)).message);
+            toast((await adminApi.changeUserRole(user.id, role)).message);
             search(keyword);
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
 

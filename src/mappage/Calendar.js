@@ -23,6 +23,7 @@ const Calendar = ({ startDate, endDate, onChangeDates }) => {
   return (
     <>
         <p className="calP" >여행기간</p>
+        <p className="calHint">{range[0] && !range[1] ? '도착일을 눌러 주세요' : '출발일과 도착일을 차례로 눌러 주세요'}</p>
         <DatePicker
         selected={range[0]}
         onChange={onChange}

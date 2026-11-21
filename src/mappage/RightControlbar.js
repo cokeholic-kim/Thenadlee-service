@@ -53,14 +53,14 @@ const useSpotFilters = (spots) => {
     return { source, setSource, category, setCategory, categories, visible };
 };
 
-const RightControlbar = ({ marker, place, onLocate, highlightId }) => (
-    <RightControlPage data={marker} place={place} onLocate={onLocate} highlightId={highlightId} />
+const RightControlbar = ({ marker, place, onLocate, highlightId, mobileHidden }) => (
+    <RightControlPage data={marker} place={place} onLocate={onLocate} highlightId={highlightId} mobileHidden={mobileHidden} />
 );
 
 export default RightControlbar;
 
 // 오른쪽 추천 장소 목록: 운영진 추천 / 여행자 추천 구분, 여행자 장소 등록
-function RightControlPage({ data, place, onLocate, highlightId }) {
+function RightControlPage({ data, place, onLocate, highlightId, mobileHidden }) {
     const dispatch = useDispatch()
     const { places } = useParams()
     const actions = useSpotActions(places)
@@ -72,7 +72,7 @@ function RightControlPage({ data, place, onLocate, highlightId }) {
     const filters = useSpotFilters(rightdata)
 
     return (
-        <div className=" RightControlbar">
+        <div className={` RightControlbar${mobileHidden ? ' is-mobile-hidden' : ''}`}>
             <div className=" RightControlbar_inner">
                 <div className=" RightControlbar_header">
                     <p>추천장소</p>

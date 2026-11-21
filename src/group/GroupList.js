@@ -7,6 +7,8 @@ import usePageMeta from '../seo/usePageMeta';
 import { getApiErrorMessage } from '../util/apiError';
 import { formatPeriod } from './groupFormat';
 import './Group.scss';
+import { toastError } from '../ui/feedback';
+import { trackEvent } from '../analytics/analytics';
 
 const GROUPS_META = { title: '내 모임', path: '/groups', noindex: true };
 
@@ -16,8 +18,9 @@ const CreateForm = ({ onCreated }) => {
         e.preventDefault();
         try {
             onCreated((await groupApi.create(name)).groupId);
+            trackEvent('create_group');
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
     return (
@@ -39,7 +42,7 @@ const GroupRow = ({ group }) => (
 
 const useMyGroups = (isLogin) => {
     const [groups, setGroups] = useState(null);
-    const load = useCallback(() => { if (isLogin) groupApi.mine().then(setGroups).catch((error) => alert(getApiErrorMessage(error))); }, [isLogin]);
+    const load = useCallback(() => { if (isLogin) groupApi.mine().then(setGroups).catch((error) => toastError(getApiErrorMessage(error))); }, [isLogin]);
     useEffect(load, [load]);
     return groups;
 };

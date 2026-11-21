@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { resizeImage } from './resizeImage';
+import { toast } from '../ui/feedback';
 
 // 이미지 주소 입력 + 파일 올리기 (올리면 /file/uploads/... 주소가 채워짐)
 const ImageUploadField = ({ id, label, value, onChange }) => {
@@ -16,7 +17,7 @@ const ImageUploadField = ({ id, label, value, onChange }) => {
             const uploaded = await adminApi.uploadImage(await resizeImage(file));
             onChange(uploaded.url);
         } catch (error) {
-            alert(error.response ? getApiErrorMessage(error) : error.message);
+            toast(error.response ? getApiErrorMessage(error) : error.message);
         } finally {
             setUploading(false);
         }

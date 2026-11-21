@@ -13,6 +13,10 @@ export const HERO = {
         width: 1280,
         height: 760,
         alt: '더 나들이 일정 만들기 화면: 제주 동쪽 해안의 여섯 장소가 자동차 경로로 이어진 지도',
+        // 휴대폰(600px 이하)에서는 휴대폰 화면 캡처로 바꿔 보여 줌
+        mobilePath: '/imgs/hero-planner-mobile.jpg',
+        mobileWidth: 750,
+        mobileHeight: 1440,
     },
 };
 
@@ -38,6 +42,16 @@ export const STEPS = [
  *   startDate·endDate (YYYY-MM-DD, 선택): 이 기간에만 노출 → 계절 기획전·제휴 홍보에 사용
  *   sponsored: true 이면 "광고" 표시 + 검색엔진에 광고 링크로 알림 (항공권·관광 홍보 등 제휴 배너)
  */
+/**
+ * 지도 화면 왼쪽의 제휴 버튼 (예: 항공권 예약). url 을 넣어야 보이고, 새 창으로 열리며 "광고" 표시
+ *   image: /file/imgs 아래 파일 이름, label: 화면 낭독기·이미지 설명
+ */
+export const MAP_PARTNER = {
+    url: '',
+    label: '여행이지 항공권 예약',
+    image: 'kyowon.png',
+};
+
 export const PROMOTIONS = [
     {
         id: 'group-plan', theme: 'teal', label: '모임 기능',

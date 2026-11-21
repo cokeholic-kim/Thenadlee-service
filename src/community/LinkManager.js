@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getApiErrorMessage } from '../util/apiError';
 import { providerLabel } from './SocialLinks';
 import './SocialLinks.scss';
+import { toastError } from '../ui/feedback';
 
 const MAX_LINKS = 3;
 
@@ -11,7 +12,7 @@ const LinkManager = ({ links, onAdd, onRemove, onChange, hint }) => {
     const [busy, setBusy] = useState(false);
     const run = async (action) => {
         setBusy(true);
-        try { onChange(await action()); return true; } catch (error) { alert(getApiErrorMessage(error)); return false; } finally { setBusy(false); }
+        try { onChange(await action()); return true; } catch (error) { toastError(getApiErrorMessage(error)); return false; } finally { setBusy(false); }
     };
     const submit = async (e) => {
         e.preventDefault();

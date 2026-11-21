@@ -4,6 +4,7 @@ import { fetchItinerary } from '../api/itineraryApi';
 import { loadDays, setDayCount } from '../modules/add';
 import { resetItinerary, setItineraryInfo } from '../modules/itinerary';
 import { getApiErrorMessage } from '../util/apiError';
+import { toastError } from '../ui/feedback';
 
 const toItineraryInfo = (detail) => ({
     id: detail.id,
@@ -35,7 +36,7 @@ const useItineraryLoader = (itineraryId, spotsReady) => {
                 dispatch(setItineraryInfo(toItineraryInfo(detail)));
                 dispatch(loadDays(detail.days.map((day) => day.items)));
             })
-            .catch((error) => alert(getApiErrorMessage(error)));
+            .catch((error) => toastError(getApiErrorMessage(error)));
         return () => { cancelled = true; };
     }, [itineraryId, spotsReady, dispatch]);
 };

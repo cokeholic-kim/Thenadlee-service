@@ -7,6 +7,7 @@ import RouteSketch, { dayColor } from './RouteSketch';
 import useCardExport from './useCardExport';
 import { isKakaoShareAvailable } from '../share/kakaoShare';
 import './Summary.scss';
+import { toastError } from '../ui/feedback';
 
 const SummaryStats = ({ summary }) => (
     <dl className="summary-stats">
@@ -72,7 +73,7 @@ const SummaryTab = ({ group }) => {
     const cardRef = useRef(null);
     const { busy, saveImage, share } = useCardExport(cardRef, `${group.name}_여행요약`);
     useEffect(() => {
-        groupApi.summary(group.id).then(setSummary).catch((error) => alert(getApiErrorMessage(error)));
+        groupApi.summary(group.id).then(setSummary).catch((error) => toastError(getApiErrorMessage(error)));
     }, [group.id]);
     if (!summary) return <p>불러오는 중…</p>;
     return (

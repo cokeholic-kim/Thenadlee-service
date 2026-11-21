@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { shareCard } from '../share/kakaoShare';
+import { toast } from '../ui/feedback';
 
 // 이미지는 화면 크기와 상관없이 선명하게 (2배)
 const IMAGE_SCALE = 2;
@@ -20,7 +21,7 @@ const useCardExport = (cardRef, fileName) => {
         try {
             await task(await renderCanvas(cardRef.current));
         } catch (error) {
-            alert(failMessage);
+            toast(failMessage);
         } finally {
             setBusy(false);
         }

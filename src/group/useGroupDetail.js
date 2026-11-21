@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { groupApi } from '../api/groupApi';
 import { getApiErrorMessage } from '../util/apiError';
+import { toastError } from '../ui/feedback';
 
 // 실시간 서버가 없어서 모임 화면을 보고 있는 동안만 일정 간격으로 새 내용을 불러옴 (다른 탭에 있으면 멈춤)
 const POLL_INTERVAL_MS = 15000;
@@ -31,7 +32,7 @@ const useGroupDetail = (groupId, { poll = true } = {}) => {
             if (updated?.id) setGroup(updated);
             return true;
         } catch (err) {
-            alert(getApiErrorMessage(err));
+            toastError(getApiErrorMessage(err));
             return false;
         }
     }, []);

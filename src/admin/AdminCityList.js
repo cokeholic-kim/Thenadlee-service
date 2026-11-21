@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
+import { toastError } from '../ui/feedback';
 
 const CityTable = ({ cities }) => (
     <table className="admin-table">
@@ -28,7 +29,7 @@ const CityTable = ({ cities }) => (
 const CityListPanel = () => {
     const [cities, setCities] = useState(null);
     useEffect(() => {
-        adminApi.listCities().then(setCities).catch((error) => alert(getApiErrorMessage(error)));
+        adminApi.listCities().then(setCities).catch((error) => toastError(getApiErrorMessage(error)));
     }, []);
 
     return (

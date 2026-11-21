@@ -4,6 +4,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import { formatDateTime } from './groupFormat';
 import useForecast, { FORECAST_DAYS } from './useForecast';
 import './SpotComments.scss';
+import { toastError, confirmDialog } from '../ui/feedback';
 
 const POLL_INTERVAL_MS = 15000;
 // trip_spot_comment.content 길이와 같음
@@ -24,7 +25,7 @@ export const useSpotComments = (groupId, { poll = true } = {}) => {
             setData(await action());
             return true;
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
             return false;
         }
     };
@@ -50,7 +51,7 @@ const CommentItem = ({ groupId, comment, canDelete, run }) => (
         <p>
             <strong className={comment.deletedUser ? 'is-deleted' : ''}>{comment.authorName}</strong>
             <time>{formatDateTime(comment.createdAt)}</time>
-            {canDelete && <button type="button" onClick={() => window.confirm('이 댓글을 지울까요?') && run(() => groupApi.deletePlanComment(groupId, comment.id))}>삭제</button>}
+            {canDelete && <button type="button" onClick={async () => await confirmDialog('이 댓글을 지울까요?') && run(() => groupApi.deletePlanComment(groupId, comment.id))}>삭제</button>}
         </p>
         <span>{comment.content}</span>
     </li>

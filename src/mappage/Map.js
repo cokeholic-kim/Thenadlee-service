@@ -20,6 +20,7 @@ import SaveItineraryModal from '../itinerary/SaveItineraryModal';
 import useItineraryLoader from '../itinerary/useItineraryLoader';
 import { loadLoginUser } from '../modules/logincheck';
 import { GroupMapProvider } from '../group/GroupMapContext';
+import { MapError, MapLoading } from './MapStatus';
 
 
 async function productFetch(places){
@@ -67,19 +68,19 @@ const Map = () => {
     useItineraryLoader(searchParams.get('itinerary'), Boolean(markerData && cityData && monthData))
 
 
-    if (cityLoading || markerLoading || monthLoading) return <div>로딩중</div>
-    if (cityError || markerError || monthError) return <div>에러발생</div>
-    if (!cityData || !markerData || !monthData) return <div>데이터 없음</div>
+    if (cityLoading || markerLoading || monthLoading) return <MapLoading/>
+    if (cityError || markerError || monthError) return <MapError error={cityError || markerError || monthError}/>
+    if (!cityData || !markerData || !monthData) return <MapLoading/>
     // const [name,lat,lon] = data;
     return (
         <GroupMapProvider groupId={searchParams.get('group')} cityName={places}>
         <div style={{display:"flex"}} className="map">
-            <MultiButton setBlog={setBlog} setRecommend={setRecommend} setSaving={setSaving}/>
             {blog && <Blogpopup setBlog={setBlog} place={cityData.body}/>}
             {recommend && <PublicItinerariesModal cityName={places} onClose={()=>setRecommend(false)}/>}
             {saving && <SaveItineraryModal cityName={places} onClose={()=>setSaving(false)}/>}
 
-            <CreateSchedule place={cityData.body} marker={markerData.body} month={monthData.body}/>
+            <CreateSchedule place={cityData.body} marker={markerData.body} month={monthData.body}
+                toolbar={<MultiButton setBlog={setBlog} setRecommend={setRecommend} setSaving={setSaving}/>}/>
         </div>
         </GroupMapProvider>
     );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
+import { toastError } from '../ui/feedback';
 
 const KIND_LABELS = { VIDEO: '영상', BLOG: '블로그 후기' };
 const EMPTY_FORM = { kind: 'VIDEO', url: '', title: '' };
@@ -61,7 +62,7 @@ const AddForm = ({ onPick }) => {
 const SpotMediaManager = ({ spotId }) => {
     const [media, setMedia] = useState(null);
     const run = async (action) => {
-        try { setMedia(await action()); return true; } catch (error) { alert(getApiErrorMessage(error)); return false; }
+        try { setMedia(await action()); return true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
     };
     useEffect(() => { run(() => adminApi.listSpotMedia(spotId)); }, [spotId]);
     if (!media) return <p className="admin-media__empty">영상·후기를 불러오는 중…</p>;

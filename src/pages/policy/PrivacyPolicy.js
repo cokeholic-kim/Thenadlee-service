@@ -1,4 +1,5 @@
 import React from 'react';
+import { GA_ID } from '../../analytics/analytics';
 import PolicyLayout from './PolicyLayout';
 import { CONTACT_EMAIL, SITE_NAME } from '../../config/site';
 import usePageMeta from '../../seo/usePageMeta';
@@ -10,6 +11,11 @@ export const POLICY_EFFECTIVE_DATE = '2026년 11월 21일';
 // 애드센스를 켰을 때만 보이는 광고 안내 (광고 사업자의 쿠키 사용)
 const AdsNotice = () => (
     <p>메인 화면과 공개 일정 페이지에는 Google 애드센스 광고가 표시됩니다. Google 등 광고 사업자는 쿠키를 사용해 이 사이트나 다른 사이트 방문 기록을 바탕으로 광고를 보여 줄 수 있으며, 맞춤 광고는 <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">Google 광고 설정</a>에서 끌 수 있습니다. 서비스는 광고 사업자에게 회원 정보를 제공하지 않습니다.</p>
+);
+
+// 구글 애널리틱스 측정 ID 가 있을 때만 표시
+const AnalyticsNotice = () => (
+    <p>서비스 개선을 위해 Google 애널리틱스로 방문한 화면, 장소 담기·일정 저장 같은 이용 행태와 기기 종류(휴대폰·PC)를 쿠키를 이용해 통계로 수집합니다. 아이디·닉네임 등 회원 정보와 회원이 작성한 내용은 보내지 않으며, Google 애널리틱스는 IP 주소를 저장하지 않습니다. 브라우저의 쿠키 차단 또는 "추적 안 함" 설정, <a href="https://tools.google.com/dlpage/gaoptout?hl=ko" target="_blank" rel="noopener noreferrer">Google 애널리틱스 차단 부가기능</a>으로 수집을 거부할 수 있습니다.</p>
 );
 
 const PrivacyPolicy = () => {
@@ -41,6 +47,7 @@ const PrivacyPolicy = () => {
             <p>회원 정보를 제3자에게 제공하거나 처리를 위탁하지 않습니다. 지도(해외 Google Maps, 국내 카카오맵)와 날씨(OpenWeatherMap) 기능은 이용자의 브라우저가 해당 서비스에 직접 요청하며, 서비스는 회원 정보를 전달하지 않습니다. 국내 길찾기는 서버가 장소 좌표만 카카오에 보내 경로를 받아 옵니다.</p>
             <p>장소 상세의 영상·블로그 후기와 지도 화면의 여행·축제 영상은 서버가 장소·도시 이름으로 카카오(다음) 검색 결과를 받아 보여 주며, 회원 정보는 보내지 않습니다. 썸네일 이미지는 이용자의 브라우저가 카카오 서버에서 직접 불러오고, 영상은 재생 버튼을 누를 때만 YouTube 플레이어(쿠키를 남기지 않는 youtube-nocookie.com)를 불러오며 이때 YouTube 로 접속 정보가 전달됩니다. 후기 제목을 누르면 원문 사이트로 이동합니다.</p>
             {isAdsEnabled() && <AdsNotice />}
+            {GA_ID && <AnalyticsNotice />}
             <h2>3. 파기 절차 및 방법</h2>
             <p>마이페이지에서 회원 탈퇴를 하면 회원 정보와 게시물, 좋아요·신고 기록이 데이터베이스에서 즉시 삭제되고, 올린 사진 파일도 서버에서 삭제되며 복구할 수 없습니다.</p>
             <h2>4. 이용자의 권리</h2>

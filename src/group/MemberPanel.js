@@ -3,6 +3,7 @@ import { groupApi } from '../api/groupApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { formatDateTime } from './groupFormat';
 import { isKakaoShareAvailable, shareInvite } from '../share/kakaoShare';
+import { toast, toastError, confirmDialog } from '../ui/feedback';
 
 const inviteUrl = (token) => `${window.location.origin}/invite/${token}`;
 
@@ -13,11 +14,11 @@ const InviteBox = ({ group, run }) => {
         try {
             setToken((await groupApi.createInvite(group.id)).token);
         } catch (error) {
-            alert(getApiErrorMessage(error));
+            toastError(getApiErrorMessage(error));
         }
     };
-    const copy = () => navigator.clipboard?.writeText(inviteUrl(token)).then(() => alert('초대 링크를 복사했어요.'));
-    const kakao = () => shareInvite({ groupName: group.name, inviteUrl: inviteUrl(token) }).catch((error) => alert(error.message));
+    const copy = () => navigator.clipboard?.writeText(inviteUrl(token)).then(() => toast('초대 링크를 복사했어요.'));
+    const kakao = () => shareInvite({ groupName: group.name, inviteUrl: inviteUrl(token) }).catch((error) => toast(error.message));
     return (
         <div className="invite-box">
             <p className="group-hint">
@@ -36,9 +37,9 @@ const InviteBox = ({ group, run }) => {
 // 방장: 참여자의 기록을 나중에 가입한 실제 멤버에게 연결 (정산 금액이 옮겨지므로 방장만)
 const GuestLink = ({ group, member, run }) => {
     const targets = group.members.filter((item) => !item.isGuest);
-    const link = (e) => {
+    const link = async (e) => {
         const target = targets.find((item) => item.id === Number(e.target.value));
-        if (target && window.confirm(`"${member.nickName}"의 지출·정산 기록을 ${target.nickName}님에게 연결할까요? 되돌릴 수 없어요.`)) {
+        if (target && await confirmDialog(`"${member.nickName}"의 지출·정산 기록을 ${target.nickName}님에게 연결할까요? 되돌릴 수 없어요.`)) {
             run(() => groupApi.claimGuest(group.id, member.id, target.id));
         }
     };
@@ -59,7 +60,7 @@ const Guest = ({ group, member, run, isOwner }) => (
         </div>
         {isOwner && !member.isFormer && <GuestLink group={group} member={member} run={run} />}
         {isOwner && <button type="button" className="group-button is-small is-danger"
-            onClick={() => window.confirm(`"${member.nickName}"을(를) 지울까요?`) && run(() => groupApi.deleteGuest(group.id, member.id))}>삭제</button>}
+            onClick={async () => await confirmDialog(`"${member.nickName}"을(를) 지울까요?`) && run(() => groupApi.deleteGuest(group.id, member.id))}>삭제</button>}
     </li>
 );
 
@@ -81,9 +82,9 @@ const Member = ({ group, member, run, isOwner }) => (member.isGuest ? <Guest gro
             <span>{member.role === 'OWNER' ? '방장' : '멤버'} · {formatDateTime(member.joinedAt)} 참여</span>
         </div>
         {isOwner && !member.isMe && <button type="button" className="group-button is-small"
-            onClick={() => window.confirm(`${member.nickName}님에게 방장을 넘길까요?`) && run(() => groupApi.transferOwner(group.id, member.id))}>방장 넘기기</button>}
+            onClick={async () => await confirmDialog(`${member.nickName}님에게 방장을 넘길까요?`) && run(() => groupApi.transferOwner(group.id, member.id))}>방장 넘기기</button>}
         {isOwner && !member.isMe && <button type="button" className="group-button is-small is-danger"
-            onClick={() => window.confirm(`${member.nickName}님을 내보낼까요?`) && run(() => groupApi.kick(group.id, member.id))}>내보내기</button>}
+            onClick={async () => await confirmDialog(`${member.nickName}님을 내보낼까요?`) && run(() => groupApi.kick(group.id, member.id))}>내보내기</button>}
     </li>
 ));
 

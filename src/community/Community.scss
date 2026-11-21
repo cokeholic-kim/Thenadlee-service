@@ -329,3 +329,28 @@ $community-like: #e0575b;
     box-shadow: inset 3px 0 0 #6d28d9;
     background-color: #f5f0ff;
 }
+
+// 추천 장소 "일정에 담기" (+) 버튼: 기본 버튼 모양 없앰
+.map .RightControlbar_contents_li .spot-card__add {
+    padding: 2px 4px;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--color-primary-strong);
+    }
+}
+
+// 휴대폰: 필터 버튼을 손가락으로 누르기 쉽게 32px 이상
+@media (max-width: 600px) {
+    .map .spot-toolbar .spot-toolbar__filters button,
+    .map .spot-toolbar .spot-toolbar__categories button {
+        min-height: 34px;
+        padding: 0 12px;
+        font-size: 13px;
+    }
+}

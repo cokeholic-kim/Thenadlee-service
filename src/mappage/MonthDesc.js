@@ -11,13 +11,13 @@ const useTripMonth = () => {
 };
 
 // 지도 왼쪽 아래 "여행 tip": 그달 여행 정보 + 도시 인기·축제 영상 보기 버튼 (휴대폰은 지도 아래)
-const MonthDesc = ({ monthList = [], cityName }) => {
+const MonthDesc = ({ monthList = [], cityName, className = '' }) => {
     const [videoOpen, setVideoOpen] = useState(false);
     const month = useTripMonth();
     const recommenddesc = monthList.find((info) => info.month === month)?.description;
     return (
         <>
-            <div className='descdiv'>
+            <div className={`descdiv ${className}`}>
                 <h2 className='titleh4'>여행 tip</h2>
                 {/* 관리자가 입력한 줄바꿈(날씨 / 축제 등)을 그대로 보여 줌 */}
                 {recommenddesc && <p style={{fontSize:14, whiteSpace:'pre-line'}}>{recommenddesc}</p>}

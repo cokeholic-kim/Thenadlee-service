@@ -98,3 +98,10 @@
         }
     }
 }
+
+// 휴대폰: 탭 이름("추천 장소")이 위에 있으므로 목록 제목은 숨김
+@media ( max-width: 600px ) {
+    .RightControlbar .RightControlbar_inner .RightControlbar_header {
+        display: none;
+    }
+}
