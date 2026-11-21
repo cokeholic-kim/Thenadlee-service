@@ -9,12 +9,13 @@ export const HERO = {
     secondaryPath: '/groups',
     badges: ['로그인 없이 바로 시작', '국내·해외 추천 장소', '대중교통·자동차·도보 길찾기'],
     image: {
-        path: '/imgs/hero-planner.jpg',
+        // 화면이 바뀌면 캡처를 새 파일 이름으로 바꿔야 함 (기기 캐시가 같은 이름의 예전 그림을 계속 보여 줌)
+        path: '/imgs/hero-planner-v2.jpg',
         width: 1280,
         height: 760,
         alt: '더 나들이 일정 만들기 화면: 제주 동쪽 해안의 여섯 장소가 자동차 경로로 이어진 지도',
         // 휴대폰(600px 이하)에서는 휴대폰 화면 캡처로 바꿔 보여 줌
-        mobilePath: '/imgs/hero-planner-mobile.jpg',
+        mobilePath: '/imgs/hero-planner-mobile-v2.jpg',
         mobileWidth: 750,
         mobileHeight: 1440,
     },
