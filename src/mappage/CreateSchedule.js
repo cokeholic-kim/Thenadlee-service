@@ -5,6 +5,7 @@ import LeftControlbar from "./LeftControlbar";
 import useRouteLegs from "../route/useRouteLegs";
 import { legsToLines } from "../route/legsToLines";
 import RoutePanel from "../route/RoutePanel";
+import MonthDesc from "./MonthDesc";
 import { setTravelMode } from "../modules/itinerary";
 import { departureTimeOfDay } from "../itinerary/tripDates";
 import MapView from "../map/MapView";
@@ -39,17 +40,21 @@ const useSpotHighlight = (mapAreaRef) => {
   return { highlight, locate };
 };
 
-const MapArea = ({ provider, center, places, highlight, areaRef }) => {
+const MapArea = ({ provider, center, places, highlight, areaRef, cityName, monthList }) => {
   const dispatch = useDispatch();
   const markers = useMemo(() => places.map((spot) => ({ lat: spot.lat, lng: spot.lon, label: spot.spotName })), [places]);
   const { travelMode, legs, loading } = useDayRoute(places, provider);
   const lines = useMemo(() => legsToLines(legs), [legs]);
   return (
     <div className="map-area" ref={areaRef}>
-      <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} highlight={highlight}
-        className="map-container" style={MAP_STYLE}/>
-      <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
-        legs={legs} places={places} loading={loading}/>
+      {/* 경로 패널은 지도 크기 기준으로 띄움 (휴대폰에서 아래에 붙는 여행 tip 과 겹치지 않게) */}
+      <div className="map-area__map">
+        <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} highlight={highlight}
+          className="map-container" style={MAP_STYLE}/>
+        <RoutePanel travelMode={travelMode} onChangeMode={(mode) => dispatch(setTravelMode(mode))}
+          legs={legs} places={places} loading={loading}/>
+      </div>
+      <MonthDesc monthList={monthList} cityName={cityName}/>
     </div>
   );
 };
@@ -61,8 +66,9 @@ const ScheduleMap = ({ place, marker, month, provider }) => {
   const { highlight, locate } = useSpotHighlight(areaRef);
   return (
     <>
-      <LeftControlbar place={place} month={month}/>
-      <MapArea provider={provider} center={center} places={places} highlight={highlight} areaRef={areaRef}/>
+      <LeftControlbar place={place}/>
+      <MapArea provider={provider} center={center} places={places} highlight={highlight} areaRef={areaRef}
+        cityName={place.name} monthList={month}/>
       <RightControlbar marker={marker} place={place} onLocate={locate} highlightId={highlight?.id}/>
     </>
   );

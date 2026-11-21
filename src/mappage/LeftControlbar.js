@@ -14,7 +14,6 @@ import Calendar from './Calendar';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import { API_URL, FILE_URL } from '../config/apiurl';
-import MonthDesc from './MonthDesc';
 import Weather from './Weather';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Skeleton } from 'antd';
@@ -43,7 +42,7 @@ const Wrapper = styled.div`
 `;
 
 
-const LeftControlbar = ({place,setToggle,toggle,month}) => {
+const LeftControlbar = ({place}) => {
     const dispatch = useDispatch() ;
     const [cold, setCold] = useState();
     const places = useSelector(state=>state.add)
@@ -58,10 +57,6 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
         if(start && end) dispatch(changeTripDates(start, end))
     }
     const term = (startDate && endDate) ? <p name='start'>{startDate}~{endDate}</p>:<></>
-    // 월별 정보는 여행 시작월 기준 (기간을 안 골랐으면 이번 달)
-    const monthInfo = startDate ? Number(startDate.slice(5,7)) : new Date().getMonth() + 1;
-
-    const recommend = month.find(({month})=> month === monthInfo)
     return (
         <div className='LeftControlbar'>
             <div className='background'>
@@ -112,7 +107,6 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
                     </ul>
                 </div>
                 </div>
-                <MonthDesc recommenddesc={recommend?.description} cityName={place.name} month={monthInfo}/>
                 
             </div>            
     );
