@@ -1,37 +1,55 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { forwardRef, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { FaTrash } from "react-icons/fa";
+import { MdDragIndicator } from "react-icons/md";
 import './AddTurning.scss' ;
 import { setRight } from '../modules/add';
-import { AiFillCaretUp,AiFillCaretDown } from "react-icons/ai";
 
-// 데이터 카드(li)가 LeftControlbar로 넘어가기 위한 컴포넌트
+// 손잡이에서 위·아래 화살표 키로도 순서를 바꿀 수 있음 (키보드 사용자)
+const KEY_OFFSETS = { ArrowUp: -1, ArrowDown: 1 };
 
+const DragHandle = forwardRef(({ spotName, onKeyMove }, ref) => (
+    <button ref={ref} type="button" className="AddTurning_handle" data-drag-handle aria-label={`${spotName} 순서 바꾸기 (끌거나 위·아래 화살표 키)`}
+        onKeyDown={(e) => { if (KEY_OFFSETS[e.key]) { e.preventDefault(); onKeyMove(KEY_OFFSETS[e.key]); } }}>
+        <MdDragIndicator aria-hidden="true" />
+    </button>
+));
 
+// 화살표 키로 옮기면 카드가 DOM 에서 자리를 바꾸며 초점이 빠지므로, 옮긴 뒤 손잡이에 다시 초점
+const useKeyMoveFocus = (index, onKeyMove) => {
+    const handleRef = useRef(null);
+    const keyMoved = useRef(false);
+    useEffect(() => {
+        if (!keyMoved.current) return;
+        keyMoved.current = false;
+        handleRef.current?.focus();
+    }, [index]);
+    const moveByKey = (offset) => { keyMoved.current = true; onKeyMove(index, offset); };
+    return { handleRef, moveByKey };
+};
 
-const AddTurning = ({adds,uparr,downarr,index}) => {
-    const dispatch = useDispatch() ;
-    const onclick= ()=>{
-        dispatch(setRight(adds));
-    }
+// 일정에 담은 장소 카드: 끌어서 순서 바꾸기, 휴지통으로 빼기
+const AddTurning = ({ adds, index, onKeyMove, dragProps }) => {
+    const dispatch = useDispatch();
+    const { handleRef, moveByKey } = useKeyMoveFocus(index, onKeyMove);
     return (
-            <li className="AddTurning_contents_li">
-                <div className="AddTurning_contents_img">
-                    <img className='AddTurning_contents_img_i' src={adds.imageUrl}></img>
+        <li className="AddTurning_contents_li" {...dragProps}>
+            <div className="AddTurning_contents_img">
+                {adds.imageUrl ? <img className='AddTurning_contents_img_i' src={adds.imageUrl} alt="" draggable="false" referrerPolicy="no-referrer" />
+                    : <div className='AddTurning_contents_img_i AddTurning_noimg' />}
+            </div>
+            <div className="AddTurning_contents_p">
+                <div className='AddTurning_contents_p_left'>
+                    <p><span>{adds.spotName}</span></p>
                 </div>
-                <div className="AddTurning_contents_p">
-                    <div className='AddTurning_contents_p_left'>
-                        <p><span>{adds.spotName}</span></p>
-                    </div>
-                    <div className='AddTurning_contents_p_right'>
-                        <div><span onClick={onclick}><FaTrash/></span></div>
-                    </div>
+                <div className='AddTurning_contents_p_right'>
+                    <button type="button" className="AddTurning_remove" onClick={() => dispatch(setRight(adds))} aria-label={`${adds.spotName} 일정에서 빼기`}><FaTrash /></button>
                 </div>
-                <div className='AddTurning_contents_arrow'>
-                    <AiFillCaretUp onClick={()=>uparr(index)}/>
-                    <AiFillCaretDown onClick={()=>downarr(index)}/>
-                </div>
-            </li>
+            </div>
+            <div className='AddTurning_contents_arrow'>
+                <DragHandle ref={handleRef} spotName={adds.spotName} onKeyMove={moveByKey} />
+            </div>
+        </li>
     );
 };
 

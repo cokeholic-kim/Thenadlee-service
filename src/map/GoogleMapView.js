@@ -58,7 +58,8 @@ const GoogleMapView = ({ center, markers = [], lines = [], onReady, onClick, foc
             onLoad={(loaded) => { setMap(loaded); onReady?.({ panTo: (point) => loaded.panTo(point) }); }}
             onClick={onClick ? (event) => onClick({ lat: event.latLng.lat(), lng: event.latLng.lng() }) : undefined}>
             {lines.map((line, index) => <PolylineF key={`${index}-${line.color}`} path={line.path} options={lineOptions(line)} />)}
-            {markers.map((marker, index) => <LabeledMarker key={`${index}-${marker.lat}-${marker.lng}`} marker={marker} icon={icon} />)}
+            {/* 순서만 바뀌면 마커를 다시 만들지 않음 (다시 만들면 이름표(InfoWindow)가 열리며 키보드 초점을 가져감) */}
+            {markers.map((marker) => <LabeledMarker key={`${marker.lat}-${marker.lng}-${marker.label || ''}`} marker={marker} icon={icon} />)}
         </GoogleMap>
     );
 };

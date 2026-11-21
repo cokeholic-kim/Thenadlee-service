@@ -5,7 +5,8 @@ import { AiOutlinePlus } from "react-icons/ai";
 import './LeftControlbar.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import AddTurning from './AddTurning';
-import { clearDay, moveSpot } from '../modules/add';
+import { clearDay, moveSpot, reorderSpot } from '../modules/add';
+import useDragSort from '../itinerary/useDragSort';
 import { changeTripDates } from '../modules/itinerary';
 import DayTabs from '../itinerary/DayTabs';
 import useAsync from '../customHook/useAsync';
@@ -48,9 +49,9 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
     const places = useSelector(state=>state.add)
     const { startDate, endDate } = useSelector(state=>state.itinerary)
 
-    // 현재 일차 안에서 순서 바꾸기 (맨 위/맨 아래에서는 무시)
-    const uparr = (index)=> dispatch(moveSpot(index, -1))
-    const downarr = (index)=> dispatch(moveSpot(index, 1))
+    // 현재 일차 안에서 순서 바꾸기: 끌어서 놓기, 또는 손잡이에서 화살표 키 (맨 위/맨 아래에서는 무시)
+    const { itemProps, dragging } = useDragSort((from, to) => dispatch(reorderSpot(from, to)))
+    const onKeyMove = (index, offset) => dispatch(moveSpot(index, offset))
 
     // 여행 기간을 고르면 일차 수가 함께 바뀜
     const onChangeDates = (start,end) => {
@@ -97,8 +98,8 @@ const LeftControlbar = ({place,setToggle,toggle,month}) => {
                         </button>
                     </div>
                         {term}
-                    <ul className="ul-style" id="cart">
-                        { places.left.length != 0 ? places.left.map((data,index)=> <AddTurning key={data.id} adds={data} uparr={uparr} downarr={downarr} index={index}/>):
+                    <ul className={`ul-style${dragging ? ' is-dragging' : ''}`} id="cart">
+                        { places.left.length != 0 ? places.left.map((data,index)=> <AddTurning key={data.id} adds={data} index={index} onKeyMove={onKeyMove} dragProps={itemProps(index)}/>):
                             <li id="cartList" className="center">
                                 <p className="empty-cart-guide">
                                     아직 담은 장소가 없어요.<br/>

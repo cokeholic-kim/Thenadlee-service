@@ -12,6 +12,7 @@ const SET_RIGHT = 'SET_RIGHT';
 const SET_LEFTALL = 'SET_LEFTALL';
 const CLEAR_DAY = 'CLEAR_DAY';
 const MOVE_SPOT = 'MOVE_SPOT';
+const REORDER_SPOT = 'REORDER_SPOT';
 const SET_DAY_COUNT = 'SET_DAY_COUNT';
 const SET_ACTIVE_DAY = 'SET_ACTIVE_DAY';
 const LOAD_DAYS = 'LOAD_DAYS';
@@ -26,6 +27,7 @@ export const setRight = (spot) => ({ type: SET_RIGHT, spot });          // 현�
 export const setLeftAll = (spots) => ({ type: SET_LEFTALL, spots });    // 추천 장소 모두 담기
 export const clearDay = () => ({ type: CLEAR_DAY });                    // 현재 일차 비우기
 export const moveSpot = (index, offset) => ({ type: MOVE_SPOT, index, offset });
+export const reorderSpot = (from, to) => ({ type: REORDER_SPOT, from, to });   // 끌어서 순서 바꾸기
 export const setDayCount = (dayCount) => ({ type: SET_DAY_COUNT, dayCount });
 export const setActiveDay = (dayIndex) => ({ type: SET_ACTIVE_DAY, dayIndex });
 export const loadDays = (days) => ({ type: LOAD_DAYS, days });          // 저장된 일정 불러오기
@@ -75,6 +77,14 @@ const moveInList = (spots, index, offset) => {
     return moved;
 };
 
+const reorderInList = (spots, from, to) => {
+    if (from === to || from < 0 || to < 0 || from >= spots.length || to >= spots.length) return spots;
+    const moved = [...spots];
+    const [spot] = moved.splice(from, 1);
+    moved.splice(to, 0, spot);
+    return moved;
+};
+
 // 일수를 줄이면 뒤쪽 일차의 장소는 일정에서 빠짐
 const resizeDays = (state, dayCount) => {
     const count = Math.min(Math.max(dayCount, 1), MAX_DAYS);
@@ -111,6 +121,8 @@ export default function adds(state = initialState, action) {
             return updateActiveDay(state, () => []);
         case MOVE_SPOT:
             return updateActiveDay(state, (spots) => moveInList(spots, action.index, action.offset));
+        case REORDER_SPOT:
+            return updateActiveDay(state, (spots) => reorderInList(spots, action.from, action.to));
         case SET_DAY_COUNT:
             return resizeDays(state, action.dayCount);
         case SET_ACTIVE_DAY:

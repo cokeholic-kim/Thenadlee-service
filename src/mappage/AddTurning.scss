@@ -303,3 +303,79 @@
         }
     }
 }
+// 끌어서 순서 바꾸기: 손잡이(⋮⋮)와 끄는 중인 카드
+.AddTurning_contents_li {
+    cursor: grab;
+    user-select: none;
+    background-color: #fff;
+
+    &[data-dragging='true'] {
+        cursor: grabbing;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .AddTurning_contents_arrow .AddTurning_handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 44px;
+        padding: 0;
+        border: none;
+        border-radius: 6px;
+        background: none;
+        color: #888;
+        font-size: 24px !important;
+        cursor: grab;
+        // 손잡이에서는 브라우저 스크롤 대신 끌기
+        touch-action: none;
+
+        // 기존 화살표용 :nth-child 글자 크기 규칙이 아이콘을 줄이지 않게 고정
+        svg {
+            width: 24px;
+            height: 24px;
+            font-size: 24px !important;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background-color: #f1f1f1;
+            color: #333;
+            font-size: 24px !important;
+        }
+    }
+
+    .AddTurning_remove {
+        padding: 4px;
+        border: none;
+        background: none;
+        font-size: inherit;
+        cursor: pointer;
+    }
+
+    .AddTurning_noimg {
+        display: block;
+        border-radius: 4px;
+        background-color: #eee;
+    }
+}
+
+.ul-style.is-dragging {
+    cursor: grabbing;
+}
+
+// PC(1201px 이상): 이름 줄 오른쪽 위에 손잡이, 아래 줄 휴지통과 겹치지 않게 이름 오른쪽을 비움
+@media ( min-width: 1201px ) {
+    .LeftControlbar .AddTurning_contents_li .AddTurning_contents_arrow {
+        justify-content: flex-start;
+    }
+
+    .LeftControlbar .AddTurning_contents_li .AddTurning_contents_arrow .AddTurning_handle {
+        height: 32px;
+    }
+
+    .LeftControlbar .AddTurning_contents_li .AddTurning_contents_p .AddTurning_contents_p_left {
+        padding-right: 30px;
+    }
+}
