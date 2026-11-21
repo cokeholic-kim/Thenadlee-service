@@ -164,3 +164,12 @@
         cursor: pointer;
     }
 }
+
+// 댓글 신고 버튼 (지우기 버튼 왼쪽, 회색)
+.comment-list__head button.is-report {
+    color: var(--color-sub);
+
+    & + button {
+        margin-left: 0;
+    }
+}

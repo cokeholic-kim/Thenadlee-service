@@ -5,10 +5,13 @@ import { getApiErrorMessage } from '../util/apiError';
 import { confirmDialog, toastError } from '../ui/feedback';
 import { loginPathHere } from '../session/loginPath';
 import { trackEvent } from '../analytics/analytics';
+import ReportModal from '../community/ReportModal';
 import './ItineraryReactions.scss';
 
 // 서버 community.commentMaxLength 와 같은 값
 const COMMENT_MAX_LENGTH = 300;
+// 신고 창에 보여 줄 댓글 앞부분 길이
+const REPORT_TITLE_LENGTH = 30;
 
 const useReactions = (itineraryId) => {
     const [data, setData] = useState(null);
@@ -52,11 +55,12 @@ const CommentForm = ({ onSubmit }) => {
     );
 };
 
-const CommentList = ({ comments, onDelete }) => (
+const CommentList = ({ comments, onDelete, onReport }) => (
     <ul className="comment-list">
         {comments.map((comment) => (
             <li key={comment.id} className={comment.isMine ? 'is-mine' : ''}>
                 <div className="comment-list__head"><strong>{comment.nickName}</strong><span>{comment.createdAt.slice(0, 16)}</span>
+                    {comment.canReport && <button type="button" className="is-report" onClick={() => onReport(comment)} aria-label={`${comment.nickName}님 댓글 신고`}>신고</button>}
                     {comment.canDelete && <button type="button" onClick={() => onDelete(comment)} aria-label={`${comment.nickName}님 댓글 지우기`}>지우기</button>}</div>
                 <p>{comment.content}</p>
             </li>
@@ -67,12 +71,14 @@ const CommentList = ({ comments, onDelete }) => (
 // 공개 일정 페이지 아래: 좋아요와 댓글 (비공개 일정은 작성자에게 안내만)
 const ItineraryReactions = ({ itineraryId }) => {
     const { data, like, add, remove } = useReactions(itineraryId);
+    const [reporting, setReporting] = useState(null);
     if (!data) return null;
     return (
         <section className="itinerary-reactions" aria-label="좋아요와 댓글">
             <div className="itinerary-reactions__bar"><LikeButton data={data} onLike={like} /><span>댓글 {data.comments.length}</span></div>
             {!data.isPublic && <p className="itinerary-reactions__note">비공개 일정이에요. 공개하면 다른 여행자가 좋아요와 댓글을 남길 수 있어요.</p>}
-            {data.comments.length > 0 && <CommentList comments={data.comments} onDelete={remove} />}
+            {data.comments.length > 0 && <CommentList comments={data.comments} onDelete={remove} onReport={setReporting} />}
+            {reporting && <ReportModal target={{ type: 'COMMENT', id: reporting.id, title: `${reporting.nickName}님 댓글 "${reporting.content.slice(0, REPORT_TITLE_LENGTH)}"` }} onClose={() => setReporting(null)} />}
             {data.canComment && <CommentForm onSubmit={add} />}
             {data.isPublic && !data.canComment && <p className="itinerary-reactions__note"><Link to={loginPathHere()}>로그인</Link>하면 좋아요와 댓글을 남길 수 있어요.</p>}
         </section>

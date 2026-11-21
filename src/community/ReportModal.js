@@ -58,7 +58,7 @@ const ReportForm = ({ target, onDone }) => {
     );
 };
 
-// 장소·공개 일정 신고 창. target: { type: 'SPOT'|'ITINERARY', id, title }
+// 장소·공개 일정·댓글 신고 창. target: { type: 'SPOT'|'ITINERARY'|'COMMENT', id, title }
 const ReportModal = ({ target, onClose }) => {
     const isLogin = useSelector((state) => state.logincheck.isLogin);
     return (
