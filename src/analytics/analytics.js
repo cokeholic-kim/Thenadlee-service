@@ -40,8 +40,9 @@ const ensureLoaded = () => {
     document.head.appendChild(script);
     window.gtag = gtag;
     gtag('js', new Date());
-    // 자동 수집 이벤트(스크롤 등)도 가린 주소를 쓰도록 기본 주소를 지정
     gtag('config', GA_ID, { page_location: maskedLocation(window.location.pathname) });
+    // config 의 주소는 자동 수집 이벤트(스크롤 등)에 적용되지 않아 set 으로 한 번 더 지정
+    gtag('set', { page_location: maskedLocation(window.location.pathname), page_title: document.title });
     return true;
 };
 
