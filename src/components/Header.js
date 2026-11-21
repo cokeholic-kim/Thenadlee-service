@@ -8,6 +8,7 @@ import { toastError } from "../ui/feedback";
 import useUnreadAnswers from "../inquiry/useUnreadAnswers";
 import { canEdit } from "../admin/roles";
 import './Header.scss';
+import { loginPathHere } from "../session/loginPath";
 
 const MenuLink = ({ to, children, onClick }) => (
     <li><Link to={to} onClick={onClick}>{children}</Link></li>
@@ -33,7 +34,8 @@ const LoginMenu = () => {
     const onLogout = useLogout();
     const unreadAnswers = useUnreadAnswers(isLogin);
     if (!isLogin) {
-        return <MenuLink to="/login">로그인</MenuLink>;
+        // 로그인 후 보던 화면으로 돌아오도록 (메인이면 그대로 메인)
+        return <MenuLink to={window.location.pathname === "/" ? "/login" : loginPathHere()}>로그인</MenuLink>;
     }
     return (
         <>

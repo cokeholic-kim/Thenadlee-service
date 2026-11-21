@@ -5,6 +5,7 @@ import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
 import { canEdit, isAdmin } from './roles';
 import './Admin.scss';
+import { loginPathHere } from '../session/loginPath';
 
 const ADMIN_META = { title: '관리자', path: '/admin', noindex: true };
 
@@ -27,7 +28,7 @@ const AdminLayout = ({ title, adminOnly = false, children }) => {
     usePageMeta(ADMIN_META);
     const { checked, isLogin, user } = useSelector((state) => state.logincheck);
     if (!checked) return <AccessMessage>확인 중…</AccessMessage>;
-    if (!isLogin) return <AccessMessage>관리자 화면은 <Link to="/login">로그인</Link> 후 이용할 수 있어요.</AccessMessage>;
+    if (!isLogin) return <AccessMessage>관리자 화면은 <Link to={loginPathHere()}>로그인</Link> 후 이용할 수 있어요.</AccessMessage>;
     if (!canEdit(user.role) || (adminOnly && !isAdmin(user.role))) {
         return <AccessMessage>이 화면을 볼 수 있는 권한이 없어요.</AccessMessage>;
     }

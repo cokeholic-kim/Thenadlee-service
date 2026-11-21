@@ -10,6 +10,7 @@ import { confirmDialog, toast, toastError } from '../ui/feedback';
 import usePageMeta from '../seo/usePageMeta';
 import { PAGE_META } from '../seo/pageMeta';
 import './MyPage.scss';
+import { loginPathHere } from '../session/loginPath';
 
 const WITHDRAW_CONFIRM_MESSAGE = '탈퇴하면 회원 정보가 즉시 삭제되며 되돌릴 수 없습니다. 탈퇴하시겠습니까?';
 
@@ -49,7 +50,7 @@ const MyPage = () => {
     const { checked, isLogin, user } = useSelector((state) => state.logincheck);
 
     useEffect(() => {
-        if (checked && !isLogin) navigate('/login', { replace: true });
+        if (checked && !isLogin) navigate(loginPathHere(), { replace: true });
     }, [checked, isLogin, navigate]);
 
     const onWithdraw = async (password) => {
