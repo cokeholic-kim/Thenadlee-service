@@ -333,9 +333,10 @@
 
         // 기존 화살표용 :nth-child 글자 크기 규칙이 아이콘을 줄이지 않게 고정
         svg {
-            width: 24px;
-            height: 24px;
-            font-size: 24px !important;
+            width: 20px;
+            height: 14px;
+            margin: 0 !important;
+            font-size: 20px !important;
         }
 
         &:hover,
@@ -346,12 +347,37 @@
         }
     }
 
+    // 빼기: 연한 동그라미 안의 ×, 올리거나 초점이면 빨간색
     .AddTurning_remove {
-        padding: 4px;
-        border: none;
-        background: none;
-        font-size: inherit;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        // 좁은 화면에서 옆 글자에 밀려 찌그러지지 않게 크기 고정
+        flex: 0 0 28px;
+        width: 28px;
+        min-width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #e2e2e2;
+        border-radius: 50%;
+        background-color: #fff;
+        color: #999;
         cursor: pointer;
+        transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+
+        svg {
+            width: 16px;
+            height: 16px;
+            margin: 0 !important;
+            font-size: 16px !important;
+        }
+
+        &:hover,
+        &:focus-visible {
+            border-color: #f5b5b5;
+            background-color: #fdecec;
+            color: #e53935;
+        }
     }
 
     .AddTurning_noimg {
@@ -377,5 +403,24 @@
 
     .LeftControlbar .AddTurning_contents_li .AddTurning_contents_p .AddTurning_contents_p_left {
         padding-right: 30px;
+    }
+}
+
+// 이름 칸과 빼기 버튼이 겹치지 않게: 버튼 칸은 버튼 크기만큼, 이름은 남은 너비 안에서 줄바꿈
+.LeftControlbar .background .left_bottom_ul .ul-style .AddTurning_contents_li .AddTurning_contents_p {
+    .AddTurning_contents_p_left {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .AddTurning_contents_p_right {
+        flex: 0 0 auto;
+        width: auto;
+        margin-left: 4px;
+
+        .AddTurning_remove {
+            margin-right: 0;
+        }
     }
 }
