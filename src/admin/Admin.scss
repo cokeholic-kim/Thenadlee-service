@@ -122,6 +122,25 @@ $admin-radius: 6px;
     }
 }
 
+.admin-category {
+    display: block;
+    color: $admin-primary;
+    font-size: 0.75rem;
+
+    &.is-empty {
+        color: #c0392b;
+    }
+}
+
+.admin-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
 .admin-badge {
     display: inline-block;
     padding: 2px 8px;

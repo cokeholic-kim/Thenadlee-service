@@ -3,9 +3,21 @@ import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import ImageUploadField from './ImageUploadField';
 import SpotMediaManager from './SpotMediaManager';
+import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
 
-const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '' };
-const toSpotForm = (spot) => ({ name: spot.name, lat: spot.lat, lng: spot.lon, description: spot.description || '', imageUrl: spot.imageUrl || '' });
+const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '' };
+const toSpotForm = (spot) => ({
+    name: spot.name, lat: spot.lat, lng: spot.lon, description: spot.description || '', imageUrl: spot.imageUrl || '', category: spot.category || '',
+});
+
+const CategorySelect = ({ value, onChange }) => (
+    <label>종류
+        <select value={value} onChange={(e) => onChange(e.target.value)}>
+            <option value="">미분류</option>
+            {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
+        </select>
+    </label>
+);
 
 const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
     const [form, setForm] = useState(initial);
@@ -13,6 +25,7 @@ const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
     return (
         <form className="admin-form admin-form--inline" onSubmit={(e) => { e.preventDefault(); onSubmit(form, () => setForm(EMPTY_SPOT)); }}>
             <label>장소 이름<input value={form.name} onChange={(e) => set('name', e.target.value)} required /></label>
+            <CategorySelect value={form.category} onChange={(value) => set('category', value)} />
             <div className="admin-form__row">
                 <label>위도<input type="number" step="any" value={form.lat} onChange={(e) => set('lat', e.target.value)} required /></label>
                 <label>경도<input type="number" step="any" value={form.lng} onChange={(e) => set('lng', e.target.value)} required /></label>
@@ -34,6 +47,7 @@ const SpotLabel = ({ spot }) => (
             {spot.tourContentId && <span className="admin-badge is-muted">관광공사</span>} {spot.name}
             {spot.status === 'HIDDEN' && <span className="admin-badge is-muted">숨김</span>}
         </strong>
+        <span className={`admin-category${spot.category ? '' : ' is-empty'}`}>{categoryLabel(spot.category) || '미분류'}</span>
         <span>{spot.lat}, {spot.lon}{spot.source === 'USER' && ` · ${spot.authorNickName || '탈퇴한 회원'} 님 등록`}</span>
     </div>
 );
@@ -60,8 +74,17 @@ const SpotRow = ({ spot, onSave, onDelete, onToggleStatus }) => {
     );
 };
 
+// 종류를 아직 안 고른 장소만 모아 보기
+const UnclassifiedToggle = ({ count, checked, onChange }) => (count === 0 ? null : (
+    <label className="admin-check">
+        <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} /> 미분류만 보기 ({count})
+    </label>
+));
+
 // 여행지의 추천 장소 목록·추가·수정·삭제
 const SpotManager = ({ cityId, spots, onChanged }) => {
+    const [onlyUnclassified, setOnlyUnclassified] = useState(false);
+    const unclassified = spots.filter((spot) => !spot.category);
     const run = async (action) => {
         try { const result = await action(); onChanged(); return result ?? true; } catch (error) { alert(getApiErrorMessage(error)); return false; }
     };
@@ -73,8 +96,9 @@ const SpotManager = ({ cityId, spots, onChanged }) => {
     return (
         <section className="admin-section">
             <h2>추천 장소 ({spots.length})</h2>
+            <UnclassifiedToggle count={unclassified.length} checked={onlyUnclassified} onChange={setOnlyUnclassified} />
             <ul className="admin-list">
-                {spots.map((spot) => <SpotRow key={spot.id} spot={spot} onDelete={onDelete}
+                {(onlyUnclassified && unclassified.length > 0 ? unclassified : spots).map((spot) => <SpotRow key={spot.id} spot={spot} onDelete={onDelete}
                     onSave={(id, form) => run(() => adminApi.updateSpot(id, form))}
                     onToggleStatus={(target) => run(() => adminApi.changeSpotStatus(target.id, target.status === 'HIDDEN' ? 'ACTIVE' : 'HIDDEN'))} />)}
             </ul>

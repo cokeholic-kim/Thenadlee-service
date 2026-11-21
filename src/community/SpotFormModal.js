@@ -8,6 +8,7 @@ import MapModal from './MapModal';
 import PhotoUploader from './PhotoUploader';
 import PlaceSearch from './PlaceSearch';
 import { MAP_PROVIDERS } from '../map/mapProvider';
+import { SPOT_CATEGORIES } from './spotCategories';
 import './Community.scss';
 
 // 서버 설정(community.maxSpotImages)과 같은 값
@@ -15,6 +16,7 @@ const MAX_PHOTOS = 3;
 
 const toForm = (spot) => ({
     name: spot?.spotName || '',
+    category: spot?.category || '',
     description: spot?.description || '',
     position: spot ? { lat: spot.lat, lng: spot.lon } : null,
     imageUrls: spot?.source === 'USER' ? spot.images : [],
@@ -25,7 +27,7 @@ const useSpotSave = (cityName, spot, onSaved) => {
     const save = async (form) => {
         if (!form.position) return alert('지도를 눌러 장소 위치를 정해 주세요.');
         setSaving(true);
-        const payload = { name: form.name, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
+        const payload = { name: form.name, category: form.category, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
         try {
             await (spot ? updateSpot(spot.id, payload) : createSpot(cityName, payload));
             alert(spot ? '장소를 수정했어요.' : '장소를 등록했어요. 다른 여행자에게 바로 보여요.');
@@ -49,6 +51,11 @@ const SpotForm = ({ initial, center, provider, saving, onSubmit }) => {
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }}>
             <label htmlFor="spotName">장소 이름</label>
             <input id="spotName" value={form.name} onChange={(e) => set('name', e.target.value)} maxLength="100" required />
+            <label htmlFor="spotCategory">종류</label>
+            <select id="spotCategory" value={form.category} onChange={(e) => set('category', e.target.value)} required>
+                <option value="">골라 주세요</option>
+                {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
+            </select>
             <label>위치 ({provider === MAP_PROVIDERS.KAKAO ? '검색하거나 ' : ''}지도를 눌러 표시)</label>
             {provider === MAP_PROVIDERS.KAKAO && <PlaceSearch center={center} onPick={onPick} />}
             <LocationPicker provider={provider} center={center} position={form.position} onChange={onPosition} />
