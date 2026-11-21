@@ -19,7 +19,12 @@ header {
     margin: 0 auto;
 }
 
+.header_top_right {
+    order: 1;
+}
+
 .header-logo {
+    margin-right: auto;
     color: var(--color-text);
     font-size: 28px;
     font-weight: 800;
@@ -60,6 +65,20 @@ header {
 
 .header-menu-button {
     display: none;
+}
+
+// 태블릿 폭: 메뉴가 많아도(로그인 + 알림 종) 한 줄에 들어가게 간격을 줄임
+@media screen and (max-width: 1080px) {
+    .header_top_right ul a {
+        padding: 0 10px;
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 920px) {
+    .header-logo span {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -124,14 +143,4 @@ header {
             border-radius: 8px;
         }
     }
-}
-
-// 확인하지 않은 문의 답변이 있을 때
-.header-badge {
-    padding: 3px 10px;
-    border-radius: 999px;
-    background-color: var(--color-primary-strong);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
 }

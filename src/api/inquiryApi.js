@@ -8,8 +8,6 @@ export const createInquiry = (form) => axios.post(`${API_URL}/inquiries`, form).
 
 export const fetchMyInquiries = () => axios.get(`${API_URL}/inquiries/mine`).then(unwrap);
 
-export const fetchInquirySummary = () => axios.get(`${API_URL}/inquiries/summary`).then(unwrap);
-
 export const deleteInquiry = (id) => axios.post(`${API_URL}/inquiries/${id}/delete`).then(unwrap);
 
 // 관리자 (ADMIN)

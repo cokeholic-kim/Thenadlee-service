@@ -1,0 +1,135 @@
+// 헤더 알림 종: PC 는 메뉴 오른쪽, 휴대폰은 메뉴 버튼 왼쪽
+.notification-bell {
+    position: relative;
+    order: 2;
+    margin-left: 4px;
+}
+
+.notification-bell__button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background-color: transparent;
+    color: var(--color-text);
+    font-size: 22px;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded='true'] {
+        background-color: var(--color-secondary-soft);
+    }
+}
+
+.notification-bell__count {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background-color: var(--color-primary-strong);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+}
+
+.notification-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 360px;
+    max-height: min(480px, 70vh);
+    overflow-y: auto;
+    padding: 14px 8px 8px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: #fff;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.notification-panel__title {
+    display: block;
+    padding: 0 10px 8px;
+    font-size: 16px;
+}
+
+.notification-panel__message {
+    padding: 24px 10px;
+    color: var(--color-sub);
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.notification-list {
+    li a {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        color: var(--color-text);
+        font-size: 14px;
+        line-height: 1.5;
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-secondary-soft);
+        }
+    }
+
+    li.is-new a {
+        background-color: #fff6ee;
+    }
+}
+
+.notification-item__icon {
+    flex: none;
+    width: 24px;
+    color: var(--color-primary-strong);
+    font-size: 16px;
+    text-align: center;
+}
+
+.notification-item__text {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+
+    em {
+        display: block;
+        margin-top: 2px;
+        color: var(--color-sub);
+        font-size: 12px;
+        font-style: normal;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .notification-bell {
+        order: 0;
+        margin: 0 6px 0 0;
+    }
+
+    .notification-bell__button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    // 휴대폰: 헤더 바로 아래 화면 너비
+    .notification-panel {
+        position: fixed;
+        top: var(--header-height, 56px);
+        left: 8px;
+        right: 8px;
+        width: auto;
+    }
+}

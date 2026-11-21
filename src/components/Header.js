@@ -5,7 +5,7 @@ import { logout } from "../api/userApi";
 import { loadLoginUser, setLogout } from "../modules/logincheck";
 import { getApiErrorMessage } from "../util/apiError";
 import { toastError } from "../ui/feedback";
-import useUnreadAnswers from "../inquiry/useUnreadAnswers";
+import NotificationBell from "../notification/NotificationBell";
 import { canEdit } from "../admin/roles";
 import './Header.scss';
 import { loginPathHere } from "../session/loginPath";
@@ -32,7 +32,6 @@ const useLogout = () => {
 const LoginMenu = () => {
     const { isLogin, user } = useSelector((state) => state.logincheck);
     const onLogout = useLogout();
-    const unreadAnswers = useUnreadAnswers(isLogin);
     if (!isLogin) {
         // 로그인 후 보던 화면으로 돌아오도록 (메인이면 그대로 메인)
         return <MenuLink to={window.location.pathname === "/" ? "/login" : loginPathHere()}>로그인</MenuLink>;
@@ -42,7 +41,6 @@ const LoginMenu = () => {
             <MenuLink to="/itineraries">내 일정</MenuLink>
             <MenuLink to="/groups">내 모임</MenuLink>
             {canEdit(user.role) && <MenuLink to="/admin">관리자</MenuLink>}
-            {unreadAnswers > 0 && <MenuLink to="/inquiries"><span className="header-badge">문의 답변 {unreadAnswers}</span></MenuLink>}
             <MenuLink to="/mypage">{user.nickName}님</MenuLink>
             <li><a href="/" onClick={onLogout}>로그아웃</a></li>
         </>
@@ -93,6 +91,7 @@ function Header({ moveto }) {
             <div className="header_top">
                 {/* 로고는 페이지 제목(h1)이 아님: 페이지마다 고유한 h1 을 둠 */}
                 <Link to="/" className="header-logo">The나들이 <span>떠나 나들이</span></Link>
+                <NotificationBell />
                 <button type="button" className="header-menu-button" aria-expanded={open} aria-controls="header-menu"
                     onClick={() => setOpen(!open)}>{open ? '닫기' : '메뉴'}<span aria-hidden="true">{open ? '✕' : '☰'}</span></button>
                 <nav id="header-menu" className="header_top_right" aria-label="주 메뉴">
