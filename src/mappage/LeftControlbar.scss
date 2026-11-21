@@ -372,3 +372,38 @@
 .LeftControlbar .background .left_bottom_ul .center2 .Clearbtn {
     width: auto;
 }
+
+// 시간표: 일차별 출발 시각과 일정이 끝나는 시각
+.LeftControlbar .day-start-time {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 10px 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background-color: var(--color-secondary-soft);
+    color: var(--color-secondary-strong);
+    font-size: 14px;
+    font-weight: 600;
+
+    input {
+        height: 32px;
+        padding: 0 6px;
+        border: 1px solid var(--color-line);
+        border-radius: 8px;
+        background-color: #fff;
+        font: inherit;
+    }
+}
+
+.LeftControlbar .day-end-time {
+    margin: 0 10px 8px;
+    color: var(--color-sub);
+    font-size: 13px;
+    text-align: right;
+
+    strong {
+        color: var(--color-secondary-strong);
+    }
+}

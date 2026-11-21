@@ -44,10 +44,10 @@ const useSpotHighlight = (mapAreaRef) => {
   return { highlight, locate };
 };
 
-const MapArea = ({ provider, center, places, highlight, areaRef, cityName, monthList, toolbar, panel, onPanel }) => {
+const MapArea = ({ provider, center, places, route, highlight, areaRef, cityName, monthList, toolbar, panel, onPanel }) => {
   const dispatch = useDispatch();
   const markers = useMemo(() => places.map((spot) => ({ lat: spot.lat, lng: spot.lon, label: spot.spotName })), [places]);
-  const { travelMode, legs, loading } = useDayRoute(places, provider);
+  const { travelMode, legs, loading } = route;
   const lines = useMemo(() => legsToLines(legs), [legs]);
   return (
     <div className="map-area" ref={areaRef}>
@@ -83,10 +83,12 @@ const ScheduleMap = ({ place, marker, month, provider, toolbar }) => {
   const areaRef = useRef(null);
   const { highlight, locate } = useSpotHighlight(areaRef);
   const { panel, show } = useMobilePanel();
+  // 경로(구간 이동 시간)는 지도와 시간표(선택목록)가 함께 씀
+  const route = useDayRoute(places, provider);
   return (
     <>
-      <LeftControlbar place={place} monthList={month} mobileHidden={panel !== MAP_PANELS.PLAN}/>
-      <MapArea provider={provider} center={center} places={places} highlight={highlight} areaRef={areaRef}
+      <LeftControlbar place={place} monthList={month} mobileHidden={panel !== MAP_PANELS.PLAN} route={route}/>
+      <MapArea provider={provider} center={center} places={places} route={route} highlight={highlight} areaRef={areaRef}
         cityName={place.name} monthList={month} toolbar={toolbar} panel={panel} onPanel={show}/>
       <RightControlbar marker={marker} place={place} onLocate={locate} highlightId={highlight?.id} mobileHidden={panel !== MAP_PANELS.SPOTS}/>
     </>

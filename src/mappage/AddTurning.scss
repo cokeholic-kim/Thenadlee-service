@@ -424,3 +424,56 @@
         }
     }
 }
+
+// 시간표: 카드 위 "이전 장소에서 이동", 카드 아래 "도착–출발 시각·머무는 시간"
+.LeftControlbar .ul-style .AddTurning_contents_li {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 100px;
+}
+
+.AddTurning_travel {
+    flex-basis: 100%;
+    order: -1;
+    margin: 0 0 6px;
+    color: var(--color-sub);
+    font-size: 12px;
+    text-align: left;
+}
+
+.AddTurning_timing {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 13px;
+
+    select {
+        height: 30px;
+        padding: 0 6px;
+        border: 1px solid var(--color-line);
+        border-radius: 8px;
+        background-color: #fff;
+        font: inherit;
+        font-size: 13px;
+    }
+}
+
+.AddTurning_clock {
+    color: var(--color-secondary-strong);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+// 카드가 세로로 쌓이는 폭: 시간표 줄은 카드 너비 전체
+@media (max-width: 1200px) {
+    .LeftControlbar .ul-style .AddTurning_contents_li {
+        .AddTurning_travel,
+        .AddTurning_timing {
+            flex-basis: auto;
+            width: 100%;
+        }
+    }
+}

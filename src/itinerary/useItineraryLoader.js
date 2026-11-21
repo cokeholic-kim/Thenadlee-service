@@ -7,6 +7,10 @@ import { getApiErrorMessage } from '../util/apiError';
 import { toast, toastError } from '../ui/feedback';
 import { clearMapDraft } from './mapDraft';
 
+// 저장된 머무는 시간 → { 장소 번호: 분 } (비어 있는 장소는 화면 기본값)
+const stayMinutesOf = (days) => Object.fromEntries(days.flatMap((day) => day.items)
+    .filter((item) => item.stayMinutes != null).map((item) => [item.spotId, item.stayMinutes]));
+
 const toItineraryInfo = (detail) => ({
     id: detail.id,
     title: detail.title,
@@ -17,6 +21,8 @@ const toItineraryInfo = (detail) => ({
     startDate: detail.startDate,
     endDate: detail.endDate,
     travelMode: detail.travelMode,
+    dayStartTimes: detail.days.map((day) => day.startTime || null),
+    stayMinutes: stayMinutesOf(detail.days),
 });
 
 // 새 일정으로 초기화 (기간·이동수단 기본값, 1일차만)

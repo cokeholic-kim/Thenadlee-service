@@ -11,6 +11,7 @@ import Calendar from './Calendar';
 import Weather from './Weather';
 import MapPartnerLink from './MapPartnerLink';
 import OptimizeRouteButton from './OptimizeRouteButton';
+import { DayEndTime, DayStartTime, useDayTimetable } from './DayTimetable';
 import MonthDesc from './MonthDesc';
 import { MAP_PANELS, requestMapPanel } from './mapPanelEvents';
 import { toast } from '../ui/feedback';
@@ -58,13 +59,13 @@ const EmptyPlan = () => (
 );
 
 // 현재 일차 안에서 순서 바꾸기: 끌어서 놓기, 또는 손잡이에서 화살표 키 (맨 위/맨 아래에서는 무시)
-const PlanList = ({ spots }) => {
+const PlanList = ({ spots, timetable }) => {
     const dispatch = useDispatch();
     const { itemProps, dragging } = useDragSort((from, to) => { dispatch(reorderSpot(from, to)); trackEvent('reorder_spot', { method: 'drag' }); });
     const onKeyMove = (index, offset) => dispatch(moveSpot(index, offset));
     return (
         <ul className={`ul-style${dragging ? ' is-dragging' : ''}`} id="cart">
-            {spots.length ? spots.map((data, index) => <AddTurning key={data.id} adds={data} index={index} onKeyMove={onKeyMove} dragProps={itemProps(index)}/>)
+            {spots.length ? spots.map((data, index) => <AddTurning key={data.id} adds={data} index={index} onKeyMove={onKeyMove} dragProps={itemProps(index)} timing={timetable.rows[index]}/>)
                 : <EmptyPlan/>}
         </ul>
     );
@@ -85,9 +86,10 @@ const CityHeading = ({ place }) => {
     );
 };
 
-const LeftControlbar = ({ place, monthList, mobileHidden }) => {
+const LeftControlbar = ({ place, monthList, mobileHidden, route }) => {
     const dispatch = useDispatch() ;
     const places = useSelector(state=>state.add)
+    const timetable = useDayTimetable(places.left, route)
     const { startDate, endDate } = useSelector(state=>state.itinerary)
     // 여행 기간을 고르면 일차 수가 함께 바뀜
     const onChangeDates = (start,end) => { if(start && end) dispatch(changeTripDates(start, end)) }
@@ -102,7 +104,9 @@ const LeftControlbar = ({ place, monthList, mobileHidden }) => {
                 <div className="center" style={{margin:"16px 0",width:"100%" }}><DayTabs/></div>
                 <div className="left_bottom_ul">
                     {startDate && endDate && <p name='start' className="trip-term">{startDate} ~ {endDate}</p>}
-                    <PlanList spots={places.left}/>
+                    <DayStartTime hasSpots={places.left.length > 0}/>
+                    <PlanList spots={places.left} timetable={timetable}/>
+                    <DayEndTime timetable={timetable}/>
                     <div className="center2"><OptimizeRouteButton activeDay={places.activeDay} spots={places.left}/><ClearDayButton activeDay={places.activeDay} spots={places.left}/></div>
                 </div>
             </div>

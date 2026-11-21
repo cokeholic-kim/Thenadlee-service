@@ -4,6 +4,7 @@ import { FiX } from "react-icons/fi";
 import './AddTurning.scss' ;
 import { setRight } from '../modules/add';
 import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
+import { TimingRow, TravelLine } from './SpotTiming';
 
 // 끌 수 있다는 표시: 가로줄 3줄
 const GripLines = () => (
@@ -35,12 +36,13 @@ const useKeyMoveFocus = (index, onKeyMove) => {
     return { handleRef, moveByKey };
 };
 
-// 일정에 담은 장소 카드: 끌어서 순서 바꾸기, 휴지통으로 빼기
-const AddTurning = ({ adds, index, onKeyMove, dragProps }) => {
+// 일정에 담은 장소 카드: 끌어서 순서 바꾸기, 휴지통으로 빼기, 시간표(이전 장소에서 이동·도착–출발·머무는 시간)
+const AddTurning = ({ adds, index, onKeyMove, dragProps, timing }) => {
     const dispatch = useDispatch();
     const { handleRef, moveByKey } = useKeyMoveFocus(index, onKeyMove);
     return (
         <li className="AddTurning_contents_li" {...dragProps}>
+            {timing?.travel && <TravelLine travel={timing.travel} />}
             <div className="AddTurning_contents_img">
                 {adds.imageUrl ? <img className='AddTurning_contents_img_i' src={adds.imageUrl} alt="" draggable="false" referrerPolicy="no-referrer" />
                     : <SpotThumbPlaceholder category={adds.category} className='AddTurning_contents_img_i AddTurning_noimg' />}
@@ -56,6 +58,7 @@ const AddTurning = ({ adds, index, onKeyMove, dragProps }) => {
             <div className='AddTurning_contents_arrow'>
                 <DragHandle ref={handleRef} spotName={adds.spotName} onKeyMove={moveByKey} />
             </div>
+            {timing && <TimingRow spot={adds} timing={timing} />}
         </li>
     );
 };

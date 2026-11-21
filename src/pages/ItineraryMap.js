@@ -8,6 +8,8 @@ import { legsToLines } from '../route/legsToLines';
 import { formatDistance, formatDuration, summarizeLegs } from '../route/formatRoute';
 import { findTravelMode } from '../route/travelModes';
 import { loginPathHere } from '../session/loginPath';
+import { dayTimetable } from '../itinerary/itineraryTimetable';
+import DayTimetableList from './DayTimetableList';
 
 const MAP_STYLE = { width: '100%', height: '360px' };
 
@@ -26,18 +28,21 @@ const RouteSummary = ({ legs, loading, travelMode, placeCount }) => {
     );
 };
 
-// 고른 일차의 장소를 지도에 번호와 함께 찍고, 저장된 이동수단으로 실제 경로를 그림
-const DayRouteMap = ({ items, travelMode, provider }) => {
+// 고른 일차의 장소를 지도에 번호와 함께 찍고, 저장된 이동수단으로 실제 경로를 그림 + 그 경로로 계산한 시간표
+const DayRouteMap = ({ day, travelMode, provider }) => {
+    const { items } = day;
     const places = useMemo(() => toPlaces(items), [items]);
     const markers = useMemo(() => places.map((place, index) => ({ lat: place.lat, lng: place.lon, label: `${index + 1}. ${place.spotName}` })), [places]);
     const { legs, loading } = useRouteLegs(places, travelMode, true, null, provider);
     const lines = useMemo(() => legsToLines(legs), [legs]);
+    const timetable = useMemo(() => dayTimetable(day, loading ? [] : legs, travelMode), [day, legs, loading, travelMode]);
     const center = markers[0] ? { lat: markers[0].lat, lng: markers[0].lng } : null;
     if (!center) return <p className="itinerary-map__note">이 날은 담은 장소가 없어요.</p>;
     return (
         <>
             <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} className="itinerary-map__map" style={MAP_STYLE} markerIcon="pin" />
             <RouteSummary legs={legs} loading={loading} travelMode={travelMode} placeCount={places.length} />
+            <DayTimetableList items={items} timetable={timetable} />
         </>
     );
 };
@@ -61,7 +66,7 @@ const ItineraryMap = ({ itinerary }) => {
             <h2>지도로 보기</h2>
             <DayTabs days={itinerary.days} active={active} onChange={setActive} />
             <MapScriptGate provider={provider}>
-                <DayRouteMap key={active} items={itinerary.days[active].items} travelMode={itinerary.travelMode} provider={provider} />
+                <DayRouteMap key={active} day={itinerary.days[active]} travelMode={itinerary.travelMode} provider={provider} />
             </MapScriptGate>
         </section>
     );
