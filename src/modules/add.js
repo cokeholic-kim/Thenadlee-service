@@ -19,6 +19,7 @@ const SET_DAY_COUNT = 'SET_DAY_COUNT';
 const SET_ACTIVE_DAY = 'SET_ACTIVE_DAY';
 const LOAD_DAYS = 'LOAD_DAYS';
 const REPLACE_SPOTS = 'REPLACE_SPOTS';
+const REPLACE_DAYS = 'REPLACE_DAYS';
 
 const MAX_DAYS = 30;
 
@@ -35,6 +36,7 @@ export const reorderDay = (dayIndex, ids) => ({ type: REORDER_DAY, dayIndex, ids
 export const setDayCount = (dayCount) => ({ type: SET_DAY_COUNT, dayCount });
 export const setActiveDay = (dayIndex) => ({ type: SET_ACTIVE_DAY, dayIndex });
 export const loadDays = (days) => ({ type: LOAD_DAYS, days });          // 저장된 일정 불러오기
+export const replaceDays = (days) => ({ type: REPLACE_DAYS, days });    // 일차 재배분·되돌리기 (보던 일차 유지)
 
 export const replaceSpots = (data) => ({ type: REPLACE_SPOTS, data }); // 장소 등록·수정·삭제 후 목록 갱신 (담은 일정 유지)
 
@@ -158,6 +160,8 @@ export default function adds(state = initialState, action) {
             return withDerived({ ...state, activeDay: action.dayIndex });
         case REPLACE_SPOTS:
             return replaceData(state, action.data);
+        case REPLACE_DAYS:
+            return withDerived({ ...state, days: action.days, activeDay: Math.min(state.activeDay, action.days.length - 1) });
         case LOAD_DAYS:
             return withDerived({ ...state, days: action.days.map((spots) => spots.map(toSpot)), activeDay: 0 });
         default:

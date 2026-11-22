@@ -11,6 +11,7 @@ import Calendar from './Calendar';
 import Weather from './Weather';
 import MapPartnerLink from './MapPartnerLink';
 import OptimizeRouteButton from './OptimizeRouteButton';
+import RedistributeDaysButton from './RedistributeDaysButton';
 import PlanBalance from './PlanBalance';
 import { DayEndTime, DayStartTime, useDayTimetable } from './DayTimetable';
 import MonthDesc from './MonthDesc';
@@ -72,6 +73,14 @@ const PlanList = ({ spots, timetable }) => {
     );
 };
 
+// 일차 탭 + (2일 이상일 때) 일차 고르게 나누기
+const DayTabsSection = () => (
+    <div className="center day-tabs-section">
+        <DayTabs/>
+        <RedistributeDaysButton/>
+    </div>
+);
+
 const CityHeading = ({ place }) => {
     const [cold, setCold] = useState();
     const name = CITY_NAMES[place.name] || place.name;
@@ -102,7 +111,7 @@ const LeftControlbar = ({ place, monthList, mobileHidden, route }) => {
                 <div className='planeticketing'><MapPartnerLink/></div>
                 <Calendar className="calendar" startDate={startDate} endDate={endDate} onChangeDates={onChangeDates}/>
                 <div className='selectList'><p>선택목록</p></div>
-                <div className="center" style={{margin:"16px 0",width:"100%" }}><DayTabs/></div>
+                <DayTabsSection/>
                 <div className="left_bottom_ul">
                     {startDate && endDate && <p name='start' className="trip-term">{startDate} ~ {endDate}</p>}
                     <DayStartTime hasSpots={places.left.length > 0}/>

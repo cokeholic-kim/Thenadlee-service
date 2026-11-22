@@ -73,6 +73,27 @@
             font-family: inherit;
         }
     }
+    // 일차 탭 영역 (예전 인라인 margin 16px 0 을 옮김)
+    .day-tabs-section {
+        width: 100%;
+        margin: 16px 0;
+    }
+    // 일차 고르게 나누기: 2일 이상·장소가 일차 수보다 많을 때, 일차 탭 아래 작은 글자 버튼 (되돌리기 알림이 뜸)
+    .RedistributeBtn {
+        margin-top: 8px;
+        padding: 4px 12px;
+        border: 1px dashed var(--color-secondary);
+        border-radius: 999px;
+        background-color: #fff;
+        color: var(--color-secondary-strong);
+        font-size: 12px;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-secondary-soft);
+        }
+    }
     .center2{
         width: 100%;
         display: flex;
