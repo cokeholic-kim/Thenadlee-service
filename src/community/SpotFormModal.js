@@ -7,7 +7,6 @@ import LoginRequired from './LoginRequired';
 import MapModal from './MapModal';
 import PhotoUploader from './PhotoUploader';
 import PlaceSearch from './PlaceSearch';
-import { MAP_PROVIDERS } from '../map/mapProvider';
 import { SPOT_CATEGORIES } from './spotCategories';
 import SpotTagPicker from './SpotTagPicker';
 import './Community.scss';
@@ -68,8 +67,8 @@ const SpotForm = ({ initial, center, provider, saving, onSubmit }) => {
             <label htmlFor="spotName">장소 이름</label>
             <input id="spotName" value={form.name} onChange={(e) => set('name', e.target.value)} maxLength="100" required />
             <KindFields form={form} set={set} />
-            <label>위치 ({provider === MAP_PROVIDERS.KAKAO ? '검색하거나 ' : ''}지도를 눌러 표시)</label>
-            {provider === MAP_PROVIDERS.KAKAO && <PlaceSearch center={center} onPick={onPick} />}
+            <label>위치 (검색하거나 지도를 눌러 표시)</label>
+            <PlaceSearch provider={provider} center={center} onPick={onPick} />
             <LocationPicker provider={provider} center={center} position={form.position} onChange={onPosition} />
             <label htmlFor="spotDescription">소개 (선택)</label>
             <textarea id="spotDescription" rows="3" maxLength="1000" value={form.description} onChange={(e) => set('description', e.target.value)} />
