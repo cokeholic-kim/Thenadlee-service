@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { groupApi } from '../api/groupApi';
@@ -14,6 +14,7 @@ import { formatDateTime, formatPeriod } from './groupFormat';
 import useGroupDetail from './useGroupDetail';
 import './Group.scss';
 import { toastError, confirmDialog } from '../ui/feedback';
+import { notifyGroupSeen } from '../notification/groupNewsEvents';
 
 // seen: 새 소식을 세는 탭 (서버 SeenSection)
 const TABS = [
@@ -30,8 +31,11 @@ const TABS = [
 const useMarkSeen = (group, tab) => {
     const section = TABS.find((item) => item.value === tab)?.seen;
     const [viewed, setViewed] = useState({ group, tabs: [tab] });
+    const notified = useRef('');
     useEffect(() => {
-        if (section) groupApi.markSeen(group.id, section).catch(() => {});
+        // 헤더 알림 종은 탭을 처음 볼 때만 다시 셈 (15초마다 다시 불러올 때는 생략)
+        const key = `${group.id}:${section}`;
+        if (section) groupApi.markSeen(group.id, section).then(() => { if (notified.current !== key) { notified.current = key; notifyGroupSeen(); } }).catch(() => {});
         setViewed((current) => (current.group === group ? { group, tabs: [...current.tabs, tab] } : { group, tabs: [tab] }));
     }, [group, section, tab]);
     return viewed.tabs;

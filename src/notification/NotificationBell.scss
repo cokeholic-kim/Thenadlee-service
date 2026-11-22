@@ -91,6 +91,17 @@
     }
 }
 
+// 모임 새 소식: 알림 목록과 줄로 나눔
+.notification-list--groups {
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--color-line);
+
+    li.is-new a {
+        background-color: var(--color-secondary-soft);
+    }
+}
+
 .notification-item__icon {
     flex: none;
     width: 24px;
