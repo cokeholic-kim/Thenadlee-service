@@ -10,7 +10,7 @@ import { GroupMapBanner } from '../group/GroupMapContext';
 import { ALL_CATEGORIES, countCategories } from '../community/spotCategories';
 import { countTags } from '../community/spotTags';
 import '../community/Community.scss';
-import { useSpotCategoryRequest } from './mapPanelEvents';
+import { useSpotCategoryRequest, useSpotTagRequest } from './mapPanelEvents';
 
 // 추천 장소 보기 필터 (서버 spot.source 값)
 const SPOT_FILTERS = [
@@ -54,6 +54,14 @@ const SpotToolbar = ({ filters, onRegister }) => (
     </div>
 );
 
+// 선택목록 안내에서 온 요청: "구성 안내"는 그 종류만, "비 예보"는 그 태그만 (운영진·여행자 구분은 풂)
+const usePanelFilterRequests = (setSource, setCategory, setTag) => {
+    const showCategory = useCallback((value) => { setSource('ALL'); setCategory(value); }, [setSource, setCategory]);
+    const showTag = useCallback((value) => { setSource('ALL'); setCategory(ALL_CATEGORIES); setTag(value); }, [setSource, setCategory, setTag]);
+    useSpotCategoryRequest(showCategory);
+    useSpotTagRequest(showTag);
+};
+
 // 출처(운영진·여행자)·종류·상황 태그를 함께 적용. 고른 종류가 목록에서 사라지면(일정에 다 담음 등) 전체로 되돌림
 // 종류별 추천 페이지(/spots/도시/종류)에서 넘어오면 ?category= 로 처음 필터를 정함
 const useSpotFilters = (spots) => {
@@ -61,9 +69,7 @@ const useSpotFilters = (spots) => {
     const [source, setSource] = useState('ALL');
     const [picked, setCategory] = useState(() => searchParams.get('category') || ALL_CATEGORIES);
     const [pickedTag, setTag] = useState(null);
-    // "구성 안내"에서 고른 종류: 운영진·여행자 구분은 풀고 그 종류만
-    const showCategory = useCallback((value) => { setSource('ALL'); setCategory(value); }, []);
-    useSpotCategoryRequest(showCategory);
+    usePanelFilterRequests(setSource, setCategory, setTag);
     const bySource = spots.filter((spot) => source === 'ALL' || spot.source === source);
     const categories = countCategories(bySource);
     const category = categories.some((option) => option.value === picked) ? picked : ALL_CATEGORIES;

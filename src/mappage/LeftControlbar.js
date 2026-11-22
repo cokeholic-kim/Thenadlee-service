@@ -13,6 +13,7 @@ import MapPartnerLink from './MapPartnerLink';
 import OptimizeRouteButton from './OptimizeRouteButton';
 import RedistributeDaysButton from './RedistributeDaysButton';
 import PlanBalance from './PlanBalance';
+import RainHint from './RainHint';
 import { DayEndTime, DayStartTime, useDayTimetable } from './DayTimetable';
 import MonthDesc from './MonthDesc';
 import { MAP_PANELS, requestMapPanel } from './mapPanelEvents';
@@ -73,6 +74,14 @@ const PlanList = ({ spots, timetable }) => {
     );
 };
 
+// 선택목록 아래 안내: 비·눈 예보 + 장소 구성
+const DayHints = ({ cityName, activeDay, spots }) => (
+    <>
+        <RainHint cityName={cityName} activeDay={activeDay}/>
+        <PlanBalance activeDay={activeDay} spots={spots}/>
+    </>
+);
+
 // 일차 탭 + (2일 이상일 때) 일차 고르게 나누기
 const DayTabsSection = () => (
     <div className="center day-tabs-section">
@@ -117,7 +126,7 @@ const LeftControlbar = ({ place, monthList, mobileHidden, route }) => {
                     <DayStartTime hasSpots={places.left.length > 0}/>
                     <PlanList spots={places.left} timetable={timetable}/>
                     <DayEndTime timetable={timetable}/>
-                    <PlanBalance activeDay={places.activeDay} spots={places.left}/>
+                    <DayHints cityName={place.name} activeDay={places.activeDay} spots={places.left}/>
                     <div className="center2"><OptimizeRouteButton activeDay={places.activeDay} spots={places.left}/><ClearDayButton activeDay={places.activeDay} spots={places.left}/></div>
                 </div>
             </div>

@@ -1,36 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toDateString } from './groupFormat';
+import { summarizeForecast } from './forecastSummary';
 
 // 기존 지도 화면 날씨와 같은 OpenWeather 키 (5일 예보, 3시간 간격)
 const WEATHER_KEY = process.env.REACT_APP_WHEATHER_API_KEY;
 const WEATHER_BASE = process.env.REACT_APP_WHEATHER_BASE_URL;
 export const FORECAST_DAYS = 5;
 const DAY_MILLIS = 86400000;
-const ICONS = { '01': '☀️', '02': '🌤️', '03': '☁️', '04': '☁️', '09': '🌧️', '10': '🌦️', '11': '⛈️', '13': '❄️', '50': '🌫️' };
-
 const addDays = (date, days) => toDateString(new Date(new Date(`${date}T00:00:00`).getTime() + days * DAY_MILLIS));
 
-// 3시간 간격 예보를 날짜별 최저·최고 기온과 가장 자주 나온 날씨로 묶음
-const summarize = (list) => {
-    const byDate = {};
-    list.forEach((item) => {
-        const date = item.dt_txt.slice(0, 10);
-        const day = byDate[date] || { min: Infinity, max: -Infinity, icons: {} };
-        day.min = Math.min(day.min, item.main.temp_min);
-        day.max = Math.max(day.max, item.main.temp_max);
-        const key = item.weather[0].icon.slice(0, 2);
-        day.icons[key] = (day.icons[key] || 0) + 1;
-        byDate[date] = day;
-    });
-    return Object.fromEntries(Object.entries(byDate).map(([date, day]) => {
-        const icon = Object.entries(day.icons).sort((a, b) => b[1] - a[1])[0][0];
-        return [date, { min: Math.round(day.min), max: Math.round(day.max), emoji: ICONS[icon] || '🌡️' }];
-    }));
-};
-
 /**
- * 여행 일차별 날씨 { byDay: { 1: {date, min, max, emoji} }, tooFar } — 여행이 5일 안에 시작할 때만 예보를 불러옴
+ * 여행 일차별 날씨 { byDay: { 1: {date, min, max, emoji, wet, pop} }, tooFar } — 여행이 5일 안에 시작할 때만 예보를 불러옴
  * 공개 정보(여행지 이름으로 조회)만 사용
  */
 const useForecast = (cityName, startDate, dayCount) => {
@@ -40,7 +21,7 @@ const useForecast = (cityName, startDate, dayCount) => {
     useEffect(() => {
         if (!inRange || !cityName || !WEATHER_KEY) return;
         axios.get(`${WEATHER_BASE}forecast`, { params: { q: cityName, appid: WEATHER_KEY, units: 'metric', lang: 'kr' } })
-            .then((response) => setForecast(summarize(response.data.list))).catch(() => setForecast(null));
+            .then((response) => setForecast(summarizeForecast(response.data.list, response.data.city?.timezone))).catch(() => setForecast(null));
     }, [inRange, cityName]);
     const byDay = {};
     if (forecast && startDate) {
