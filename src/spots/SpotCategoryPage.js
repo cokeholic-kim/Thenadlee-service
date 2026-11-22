@@ -5,6 +5,7 @@ import usePageMeta from '../seo/usePageMeta';
 import { CATEGORY_NAMES, CITY_NAMES, spotCategoryPageMeta } from '../seo/pageMeta';
 import { categoryIcon, countCategories, SPOT_CATEGORIES } from '../community/spotCategories';
 import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
+import { spotTagList } from '../community/spotTags';
 import useCategorySpots from './useCategorySpots';
 import './SpotCategory.scss';
 
@@ -22,6 +23,7 @@ const SpotCard = ({ spot }) => (
         </div>
         <div className="spot-category-card__body">
             <h2>{spot.spotName}</h2>
+            {spot.tags?.length > 0 && <span className="spot-category-card__tags">{spotTagList(spot.tags).map((tag) => `${tag.icon} ${tag.label}`).join(' · ')}</span>}
             {spot.description && <p>{shorten(spot.description)}</p>}
             <span className="spot-category-card__meta">
                 {spot.source === 'USER' ? `여행자 추천${spot.authorNickName ? ` · ${spot.authorNickName}님` : ''}` : '운영진 추천'}

@@ -110,6 +110,13 @@
     }
 }
 
+.spot-category-card__tags {
+    display: block;
+    margin: -2px 0 6px;
+    color: var(--color-primary-strong);
+    font-size: 12px;
+}
+
 .spot-category-card__meta {
     color: var(--color-sub);
     font-size: 12px;

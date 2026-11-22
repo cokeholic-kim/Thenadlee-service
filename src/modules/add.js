@@ -52,6 +52,7 @@ export const toSpot = (item) => ({
     credit: item.credit || null,
     imageCredit: item.imageCredit || null,
     category: item.category || null,
+    tags: item.tags || [],
     links: item.links || []
 });
 

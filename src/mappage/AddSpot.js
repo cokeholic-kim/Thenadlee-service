@@ -2,6 +2,7 @@ import { FaInfoCircle, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { setLeft } from "../modules/add";
 import { categoryLabel } from '../community/spotCategories';
+import { spotTagList } from '../community/spotTags';
 import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
 import { toast } from '../ui/feedback';
 import { trackEvent } from '../analytics/analytics';
@@ -10,10 +11,18 @@ import './AddSpot.scss' ;
 
 // 데이터 카드(li)에 대한 컴포넌트 (여행자 추천·장소 종류 배지, 지도에서 보기, i 버튼으로 상세 보기)
 
+// 상황 태그는 좁은 카드에 맞게 아이콘만 (이름은 툴팁·읽기 도구용)
+const TagIcons = ({ tags }) => {
+    const list = spotTagList(tags);
+    if (list.length === 0) return null;
+    const names = list.map((tag) => tag.label).join(', ');
+    return <span className="spot-card__tags" title={names} aria-label={`상황: ${names}`}>{list.map((tag) => tag.icon).join('')}</span>;
+};
+
 const SpotBadge = ({ spot }) => {
     const text = [spot.source === 'USER' && '여행자 추천', categoryLabel(spot.category)].filter(Boolean).join(' · ');
-    if (!text) return null;
-    return <span className={`spot-card__badge${spot.source === 'USER' ? '' : ' is-category'}`}>{text}</span>;
+    if (!text && !spot.tags?.length) return null;
+    return <span className={`spot-card__badge${spot.source === 'USER' ? '' : ' is-category'}`}>{text}<TagIcons tags={spot.tags} /></span>;
 };
 
 const LocateButton = ({ spot, active, onLocate }) => (

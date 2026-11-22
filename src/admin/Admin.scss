@@ -206,6 +206,13 @@ $admin-radius: 6px;
         }
     }
 
+    .admin-form__field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-weight: 600;
+    }
+
     .admin-form__row {
         display: flex;
         flex-wrap: wrap;

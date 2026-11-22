@@ -8,6 +8,7 @@ import useSpotActions from '../community/useSpotActions';
 import SpotModals from '../community/SpotModals';
 import { GroupMapBanner } from '../group/GroupMapContext';
 import { ALL_CATEGORIES, countCategories } from '../community/spotCategories';
+import { countTags } from '../community/spotTags';
 import '../community/Community.scss';
 import { useSpotCategoryRequest } from './mapPanelEvents';
 
@@ -29,6 +30,16 @@ const CategoryFilter = ({ categories, value, onChange }) => (categories.length <
     </div>
 ));
 
+// 상황 태그(아이와 함께·비 오는 날 등): 하나만 고르고, 다시 누르면 풂
+const TagFilter = ({ tags, value, onChange }) => (tags.length === 0 ? null : (
+    <div className="spot-toolbar__categories spot-toolbar__tags" role="group" aria-label="상황">
+        {tags.map((tag) => (
+            <button key={tag.value} type="button" className={value === tag.value ? 'is-active' : ''} aria-pressed={value === tag.value}
+                onClick={() => onChange(value === tag.value ? null : tag.value)}>{tag.icon} {tag.label} <span>{tag.count}</span></button>
+        ))}
+    </div>
+));
+
 const SpotToolbar = ({ filters, onRegister }) => (
     <div className="spot-toolbar">
         <div className="spot-toolbar__filters">
@@ -38,24 +49,29 @@ const SpotToolbar = ({ filters, onRegister }) => (
             ))}
         </div>
         <CategoryFilter categories={filters.categories} value={filters.category} onChange={filters.setCategory} />
+        <TagFilter tags={filters.tags} value={filters.tag} onChange={filters.setTag} />
         <button type="button" className="spot-toolbar__register" onClick={onRegister}>+ 나만 아는 장소 등록</button>
     </div>
 );
 
-// 출처(운영진·여행자)와 종류를 함께 적용. 고른 종류가 목록에서 사라지면(일정에 다 담음 등) 전체로 되돌림
+// 출처(운영진·여행자)·종류·상황 태그를 함께 적용. 고른 종류가 목록에서 사라지면(일정에 다 담음 등) 전체로 되돌림
 // 종류별 추천 페이지(/spots/도시/종류)에서 넘어오면 ?category= 로 처음 필터를 정함
 const useSpotFilters = (spots) => {
     const [searchParams] = useSearchParams();
     const [source, setSource] = useState('ALL');
     const [picked, setCategory] = useState(() => searchParams.get('category') || ALL_CATEGORIES);
+    const [pickedTag, setTag] = useState(null);
     // "구성 안내"에서 고른 종류: 운영진·여행자 구분은 풀고 그 종류만
     const showCategory = useCallback((value) => { setSource('ALL'); setCategory(value); }, []);
     useSpotCategoryRequest(showCategory);
     const bySource = spots.filter((spot) => source === 'ALL' || spot.source === source);
     const categories = countCategories(bySource);
     const category = categories.some((option) => option.value === picked) ? picked : ALL_CATEGORIES;
-    const visible = bySource.filter((spot) => category === ALL_CATEGORIES || spot.category === category);
-    return { source, setSource, category, setCategory, categories, visible };
+    const byCategory = bySource.filter((spot) => category === ALL_CATEGORIES || spot.category === category);
+    const tags = countTags(byCategory);
+    const tag = tags.some((option) => option.value === pickedTag) ? pickedTag : null;
+    const visible = byCategory.filter((spot) => !tag || spot.tags.includes(tag));
+    return { source, setSource, category, setCategory, categories, tag, setTag, tags, visible };
 };
 
 const RightControlbar = ({ marker, place, onLocate, highlightId, mobileHidden }) => (

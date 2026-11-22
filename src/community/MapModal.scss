@@ -168,6 +168,12 @@ $modal-danger: #d64545;
             color: #2f7d79;
         }
 
+        // 상황 태그 (아이와 함께·비 오는 날 등)
+        &.is-tag {
+            background-color: #fff4e8;
+            color: #a0521c;
+        }
+
         // 작성자 영상(SNS 링크)이 있는 일정
         &.is-video {
             background-color: #e53935;

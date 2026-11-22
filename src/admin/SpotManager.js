@@ -4,20 +4,27 @@ import { getApiErrorMessage } from '../util/apiError';
 import ImageUploadField from './ImageUploadField';
 import SpotMediaManager from './SpotMediaManager';
 import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
+import { spotTagList } from '../community/spotTags';
+import SpotTagPicker from '../community/SpotTagPicker';
 import { toastError, confirmDialog } from '../ui/feedback';
 
-const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '' };
+const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '', tags: [] };
 const toSpotForm = (spot) => ({
     name: spot.name, lat: spot.lat, lng: spot.lon, description: spot.description || '', imageUrl: spot.imageUrl || '', category: spot.category || '',
+    tags: spot.tags || [],
 });
 
-const CategorySelect = ({ value, onChange }) => (
-    <label>종류
-        <select value={value} onChange={(e) => onChange(e.target.value)}>
-            <option value="">미분류</option>
-            {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
-        </select>
-    </label>
+// 종류(하나) + 상황 태그(여러 개)
+const KindFields = ({ form, set }) => (
+    <>
+        <label>종류
+            <select value={form.category} onChange={(e) => set('category', e.target.value)}>
+                <option value="">미분류</option>
+                {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
+            </select>
+        </label>
+        <div className="admin-form__field">상황 태그 (선택)<SpotTagPicker value={form.tags} onChange={(tags) => set('tags', tags)} /></div>
+    </>
 );
 
 const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
@@ -26,7 +33,7 @@ const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
     return (
         <form className="admin-form admin-form--inline" onSubmit={(e) => { e.preventDefault(); onSubmit(form, () => setForm(EMPTY_SPOT)); }}>
             <label>장소 이름<input value={form.name} onChange={(e) => set('name', e.target.value)} required /></label>
-            <CategorySelect value={form.category} onChange={(value) => set('category', value)} />
+            <KindFields form={form} set={set} />
             <div className="admin-form__row">
                 <label>위도<input type="number" step="any" value={form.lat} onChange={(e) => set('lat', e.target.value)} required /></label>
                 <label>경도<input type="number" step="any" value={form.lng} onChange={(e) => set('lng', e.target.value)} required /></label>
@@ -48,7 +55,7 @@ const SpotLabel = ({ spot }) => (
             {spot.tourContentId && <span className="admin-badge is-muted">관광공사</span>} {spot.name}
             {spot.status === 'HIDDEN' && <span className="admin-badge is-muted">숨김</span>}
         </strong>
-        <span className={`admin-category${spot.category ? '' : ' is-empty'}`}>{categoryLabel(spot.category) || '미분류'}</span>
+        <span className={`admin-category${spot.category ? '' : ' is-empty'}`}>{categoryLabel(spot.category) || '미분류'}{spotTagList(spot.tags).map((tag) => ` ${tag.icon}`).join('')}</span>
         <span>{spot.lat}, {spot.lon}{spot.source === 'USER' && ` · ${spot.authorNickName || '탈퇴한 회원'} 님 등록`}</span>
     </div>
 );

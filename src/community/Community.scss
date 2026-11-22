@@ -291,6 +291,12 @@ $community-like: #e0575b;
         background-color: #e8f4f3;
         color: #2f7d79 !important;
     }
+
+    // 상황 태그 아이콘 (종류 이름 뒤)
+    .spot-card__tags {
+        margin-left: 4px;
+        letter-spacing: 1px;
+    }
 }
 
 .map .RightControlbar_contents_li .spot-card__info {

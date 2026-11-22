@@ -1,0 +1,43 @@
+// 관리자·지도 모달의 공통 label 규칙(세로 배치·굵게)보다 우선하도록 div 를 붙임
+div.spot-tag-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 8px;
+
+    label {
+        position: relative;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        min-height: 32px;
+        margin: 0;
+        padding: 0 10px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        background: #fff;
+        font-size: 13px;
+        font-weight: 400;
+        cursor: pointer;
+
+        &.is-checked {
+            border-color: var(--color-primary);
+            background: var(--color-primary-soft);
+            color: var(--color-primary-strong);
+            font-weight: 700;
+        }
+    }
+
+    input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    label:focus-within {
+        outline: 2px solid var(--color-secondary);
+        outline-offset: 1px;
+    }
+}
