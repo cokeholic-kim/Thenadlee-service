@@ -22,6 +22,29 @@ $comment-accent: #2a9d8f;
     }
 }
 
+.plan-day__schedule,
+.plan-day__hint {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.5;
+
+    span {
+        color: $comment-muted;
+    }
+}
+
+.plan-day__hint {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #fff7ed;
+    color: #9a4a12;
+
+    a {
+        margin-left: 4px;
+        font-weight: 700;
+    }
+}
+
 .plan-spot {
     border-bottom: 1px solid $comment-line;
 
@@ -44,6 +67,15 @@ $comment-accent: #2a9d8f;
             font-style: normal;
             font-size: 13px;
         }
+    }
+
+    &__time {
+        display: inline-block;
+        min-width: 46px;
+        margin-right: 6px;
+        color: $comment-accent;
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
     }
 
     &__count {

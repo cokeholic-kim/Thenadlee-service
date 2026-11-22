@@ -3,6 +3,8 @@ import { groupApi } from '../api/groupApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { formatDateTime } from './groupFormat';
 import useForecast, { FORECAST_DAYS } from './useForecast';
+import { planDayTimetable } from './planDay';
+import { DaySchedule, RouteHint, clockText } from './PlanDayTools';
 import './SpotComments.scss';
 import { toastError, confirmDialog } from '../ui/feedback';
 
@@ -66,16 +68,31 @@ export const SpotCommentThread = ({ groupId, spot, canDelete, run }) => (
     </div>
 );
 
-const SpotRow = ({ groupId, spot, canDelete, run }) => {
+const SpotRow = ({ groupId, spot, time, canDelete, run }) => {
     const [open, setOpen] = useState(false);
     return (
         <li className="plan-spot">
             <button type="button" className="plan-spot__head" onClick={() => setOpen(!open)} aria-expanded={open}>
-                <span>{spot.name}{spot.memo ? <em> · {spot.memo}</em> : null}</span>
+                <span>{time && <time className="plan-spot__time">{clockText(time.arrive)}</time>}{spot.name}{spot.memo ? <em> · {spot.memo}</em> : null}</span>
                 <span className="plan-spot__count">💬 {spot.comments.length}</span>
             </button>
             {open && <SpotCommentThread groupId={groupId} spot={spot} canDelete={canDelete} run={run} />}
         </li>
+    );
+};
+
+const DayWeather = ({ weather }) => (weather ? <span className="day-weather">{weather.date.slice(5).replace('-', '/')} {weather.emoji} {weather.min}~{weather.max}°C</span> : null);
+
+// 하루: 날씨, 출발·끝 시각, 더 짧은 순서 안내, 장소별 도착 시각과 댓글
+const PlanDay = ({ group, day, data, weather, run }) => {
+    const timetable = planDayTimetable(day, data.travelMode);
+    return (
+        <div className="plan-comments__day">
+            <h3>{day.dayNo}일차<DayWeather weather={weather} /></h3>
+            <DaySchedule timetable={timetable} travelMode={data.travelMode} />
+            <RouteHint day={day} group={group} />
+            <ol>{day.spots.map((spot, index) => <SpotRow key={spot.spotId} groupId={group.id} spot={spot} time={timetable.rows[index]} canDelete={data.canDelete} run={run} />)}</ol>
+        </div>
     );
 };
 
@@ -88,12 +105,7 @@ export const PlanComments = ({ group }) => {
     return (
         <div className="plan-comments">
             <p className="group-hint">장소를 누르면 댓글을 볼 수 있어요. 댓글은 방장과 관리자만 지울 수 있어요.{tooFar ? ` 여행 ${FORECAST_DAYS}일 전부터 일차별 날씨 예보가 보여요.` : ''}</p>
-            {data.days.map((day) => (
-                <div key={day.dayNo} className="plan-comments__day">
-                    <h3>{day.dayNo}일차{byDay[day.dayNo] && <span className="day-weather">{byDay[day.dayNo].date.slice(5).replace('-', '/')} {byDay[day.dayNo].emoji} {byDay[day.dayNo].min}~{byDay[day.dayNo].max}°C</span>}</h3>
-                    <ol>{day.spots.map((spot) => <SpotRow key={spot.spotId} groupId={group.id} spot={spot} canDelete={data.canDelete} run={run} />)}</ol>
-                </div>
-            ))}
+            {data.days.map((day) => <PlanDay key={day.dayNo} group={group} day={day} data={data} weather={byDay[day.dayNo]} run={run} />)}
         </div>
     );
 };
