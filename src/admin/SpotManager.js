@@ -6,6 +6,7 @@ import SpotMediaManager from './SpotMediaManager';
 import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
 import { spotTagList } from '../community/spotTags';
 import SpotTagPicker from '../community/SpotTagPicker';
+import SpotTagBulkBar, { useSpotSelection } from './SpotTagBulkBar';
 import { toastError, confirmDialog } from '../ui/feedback';
 
 const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '', tags: [] };
@@ -60,7 +61,7 @@ const SpotLabel = ({ spot }) => (
     </div>
 );
 
-const SpotRow = ({ spot, onSave, onDelete, onToggleStatus }) => {
+const SpotRow = ({ spot, selection, onSave, onDelete, onToggleStatus }) => {
     const [editing, setEditing] = useState(false);
     const [mediaOpen, setMediaOpen] = useState(false);
     if (editing) {
@@ -70,6 +71,7 @@ const SpotRow = ({ spot, onSave, onDelete, onToggleStatus }) => {
     return (
         <>
             <li className={`admin-list__item${spot.status === 'HIDDEN' ? ' is-muted' : ''}`}>
+                <input type="checkbox" className="admin-list__pick" aria-label={`${spot.name} 고르기`} checked={selection.isSelected(spot.id)} onChange={() => selection.toggle(spot.id)} />
                 {spot.imageUrl ? <img src={spot.imageUrl} alt="" /> : <div className="admin-list__noimg" />}
                 <SpotLabel spot={spot} />
                 <button type="button" className="admin-button" aria-expanded={mediaOpen} onClick={() => setMediaOpen(!mediaOpen)}>영상·후기</button>
@@ -82,34 +84,58 @@ const SpotRow = ({ spot, onSave, onDelete, onToggleStatus }) => {
     );
 };
 
-// 종류를 아직 안 고른 장소만 모아 보기
-const UnclassifiedToggle = ({ count, checked, onChange }) => (count === 0 ? null : (
-    <label className="admin-check">
-        <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} /> 미분류만 보기 ({count})
-    </label>
-));
+// 목록 거르기: 종류를 안 고른 장소, 상황 태그가 없는 장소 (둘 다 켜면 둘 다 해당하는 장소)
+const LIST_FILTERS = [
+    { key: 'unclassified', label: '미분류만 보기', test: (spot) => !spot.category },
+    { key: 'untagged', label: '태그 없는 장소만 보기', test: (spot) => !spot.tags?.length },
+];
 
-// 여행지의 추천 장소 목록·추가·수정·삭제
-const SpotManager = ({ cityId, spots, onChanged }) => {
-    const [onlyUnclassified, setOnlyUnclassified] = useState(false);
-    const unclassified = spots.filter((spot) => !spot.category);
-    const run = async (action) => {
-        try { const result = await action(); onChanged(); return result ?? true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
-    };
+const useSpotListFilter = (spots) => {
+    const [on, setOn] = useState({});
+    const options = LIST_FILTERS.map((filter) => ({ ...filter, count: spots.filter(filter.test).length, checked: Boolean(on[filter.key]) }));
+    const visible = spots.filter((spot) => options.every((filter) => !filter.checked || filter.test(spot)));
+    return { options, visible, toggle: (key, checked) => setOn((current) => ({ ...current, [key]: checked })) };
+};
+
+const SpotListFilters = ({ filter }) => (
+    <div className="admin-filters">
+        {filter.options.map((option) => (option.count === 0 && !option.checked ? null : (
+            <label key={option.key} className="admin-check">
+                <input type="checkbox" checked={option.checked} onChange={(e) => filter.toggle(option.key, e.target.checked)} /> {option.label} ({option.count})
+            </label>
+        )))}
+    </div>
+);
+
+// 실행 후 목록을 다시 불러오고, 실패하면 알림 (성공하면 응답값 또는 true)
+const useAdminRun = (onChanged) => async (action) => {
+    try { const result = await action(); onChanged(); return result ?? true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
+};
+
+const SpotList = ({ spots, selection, run }) => {
     const onDelete = async (spot) => {
-        if (await confirmDialog(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 회원 일정에서도 빠집니다.`)) {
-            run(() => adminApi.deleteSpot(spot.id));
-        }
+        if (await confirmDialog(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 회원 일정에서도 빠집니다.`)) run(() => adminApi.deleteSpot(spot.id));
     };
+    return (
+        <ul className="admin-list">
+            {spots.map((spot) => <SpotRow key={spot.id} spot={spot} selection={selection} onDelete={onDelete}
+                onSave={(id, form) => run(() => adminApi.updateSpot(id, form))}
+                onToggleStatus={(target) => run(() => adminApi.changeSpotStatus(target.id, target.status === 'HIDDEN' ? 'ACTIVE' : 'HIDDEN'))} />)}
+        </ul>
+    );
+};
+
+// 여행지의 추천 장소 목록·거르기·태그 한 번에 바꾸기·추가·수정·삭제
+const SpotManager = ({ cityId, spots, onChanged }) => {
+    const run = useAdminRun(onChanged);
+    const filter = useSpotListFilter(spots);
+    const selection = useSpotSelection(filter.visible);
     return (
         <section className="admin-section">
             <h2>추천 장소 ({spots.length})</h2>
-            <UnclassifiedToggle count={unclassified.length} checked={onlyUnclassified} onChange={setOnlyUnclassified} />
-            <ul className="admin-list">
-                {(onlyUnclassified && unclassified.length > 0 ? unclassified : spots).map((spot) => <SpotRow key={spot.id} spot={spot} onDelete={onDelete}
-                    onSave={(id, form) => run(() => adminApi.updateSpot(id, form))}
-                    onToggleStatus={(target) => run(() => adminApi.changeSpotStatus(target.id, target.status === 'HIDDEN' ? 'ACTIVE' : 'HIDDEN'))} />)}
-            </ul>
+            <SpotListFilters filter={filter} />
+            <SpotTagBulkBar cityId={cityId} selection={selection} run={run} visibleCount={filter.visible.length} />
+            <SpotList spots={filter.visible} selection={selection} run={run} />
             <h3>장소 추가</h3>
             <SpotForm initial={EMPTY_SPOT} submitLabel="장소 추가"
                 onSubmit={async (form, reset) => { if (await run(() => adminApi.addSpot(cityId, form))) reset(); }} />
