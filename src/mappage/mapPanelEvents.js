@@ -14,3 +14,16 @@ export const useMapPanelRequest = (handler) => {
         return () => window.removeEventListener(EVENT_NAME, listener);
     }, [handler]);
 };
+
+// 추천 장소 목록을 한 종류로 거르기 요청 (선택목록 "구성 안내"의 버튼)
+const CATEGORY_EVENT_NAME = 'map-spot-category-request';
+
+export const requestSpotCategory = (category) => window.dispatchEvent(new CustomEvent(CATEGORY_EVENT_NAME, { detail: category }));
+
+export const useSpotCategoryRequest = (handler) => {
+    useEffect(() => {
+        const listener = (event) => handler(event.detail);
+        window.addEventListener(CATEGORY_EVENT_NAME, listener);
+        return () => window.removeEventListener(CATEGORY_EVENT_NAME, listener);
+    }, [handler]);
+};

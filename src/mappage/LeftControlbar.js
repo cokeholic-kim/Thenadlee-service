@@ -11,6 +11,7 @@ import Calendar from './Calendar';
 import Weather from './Weather';
 import MapPartnerLink from './MapPartnerLink';
 import OptimizeRouteButton from './OptimizeRouteButton';
+import PlanBalance from './PlanBalance';
 import { DayEndTime, DayStartTime, useDayTimetable } from './DayTimetable';
 import MonthDesc from './MonthDesc';
 import { MAP_PANELS, requestMapPanel } from './mapPanelEvents';
@@ -107,6 +108,7 @@ const LeftControlbar = ({ place, monthList, mobileHidden, route }) => {
                     <DayStartTime hasSpots={places.left.length > 0}/>
                     <PlanList spots={places.left} timetable={timetable}/>
                     <DayEndTime timetable={timetable}/>
+                    <PlanBalance activeDay={places.activeDay} spots={places.left}/>
                     <div className="center2"><OptimizeRouteButton activeDay={places.activeDay} spots={places.left}/><ClearDayButton activeDay={places.activeDay} spots={places.left}/></div>
                 </div>
             </div>

@@ -1,0 +1,50 @@
+// 선택목록 아래 "구성 안내"
+.plan-balance {
+    width: 100%;
+    margin: 4px 0 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background-color: var(--color-surface);
+}
+
+.plan-balance__counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    color: var(--color-sub);
+    font-size: 13px;
+
+    span {
+        white-space: nowrap;
+    }
+}
+
+.plan-balance__hint {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--color-line);
+
+    p {
+        color: var(--color-text);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    button {
+        margin-top: 6px;
+        padding: 6px 12px;
+        border: 1px solid var(--color-primary-strong);
+        border-radius: 999px;
+        background-color: #fff;
+        color: var(--color-primary-strong);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-primary-soft);
+        }
+    }
+}

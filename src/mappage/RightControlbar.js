@@ -2,13 +2,14 @@ import './RightControlbar.scss' ;
 import { useParams } from 'react-router-dom';
 import AddSpot from './AddSpot';
 import { useSelector } from 'react-redux';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { providerFor } from '../map/mapProvider';
 import useSpotActions from '../community/useSpotActions';
 import SpotModals from '../community/SpotModals';
 import { GroupMapBanner } from '../group/GroupMapContext';
 import { ALL_CATEGORIES, countCategories } from '../community/spotCategories';
 import '../community/Community.scss';
+import { useSpotCategoryRequest } from './mapPanelEvents';
 
 // 추천 장소 보기 필터 (서버 spot.source 값)
 const SPOT_FILTERS = [
@@ -45,6 +46,9 @@ const SpotToolbar = ({ filters, onRegister }) => (
 const useSpotFilters = (spots) => {
     const [source, setSource] = useState('ALL');
     const [picked, setCategory] = useState(ALL_CATEGORIES);
+    // "구성 안내"에서 고른 종류: 운영진·여행자 구분은 풀고 그 종류만
+    const showCategory = useCallback((value) => { setSource('ALL'); setCategory(value); }, []);
+    useSpotCategoryRequest(showCategory);
     const bySource = spots.filter((spot) => source === 'ALL' || spot.source === source);
     const categories = countCategories(bySource);
     const category = categories.some((option) => option.value === picked) ? picked : ALL_CATEGORIES;
