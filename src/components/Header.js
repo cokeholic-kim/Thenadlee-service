@@ -100,6 +100,7 @@ function Header({ moveto }) {
                             ? <li><a href="#tour" onClick={(e) => { setOpen(false); moveto(e); }}>여행지</a></li>
                             : <MenuLink to="/">여행지</MenuLink>}
                         <MenuLink to="/explore">일정 둘러보기</MenuLink>
+                        <MenuLink to="/settle">정산 계산기</MenuLink>
                         <LoginMenu />
                     </ul>
                 </nav>

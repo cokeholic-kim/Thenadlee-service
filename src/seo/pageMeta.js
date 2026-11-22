@@ -14,6 +14,7 @@ export const PAGE_META = {
     explore: seo.pages.explore,
     privacy: seo.pages.privacy,
     terms: seo.pages.terms,
+    settle: seo.pages.settle,
     notFound: { title: '페이지를 찾을 수 없습니다', noindex: true }
 };
 
