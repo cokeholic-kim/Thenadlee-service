@@ -8,6 +8,7 @@ import CityForm, { emptyCityForm, toCityForm } from './CityForm';
 import PostManager from './PostManager';
 import SpotManager from './SpotManager';
 import TourImportPanel from './TourImportPanel';
+import CityMediaManager from './CityMediaManager';
 import { isAdmin } from './roles';
 import { toast, toastError, confirmDialog } from '../ui/feedback';
 
@@ -56,6 +57,7 @@ const CityEditPanel = () => {
                     <SpotManager cityId={city.id} spots={city.spots} onChanged={load} />
                     {city.region === 'DOMESTIC' && <TourImportPanel cityId={city.id} onImported={load} />}
                     <PostManager cityId={city.id} posts={city.posts} onChanged={load} />
+                    <CityMediaManager cityId={city.id} />
                 </>
             )}
         </>

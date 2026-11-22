@@ -152,6 +152,11 @@ $admin-radius: 6px;
     &.is-muted {
         background: #999;
     }
+
+    // 공개 화면에 실제로 보이는 항목
+    &.is-shown {
+        background: var(--color-secondary);
+    }
 }
 
 .admin-table {

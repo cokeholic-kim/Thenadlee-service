@@ -23,6 +23,11 @@ export const adminApi = {
     pickSpotMedia: (spotId, action, item) => post(`/spots/${spotId}/media/${action}`, item),
     unpickSpotMedia: (spotId, url) => post(`/spots/${spotId}/media/unpick`, { url }),
     refreshSpotMedia: (spotId) => post(`/spots/${spotId}/media/refresh`),
+    // 도시 영상 구역: { section: 'POPULAR' } 또는 { section: 'FESTIVAL', month }
+    listCityMedia: (cityId, section) => get(`/cities/${cityId}/media`, section),
+    pickCityMedia: (cityId, section, action, item) => post(`/cities/${cityId}/media/${action}`, { ...section, ...item }),
+    unpickCityMedia: (cityId, section, url) => post(`/cities/${cityId}/media/unpick`, { ...section, url }),
+    refreshCityMedia: (cityId, section) => post(`/cities/${cityId}/media/refresh`, section),
 
     searchTour: (cityId, params) => get(`/cities/${cityId}/tour`, params),
     importTour: (cityId, contentId) => post(`/cities/${cityId}/tour/import`, { contentId }),

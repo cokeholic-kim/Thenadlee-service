@@ -10,6 +10,7 @@ const toPick = (item) => ({ kind: item.kind, url: item.url, title: item.title, t
 
 const ItemState = ({ item }) => (
     <>
+        {item.shown && <span className="admin-badge is-shown">화면에 보임</span>}
         {item.pinned && <span className="admin-badge">고정</span>}
         {item.hidden && <span className="admin-badge is-muted">숨김</span>}
     </>
@@ -25,7 +26,7 @@ const ItemButtons = ({ item, onPick, onUnpick }) => (item.pinned || item.hidden
         </>
     ));
 
-const MediaItemList = ({ title, items, ...handlers }) => (
+export const MediaItemList = ({ title, items, ...handlers }) => (
     <>
         <h4>{title} <span>{items.length}건</span></h4>
         <ul className="admin-media__list">
@@ -40,16 +41,17 @@ const MediaItemList = ({ title, items, ...handlers }) => (
     </>
 );
 
-const AddForm = ({ onPick }) => {
+// kinds: 고를 수 있는 종류 (도시 영상은 영상만이라 종류 칸을 숨김)
+export const AddForm = ({ onPick, kinds = Object.keys(KIND_LABELS) }) => {
     const [form, setForm] = useState(EMPTY_FORM);
     const set = (key, value) => setForm({ ...form, [key]: value });
     const submit = async (e) => { e.preventDefault(); if (await onPick('pin', form)) setForm(EMPTY_FORM); };
     return (
         <form className="admin-form admin-form--inline" onSubmit={submit}>
             <div className="admin-form__row">
-                <label>종류<select value={form.kind} onChange={(e) => set('kind', e.target.value)}>
-                    {Object.entries(KIND_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                </select></label>
+                {kinds.length > 1 && <label>종류<select value={form.kind} onChange={(e) => set('kind', e.target.value)}>
+                    {kinds.map((value) => <option key={value} value={value}>{KIND_LABELS[value]}</option>)}
+                </select></label>}
                 <label>주소<input type="url" value={form.url} onChange={(e) => set('url', e.target.value)} placeholder="https://www.youtube.com/watch?v=..." required /></label>
             </div>
             <label>제목<input value={form.title} maxLength="200" onChange={(e) => set('title', e.target.value)} required /></label>
