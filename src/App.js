@@ -20,6 +20,7 @@ const Terms = lazy(() => import('./pages/policy/Terms'));
 const ItineraryPage = lazy(() => import('./pages/ItineraryPage'));
 const ExplorePage = lazy(() => import('./explore/ExplorePage'));
 const SettleCalculatorPage = lazy(() => import('./settle/SettleCalculatorPage'));
+const SpotCategoryPage = lazy(() => import('./spots/SpotCategoryPage'));
 const GroupList = lazy(() => import('./group/GroupList'));
 const GroupDetail = lazy(() => import('./group/GroupDetail'));
 const InvitePage = lazy(() => import('./group/InvitePage'));
@@ -49,6 +50,7 @@ function App() {
           <Route path="/itinerary/:id" element={<ItineraryPage/>}/>
           <Route path="/explore" element={<ExplorePage/>}/>
           <Route path="/settle" element={<SettleCalculatorPage/>}/>
+          <Route path="/spots/:city/:category" element={<SpotCategoryPage/>}/>
           <Route path="/groups" element={<GroupList/>}/>
           <Route path="/groups/:id" element={<GroupDetail/>}/>
           <Route path="/invite/:token" element={<InvitePage/>}/>

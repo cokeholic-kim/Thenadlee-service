@@ -29,3 +29,17 @@ export const cityPageMeta = (city) => {
         path: `/map/${city}`
     };
 };
+
+// 여행지별 장소 종류 페이지 (/spots/도시/종류, 종류는 소문자): 장소가 적으면 검색 노출 안 함
+export const CATEGORY_NAMES = seo.categoryNames;
+
+export const spotCategoryPageMeta = (city, slug, count) => {
+    const values = { '{city}': CITY_NAMES[city] || city, '{category}': CATEGORY_NAMES[slug] || slug, '{count}': count };
+    const fill = (text) => Object.entries(values).reduce((result, [key, value]) => result.replaceAll(key, value), text);
+    return {
+        title: fill(seo.categoryTitle),
+        description: fill(seo.categoryDescription),
+        path: `/spots/${city}/${slug}`,
+        noindex: count < seo.categoryMinSpots
+    };
+};

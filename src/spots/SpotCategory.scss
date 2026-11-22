@@ -1,0 +1,176 @@
+// 여행지별 장소 종류 페이지
+.spot-category-page {
+    max-width: 1080px;
+    margin: 40px auto 80px;
+    padding: 0 16px;
+    text-align: left;
+    color: var(--color-text);
+
+    h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+    }
+}
+
+.spot-category-page__intro {
+    margin: 0 0 16px;
+    color: var(--color-sub);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.spot-category-page__message {
+    padding: 24px 0;
+    color: var(--color-sub);
+
+    a {
+        color: var(--color-secondary-strong);
+    }
+}
+
+.spot-category-page__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--color-secondary);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.spot-category-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+
+    a {
+        padding: 6px 12px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        color: var(--color-text);
+        font-size: 14px;
+        text-decoration: none;
+
+        &.is-active {
+            border-color: var(--color-secondary);
+            background: var(--color-secondary-soft);
+            color: var(--color-secondary-strong);
+            font-weight: 700;
+        }
+    }
+}
+
+.spot-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.spot-category-card {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: #fff;
+}
+
+.spot-category-card__thumb {
+    aspect-ratio: 4 / 3;
+    background: var(--color-surface);
+
+    img,
+    .spot-thumb-placeholder {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.spot-category-card__body {
+    padding: 12px 14px 14px;
+
+    h2 {
+        margin: 0 0 6px;
+        font-size: 16px;
+    }
+
+    p {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: 0 0 8px;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+}
+
+.spot-category-card__meta {
+    color: var(--color-sub);
+    font-size: 12px;
+}
+
+.spot-category-cities {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-line);
+
+    h2 {
+        flex-basis: 100%;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    a {
+        color: var(--color-secondary-strong);
+        font-size: 14px;
+    }
+}
+
+// 휴대폰: 사진 왼쪽·글 오른쪽 가로 카드로 한 화면에 여러 곳
+@media (max-width: 600px) {
+    .spot-category-page h1 {
+        font-size: 22px;
+    }
+
+    .spot-category-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .spot-category-card {
+        display: flex;
+    }
+
+    .spot-category-card__thumb {
+        flex: 0 0 108px;
+        aspect-ratio: auto;
+        min-height: 108px;
+    }
+
+    .spot-category-card__body {
+        min-width: 0;
+        padding: 10px 12px;
+
+        h2 {
+            font-size: 15px;
+        }
+
+        p {
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: 13px;
+        }
+    }
+}

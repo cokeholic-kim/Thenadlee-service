@@ -24,15 +24,25 @@ const write = (value) => {
 
 const hasSpots = (draft) => draft.days.some((spots) => spots.length > 0);
 
+// 추천 목록 종류 필터(?category=)는 같은 일정으로 봄 (?itinerary·?group 만 구분)
+const IGNORED_PARAMS = ['category'];
+const draftScope = (search) => {
+    const params = new URLSearchParams(search);
+    IGNORED_PARAMS.forEach((name) => params.delete(name));
+    params.sort();
+    return params.toString();
+};
+
 /** 같은 화면 주소(도시 + ?itinerary·?group)일 때만 담아 둔 일정을 돌려줌 */
 export const readMapDraft = (cityName, search) => {
     const draft = read();
-    if (!draft || draft.cityName !== cityName || draft.search !== search) return null;
+    if (!draft || draft.cityName !== cityName || draft.search !== draftScope(search)) return null;
     if (Date.now() - draft.savedAt > MAX_AGE_MS || !hasSpots(draft)) return null;
     return draft;
 };
 
-export const saveMapDraft = ({ cityName, search, days, itinerary }) => {
+export const saveMapDraft = ({ cityName, search: rawSearch, days, itinerary }) => {
+    const search = draftScope(rawSearch);
     const previous = read();
     const resumeSave = previous?.cityName === cityName && previous?.search === search && Boolean(previous?.resumeSave);
     write({ cityName, search, days, itinerary, resumeSave, savedAt: Date.now() });
