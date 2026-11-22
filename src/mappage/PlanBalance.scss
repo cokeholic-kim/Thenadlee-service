@@ -48,3 +48,13 @@
         }
     }
 }
+
+// 지도 핀과 같은 종류 색
+.plan-balance__dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 4px;
+    border-radius: 50%;
+    vertical-align: middle;
+}

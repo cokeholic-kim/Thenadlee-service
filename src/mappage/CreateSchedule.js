@@ -15,6 +15,7 @@ import MapScriptGate from "../map/MapScriptGate";
 import { providerFor } from "../map/mapProvider";
 import "./CreateSchedule.scss";
 import { trackEvent } from "../analytics/analytics";
+import { categoryColor } from "../community/spotCategories";
 
 const MAP_STYLE = { width: '100%', height: '100vh' };
 
@@ -46,7 +47,7 @@ const useSpotHighlight = (mapAreaRef) => {
 
 const MapArea = ({ provider, center, places, route, highlight, areaRef, cityName, monthList, toolbar, panel, onPanel }) => {
   const dispatch = useDispatch();
-  const markers = useMemo(() => places.map((spot) => ({ lat: spot.lat, lng: spot.lon, label: spot.spotName })), [places]);
+  const markers = useMemo(() => places.map((spot, index) => ({ lat: spot.lat, lng: spot.lon, label: spot.spotName, color: categoryColor(spot.category), badge: index + 1 })), [places]);
   const { travelMode, legs, loading } = route;
   const lines = useMemo(() => legsToLines(legs), [legs]);
   return (

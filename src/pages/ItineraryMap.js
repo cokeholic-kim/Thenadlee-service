@@ -10,10 +10,12 @@ import { findTravelMode } from '../route/travelModes';
 import { loginPathHere } from '../session/loginPath';
 import { dayTimetable } from '../itinerary/itineraryTimetable';
 import DayTimetableList from './DayTimetableList';
+import { categoryColor } from '../community/spotCategories';
+import CategoryLegend from '../map/CategoryLegend';
 
 const MAP_STYLE = { width: '100%', height: '360px' };
 
-const toPlaces = (items) => items.map((item) => ({ lat: item.lat, lon: item.lon, spotName: item.spotName }));
+const toPlaces = (items) => items.map((item) => ({ lat: item.lat, lon: item.lon, spotName: item.spotName, category: item.category }));
 
 const RouteSummary = ({ legs, loading, travelMode, placeCount }) => {
     if (placeCount < 2) return <p className="itinerary-map__note">장소가 1곳이라 이동 경로가 없어요.</p>;
@@ -32,7 +34,8 @@ const RouteSummary = ({ legs, loading, travelMode, placeCount }) => {
 const DayRouteMap = ({ day, travelMode, provider }) => {
     const { items } = day;
     const places = useMemo(() => toPlaces(items), [items]);
-    const markers = useMemo(() => places.map((place, index) => ({ lat: place.lat, lng: place.lon, label: `${index + 1}. ${place.spotName}` })), [places]);
+    // 핀에 종류 색과 방문 순서 번호, 이름표는 장소 이름
+    const markers = useMemo(() => places.map((place, index) => ({ lat: place.lat, lng: place.lon, label: place.spotName, color: categoryColor(place.category), badge: index + 1 })), [places]);
     const { legs, loading } = useRouteLegs(places, travelMode, true, null, provider);
     const lines = useMemo(() => legsToLines(legs), [legs]);
     const timetable = useMemo(() => dayTimetable(day, loading ? [] : legs, travelMode), [day, legs, loading, travelMode]);
@@ -41,6 +44,7 @@ const DayRouteMap = ({ day, travelMode, provider }) => {
     return (
         <>
             <MapView provider={provider} center={center} markers={markers} lines={lines} fitTo={markers} className="itinerary-map__map" style={MAP_STYLE} markerIcon="pin" />
+            <CategoryLegend spots={places} />
             <RouteSummary legs={legs} loading={loading} travelMode={travelMode} placeCount={places.length} />
             <DayTimetableList items={items} timetable={timetable} />
         </>

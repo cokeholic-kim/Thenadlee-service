@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './MapView.scss';
+import { PIN_HEIGHT, PIN_WIDTH, pinIconUrl } from './markerIcon';
 
 const DEFAULT_LEVEL = 8;
 // 여러 장소에 맞출 때 지도 가장자리 여백(px)
@@ -22,9 +23,14 @@ const labelContent = (text) => {
     return element;
 };
 
+// 종류 색이 있으면 색·번호 핀, 없으면 카카오 기본 핀
+const markerImage = (marker) => (marker.color ? new window.kakao.maps.MarkerImage(pinIconUrl(marker.color, marker.badge),
+    new window.kakao.maps.Size(PIN_WIDTH, PIN_HEIGHT), { offset: new window.kakao.maps.Point(PIN_WIDTH / 2, PIN_HEIGHT) }) : undefined);
+
 const drawMarkers = (map, markers) => markers.flatMap((marker) => {
     const position = toLatLng(marker);
-    const pin = new window.kakao.maps.Marker({ map, position });
+    const image = markerImage(marker);
+    const pin = new window.kakao.maps.Marker({ map, position, ...(image ? { image } : {}) });
     if (!marker.label) return [pin];
     const label = new window.kakao.maps.CustomOverlay({ map, position, content: labelContent(marker.label), yAnchor: 2.6 });
     return [pin, label];

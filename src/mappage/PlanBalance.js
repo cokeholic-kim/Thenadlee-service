@@ -21,7 +21,7 @@ const PlanBalance = ({ activeDay, spots }) => {
     return (
         <section className="plan-balance" aria-label={`${activeDay + 1}일차 장소 구성`}>
             <p className="plan-balance__counts">
-                {counts.map((category) => <span key={category.value}>{category.icon} {category.label} {category.count}</span>)}
+                {counts.map((category) => <span key={category.value}><i className="plan-balance__dot" style={{ backgroundColor: category.color }} aria-hidden="true" />{category.icon} {category.label} {category.count}</span>)}
             </p>
             {hint && (
                 <div className="plan-balance__hint" role="status">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GoogleMap, InfoWindowF, MarkerF, OverlayViewF, PolylineF } from '@react-google-maps/api';
 import { FILE_URL } from '../config/apiurl';
 import './MapView.scss';
+import { PIN_HEIGHT, PIN_WIDTH, pinIconUrl } from './markerIcon';
 
 const DEFAULT_ZOOM = 12;
 const LINE_WEIGHT = 5;
@@ -24,10 +25,21 @@ const dashedOptions = (color) => ({
 const lineOptions = (line) => (line.dashed ? dashedOptions(line.color)
     : { strokeColor: line.color, strokeOpacity: LINE_OPACITY, strokeWeight: LINE_WEIGHT });
 
+// 이름표를 핀 바로 위에 두는 세로 위치 (이름표는 핀 윗부분 기준으로 놓이므로 색 핀은 더 올리지 않음)
+const DEFAULT_PIN_LABEL_OFFSET = -47;
+const COLOR_PIN_LABEL_OFFSET = 0;
+
+// 종류 색이 있으면 색·번호 핀
+const pinIcon = (marker) => ({
+    url: pinIconUrl(marker.color, marker.badge),
+    scaledSize: new window.google.maps.Size(PIN_WIDTH, PIN_HEIGHT),
+    anchor: new window.google.maps.Point(PIN_WIDTH / 2, PIN_HEIGHT),
+});
+
 const LabeledMarker = ({ marker, icon }) => (
-    <MarkerF position={{ lat: marker.lat, lng: marker.lng }} icon={icon}>
+    <MarkerF position={{ lat: marker.lat, lng: marker.lng }} icon={marker.color ? pinIcon(marker) : icon}>
         {marker.label && (
-            <InfoWindowF position={{ lat: marker.lat, lng: marker.lng }} options={{ pixelOffset: new window.google.maps.Size(0, -47) }}>
+            <InfoWindowF position={{ lat: marker.lat, lng: marker.lng }} options={{ pixelOffset: new window.google.maps.Size(0, marker.color ? COLOR_PIN_LABEL_OFFSET : DEFAULT_PIN_LABEL_OFFSET) }}>
                 <div className="map-label">{marker.label}</div>
             </InfoWindowF>
         )}
