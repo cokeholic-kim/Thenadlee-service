@@ -29,10 +29,11 @@ async function fetchBody(url) {
 }
 
 // 공개 여행지와 도시별 추천 장소 (API 실패 시 seo.json 의 도시 목록, 장소 없음)
+//   도시별 장소 요청 실패도 여기서 잡도록 await 로 기다림 (await 없이 넘기면 try 밖에서 실패해 빌드가 멈춤)
 async function loadCities(apiUrl) {
     try {
         const cities = await fetchBody(`${apiUrl}/cities`);
-        return Promise.all(cities.map(async (city) => ({
+        return await Promise.all(cities.map(async (city) => ({
             ...city,
             spots: await fetchBody(`${apiUrl}/place/spot/${encodeURIComponent(city.name)}`),
             itineraries: await fetchBody(`${apiUrl}/cities/${encodeURIComponent(city.name)}/itineraries`).catch(() => []),
