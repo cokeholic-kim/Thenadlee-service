@@ -7,6 +7,7 @@ import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
 import { spotTagList } from '../community/spotTags';
 import SpotTagPicker from '../community/SpotTagPicker';
 import SpotTagBulkBar, { useSpotSelection } from './SpotTagBulkBar';
+import AdminPlaceSearch, { SpotCityContext } from './AdminPlaceSearch';
 import { toastError, confirmDialog } from '../ui/feedback';
 
 const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '', tags: [] };
@@ -28,13 +29,21 @@ const KindFields = ({ form, set }) => (
     </>
 );
 
-const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
+const useSpotFormState = (initial) => {
     const [form, setForm] = useState(initial);
     const set = (key, value) => setForm({ ...form, [key]: value });
+    // 검색으로 고르면 좌표를 채우고, 이름이 비어 있으면 이름도 채움
+    const onPick = ({ name, lat, lng }) => setForm((current) => ({ ...current, lat, lng, name: current.name || name }));
+    return { form, setForm, set, onPick };
+};
+
+const SpotForm = ({ initial, submitLabel, onSubmit, onCancel }) => {
+    const { form, setForm, set, onPick } = useSpotFormState(initial);
     return (
         <form className="admin-form admin-form--inline" onSubmit={(e) => { e.preventDefault(); onSubmit(form, () => setForm(EMPTY_SPOT)); }}>
             <label>장소 이름<input value={form.name} onChange={(e) => set('name', e.target.value)} required /></label>
             <KindFields form={form} set={set} />
+            <AdminPlaceSearch onPick={onPick} />
             <div className="admin-form__row">
                 <label>위도<input type="number" step="any" value={form.lat} onChange={(e) => set('lat', e.target.value)} required /></label>
                 <label>경도<input type="number" step="any" value={form.lng} onChange={(e) => set('lng', e.target.value)} required /></label>
@@ -126,12 +135,12 @@ const SpotList = ({ spots, selection, run }) => {
 };
 
 // 여행지의 추천 장소 목록·거르기·태그 한 번에 바꾸기·추가·수정·삭제
-const SpotManager = ({ cityId, spots, onChanged }) => {
+const SpotManager = ({ cityId, city, spots, onChanged }) => {
     const run = useAdminRun(onChanged);
     const filter = useSpotListFilter(spots);
     const selection = useSpotSelection(filter.visible);
     return (
-        <section className="admin-section">
+        <SpotCityContext.Provider value={city}><section className="admin-section">
             <h2>추천 장소 ({spots.length})</h2>
             <SpotListFilters filter={filter} />
             <SpotTagBulkBar cityId={cityId} selection={selection} run={run} visibleCount={filter.visible.length} />
@@ -139,7 +148,7 @@ const SpotManager = ({ cityId, spots, onChanged }) => {
             <h3>장소 추가</h3>
             <SpotForm initial={EMPTY_SPOT} submitLabel="장소 추가"
                 onSubmit={async (form, reset) => { if (await run(() => adminApi.addSpot(cityId, form))) reset(); }} />
-        </section>
+        </section></SpotCityContext.Provider>
     );
 };
 

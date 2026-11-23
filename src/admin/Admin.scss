@@ -132,6 +132,83 @@ $admin-radius: 6px;
     }
 }
 
+// 관리자 장소 폼: 장소 이름으로 검색해 위도·경도 채우기 (검색 결과 모양은 지도 화면 장소 등록과 같게)
+.admin-place-search__open {
+    align-self: flex-start;
+}
+
+.admin-place-search {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    background: $admin-bg-soft;
+
+    > .admin-button {
+        align-self: flex-start;
+    }
+
+    .place-search__row {
+        display: flex;
+        gap: 6px;
+
+        input {
+            flex: 1;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid $admin-line;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        button {
+            padding: 0 14px;
+            border: 1px solid $admin-line;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+        }
+    }
+
+    .place-search__results {
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid $admin-line;
+        border-radius: 6px;
+        background: #fff;
+
+        button {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 8px 10px;
+            border: 0;
+            border-bottom: 1px solid $admin-bg-soft;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+                background: $admin-bg-soft;
+            }
+
+            span {
+                color: #777;
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    .map-modal__hint {
+        margin: 4px 0 0;
+        color: #777;
+        font-size: 0.85rem;
+    }
+}
+
 // 추천 장소 목록 거르기
 .admin-filters {
     display: flex;

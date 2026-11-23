@@ -54,7 +54,7 @@ const CityEditPanel = () => {
             {city && (
                 <>
                     <CityForm key={city.id} initial={toCityForm(city)} onSave={onSave} onDelete={isAdmin(role) ? onDelete : null} />
-                    <SpotManager cityId={city.id} spots={city.spots} onChanged={load} />
+                    <SpotManager cityId={city.id} city={city} spots={city.spots} onChanged={load} />
                     {city.region === 'DOMESTIC' && <TourImportPanel cityId={city.id} onImported={load} />}
                     <PostManager cityId={city.id} posts={city.posts} onChanged={load} />
                     <CityMediaManager cityId={city.id} />
