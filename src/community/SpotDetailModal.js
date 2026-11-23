@@ -7,6 +7,7 @@ import { addSpotLink, removeSpotLink } from '../api/communityApi';
 import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import { categoryLabel } from './spotCategories';
 import { spotTagList } from './spotTags';
+import MoreInCategory from './MoreInCategory';
 import './Community.scss';
 
 export const SourceBadge = ({ spot }) => (spot.source === 'USER'
@@ -37,6 +38,13 @@ const SpotLinks = ({ spot }) => {
     );
 };
 
+const SpotCredits = ({ spot }) => (
+    <>
+        {spot.credit && <p className="map-modal__hint">자료 제공: {spot.credit}</p>}
+        {spot.imageCredit && <p className="map-modal__hint">사진: {spot.imageCredit}</p>}
+    </>
+);
+
 // 추천 장소 상세: 사진, 소개, 등록자. 내가 등록한 장소면 수정·삭제, 아니면 신고
 const SpotDetailModal = ({ spot, onClose, ...actions }) => (
     <MapModal title={spot.spotName} onClose={onClose}>
@@ -52,8 +60,8 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
             {spot.source === 'USER' && <span>{spot.authorNickName || '탈퇴한 회원'} 님이 등록</span>}
         </p>
         {spot.description && <p className="spot-detail__description">{spot.description}</p>}
-        {spot.credit && <p className="map-modal__hint">자료 제공: {spot.credit}</p>}
-        {spot.imageCredit && <p className="map-modal__hint">사진: {spot.imageCredit}</p>}
+        <SpotCredits spot={spot} />
+        <MoreInCategory spot={spot} />
         <SpotActions spot={spot} {...actions} />
         <div className="map-modal__actions"><GroupWishButton spot={spot} /></div>
         <SpotLinks spot={spot} />

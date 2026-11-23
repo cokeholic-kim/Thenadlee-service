@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CityVideosModal from './CityVideosModal';
+import CategoryPageLinks from './CategoryPageLinks';
 import { CITY_NAMES } from '../seo/pageMeta';
 import './MonthDesc.scss'
 
@@ -10,7 +11,7 @@ const useTripMonth = () => {
     return startDate ? Number(startDate.slice(5, 7)) : new Date().getMonth() + 1;
 };
 
-// 지도 왼쪽 아래 "여행 tip": 그달 여행 정보 + 도시 인기·축제 영상 보기 버튼 (휴대폰은 지도 아래)
+// 지도 왼쪽 아래 "여행 tip": 그달 여행 정보 + 도시 인기·축제 영상 보기 버튼 + 종류별 추천 링크 (휴대폰은 지도 아래)
 const MonthDesc = ({ monthList = [], cityName, className = '' }) => {
     const [videoOpen, setVideoOpen] = useState(false);
     const month = useTripMonth();
@@ -24,6 +25,7 @@ const MonthDesc = ({ monthList = [], cityName, className = '' }) => {
                 <button type="button" className="descdiv__video" onClick={() => setVideoOpen(true)}>
                     ▶ {CITY_NAMES[cityName] || cityName} 여행·{month}월 축제 영상
                 </button>
+                <CategoryPageLinks cityName={cityName} />
             </div>
             {videoOpen && <CityVideosModal cityName={cityName} month={month} onClose={() => setVideoOpen(false)} />}
         </>

@@ -43,3 +43,6 @@ export const spotCategoryPageMeta = (city, slug, count) => {
         noindex: count < seo.categoryMinSpots
     };
 };
+
+// 종류별 페이지를 미리 만들고 링크하는 최소 장소 수 (서버 config.php 의 seo.categoryMinSpots 와 같은 값)
+export const CATEGORY_MIN_SPOTS = seo.categoryMinSpots;

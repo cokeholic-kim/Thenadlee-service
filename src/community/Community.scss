@@ -83,6 +83,17 @@ $community-like: #e0575b;
         white-space: pre-line;
     }
 
+    // 같은 종류 추천 페이지로 (그 종류 장소가 기준 수 이상일 때만)
+    .spot-detail__more {
+        margin: 8px 0;
+        font-size: 14px;
+
+        a {
+            color: #04626c;
+            font-weight: 700;
+        }
+    }
+
     .place-search {
         margin-bottom: 8px;
     }
