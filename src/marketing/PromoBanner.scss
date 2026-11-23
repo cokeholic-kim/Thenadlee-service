@@ -1,6 +1,7 @@
 $promo-teal: linear-gradient(120deg, #2b7d83 0%, #3a9ea5 100%);
 $promo-orange: linear-gradient(120deg, #f08a3c 0%, #ffb067 100%);
 $promo-navy: linear-gradient(120deg, #1f3557 0%, #3c5a8a 100%);
+$promo-purple: linear-gradient(120deg, #4c1d95 0%, #7c4dce 100%);
 
 .promoBanner {
     position: relative;
@@ -28,6 +29,7 @@ $promo-navy: linear-gradient(120deg, #1f3557 0%, #3c5a8a 100%);
         &.is-teal { background: $promo-teal; }
         &.is-orange { background: $promo-orange; }
         &.is-navy { background: $promo-navy; }
+        &.is-purple { background: $promo-purple; }
 
         h2 {
             margin: 12px 0 8px;

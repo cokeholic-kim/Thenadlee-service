@@ -67,6 +67,12 @@ export const PROMOTIONS = [
         linkLabel: '내 모임 보기', path: '/groups',
     },
     {
+        id: 'editor-recruit', theme: 'purple', label: '에디터 모집',
+        title: '내가 아는 여행지, 에디터가 되어 소개해 주세요',
+        description: '여행지 소개와 추천 장소·사진·여행기를 함께 다듬을 에디터를 모집해요. 고객 문의로 지원하면 답변으로 안내해 드려요.',
+        linkLabel: '에디터 지원하기', path: '/inquiries?topic=editor',
+    },
+    {
         id: 'winter-sunrise', theme: 'navy', label: '이달의 여행', startDate: '2026-12-01', endDate: '2027-01-15',
         title: '새해 첫 해돋이, 동선부터 미리 짜 두세요',
         description: '해돋이 명소와 근처 맛집·카페를 담아 새벽 동선을 미리 그려 보세요.',

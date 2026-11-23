@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
 import { createInquiry, deleteInquiry, fetchMyInquiries } from '../api/inquiryApi';
 import { getApiErrorMessage } from '../util/apiError';
 import { confirmDialog, toast, toastError } from '../ui/feedback';
 import usePageMeta from '../seo/usePageMeta';
 import { PAGE_META } from '../seo/pageMeta';
-import { INQUIRY_CATEGORIES, INQUIRY_LIMITS, INQUIRY_STATUS, categoryLabelOf, formatInquiryDate } from './inquiryLabels';
+import { loginPathHere } from '../session/loginPath';
+import { INQUIRY_CATEGORIES, INQUIRY_LIMITS, INQUIRY_PRESETS, INQUIRY_STATUS, categoryLabelOf, formatInquiryDate } from './inquiryLabels';
 import './Inquiry.scss';
 
-const PAGE_PATH = '/inquiries';
 const EMPTY_FORM = { category: '', title: '', content: '' };
 
-const InquiryForm = ({ onSubmit }) => {
-    const [form, setForm] = useState(EMPTY_FORM);
+const InquiryForm = ({ onSubmit, preset }) => {
+    const [form, setForm] = useState(() => ({ ...EMPTY_FORM, ...preset }));
     const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
     const submit = async (e) => { e.preventDefault(); if (await onSubmit(form)) setForm(EMPTY_FORM); };
     return (
@@ -70,7 +70,7 @@ const useLoginRequired = () => {
     const navigate = useNavigate();
     const { checked, isLogin } = useSelector((state) => state.logincheck);
     useEffect(() => {
-        if (checked && !isLogin) navigate(`/login?next=${encodeURIComponent(PAGE_PATH)}`, { replace: true });
+        if (checked && !isLogin) navigate(loginPathHere(), { replace: true });
     }, [checked, isLogin, navigate]);
     return isLogin;
 };
@@ -80,12 +80,14 @@ const InquiryPage = () => {
     usePageMeta(PAGE_META.inquiries);
     const isLogin = useLoginRequired();
     const { items, submit, remove } = useMyInquiries(isLogin);
+    const [searchParams] = useSearchParams();
+    const preset = INQUIRY_PRESETS[searchParams.get('topic')];
     return (
         <PageLayout>
             <div className="inquiry-page">
                 <h1>고객 문의</h1>
                 <p className="inquiry-page__intro">이용하다 막힌 점, 오류, 바라는 기능을 알려 주세요. 남긴 문의와 답변은 본인과 운영자만 볼 수 있어요.</p>
-                <section className="inquiry-card"><h2>새 문의</h2><InquiryForm onSubmit={submit} /></section>
+                <section className="inquiry-card"><h2>새 문의</h2><InquiryForm onSubmit={submit} preset={preset} /></section>
                 <section className="inquiry-card">
                     <h2>내 문의</h2>
                     {items === null && <p>불러오는 중…</p>}

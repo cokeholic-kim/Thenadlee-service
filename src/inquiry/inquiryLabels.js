@@ -7,6 +7,20 @@ export const INQUIRY_CATEGORIES = [
     { value: 'ETC', label: '기타' },
 ];
 
+// 다른 화면에서 /inquiries?topic=키 로 들어오면 미리 채우는 문의 (연락처는 받지 않으므로 묻지 않음)
+export const INQUIRY_PRESETS = {
+    editor: {
+        category: 'ETC',
+        title: '에디터 지원',
+        content: [
+            '관심 있는 여행지:',
+            '잘 아는 장소·자주 가는 곳:',
+            '해 보고 싶은 활동 (추천 장소 등록·사진·여행기·공개 일정 다듬기 등):',
+            '간단한 소개:',
+        ].join('\n\n') + '\n',
+    },
+};
+
 export const INQUIRY_STATUS = { WAITING: '답변 대기', ANSWERED: '답변 완료' };
 
 // 서버 config.php 의 inquiry 값과 같게
