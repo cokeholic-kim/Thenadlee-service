@@ -2,7 +2,7 @@
  * 빌드 후 공개 페이지별 HTML 을 미리 만듦 (build/prerender/...) — npm run build 의 postbuild 단계
  *   검색 로봇(네이버·다음)과 링크 미리보기(카카오톡 등)는 JavaScript 를 거의 실행하지 않아 SPA 의 빈 index.html 만 보므로,
  *   페이지마다 제목·설명·대표 주소·대표 사진·구조화 데이터·본문 요약을 넣어 둠 (React 가 뜨면 본문은 실제 화면으로 바뀜)
- *   제공은 root/.htaccess 가 담당 (/ → prerender/index.html, /map/도시 → prerender/map/도시.html, /spots/도시/종류 → prerender/spots/도시/종류.html)
+ *   제공은 root/.htaccess 가 담당 (/ → prerender/index.html, /map/도시 → prerender/map/도시.html, /spots/도시/종류·태그 → prerender/spots/도시/종류·태그.html)
  * 데이터는 운영 API(/back/cities, /back/place/spot/{도시})에서 받고, 받지 못하면 seo.json 의 도시 이름으로 제목·설명만 만듦
  */
 const fs = require('fs');
@@ -75,27 +75,30 @@ function cityPage(siteUrl, city) {
         jsonLd: cityJsonLd(city, url, absolute(siteUrl, city.titleImageUrl)),
         body: `<main class="prerender"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(city.description)}</p>`
             + (spots ? `<h2>${escapeHtml(cityName)} 추천 여행지</h2><ul>${spots}</ul>` : '')
-            + (categories ? `<h2>${escapeHtml(cityName)} 종류별 추천</h2><ul>${categories}</ul>` : '')
+            + (categories ? `<h2>${escapeHtml(cityName)} 테마별 추천</h2><ul>${categories}</ul>` : '')
             + (plans ? `<h2>${escapeHtml(cityName)} 추천 일정</h2><ul>${plans}</ul>` : '') + `<p><a href="/">${escapeHtml(seo.siteName)} 홈</a></p></main>`,
     };
 }
 
-// 장소가 seo.categoryMinSpots 곳 이상인 종류만 (서버 사이트맵의 seo.categoryMinSpots 와 같은 기준)
+// 장소 종류·상황 태그별 묶음 중 장소가 seo.categoryMinSpots 곳 이상인 것만 (서버 사이트맵의 seo.categoryMinSpots 와 같은 기준)
+const hasTag = (spot, slug) => (spot.tags || []).some((tag) => String(tag).toLowerCase() === slug);
+
 function categoryGroups(city) {
-    return Object.keys(seo.categoryNames)
-        .map((slug) => ({ slug, spots: city.spots.filter((spot) => String(spot.category || '').toLowerCase() === slug) }))
-        .filter((group) => group.spots.length >= seo.categoryMinSpots);
+    const byCategory = Object.keys(seo.categoryNames).map((slug) => ({ slug, spots: city.spots.filter((spot) => String(spot.category || '').toLowerCase() === slug) }));
+    const byTag = Object.keys(seo.tagNames).map((slug) => ({ slug, spots: city.spots.filter((spot) => hasTag(spot, slug)) }));
+    return [...byCategory, ...byTag].filter((group) => group.spots.length >= seo.categoryMinSpots);
 }
 
 function fillCategory(text, cityName, slug, count) {
-    return text.replaceAll('{city}', cityName).replaceAll('{category}', seo.categoryNames[slug]).replaceAll('{count}', String(count));
+    const name = seo.categoryNames[slug] || seo.tagNames[slug];
+    return text.replaceAll('{city}', cityName).replaceAll('{category}', name).replaceAll('{count}', String(count));
 }
 
 function categoryPage(siteUrl, city, { slug, spots }) {
     const cityName = seo.cityNames[city.name] || city.displayName || city.name;
     const title = fillCategory(seo.categoryTitle, cityName, slug, spots.length);
     const items = spots.map((spot) => `<li><strong>${escapeHtml(spot.spotName)}</strong> ${escapeHtml(summary(spot.description, SPOT_SUMMARY_LENGTH))}</li>`).join('');
-    const mapLink = `/map/${encodeURIComponent(city.name)}?category=${slug.toUpperCase()}`;
+    const mapLink = `/map/${encodeURIComponent(city.name)}?${seo.tagNames[slug] ? 'tag' : 'category'}=${slug.toUpperCase()}`;
     return {
         file: `spots/${city.name}/${slug}.html`, url: `${siteUrl}/spots/${encodeURIComponent(city.name)}/${slug}`, title: `${title} | ${seo.siteName}`,
         description: fillCategory(seo.categoryDescription, cityName, slug, spots.length), image: absolute(siteUrl, spots.find((spot) => spot.imageUrl)?.imageUrl),

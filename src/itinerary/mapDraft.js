@@ -24,8 +24,8 @@ const write = (value) => {
 
 const hasSpots = (draft) => draft.days.some((spots) => spots.length > 0);
 
-// 추천 목록 종류 필터(?category=)는 같은 일정으로 봄 (?itinerary·?group 만 구분)
-const IGNORED_PARAMS = ['category'];
+// 추천 목록 필터(?category=·?tag=)는 같은 일정으로 봄 (?itinerary·?group 만 구분)
+const IGNORED_PARAMS = ['category', 'tag'];
 const draftScope = (search) => {
     const params = new URLSearchParams(search);
     IGNORED_PARAMS.forEach((name) => params.delete(name));

@@ -181,3 +181,8 @@
         }
     }
 }
+
+// 종류 줄 바로 아래 상황 줄은 붙여서
+.spot-category-links + .spot-category-links {
+    margin-top: -12px;
+}

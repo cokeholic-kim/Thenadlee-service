@@ -63,12 +63,12 @@ const usePanelFilterRequests = (setSource, setCategory, setTag) => {
 };
 
 // 출처(운영진·여행자)·종류·상황 태그를 함께 적용. 고른 종류가 목록에서 사라지면(일정에 다 담음 등) 전체로 되돌림
-// 종류별 추천 페이지(/spots/도시/종류)에서 넘어오면 ?category= 로 처음 필터를 정함
+// 종류·상황 추천 페이지(/spots/도시/…)에서 넘어오면 ?category= 또는 ?tag= 로 처음 필터를 정함
 const useSpotFilters = (spots) => {
     const [searchParams] = useSearchParams();
     const [source, setSource] = useState('ALL');
     const [picked, setCategory] = useState(() => searchParams.get('category') || ALL_CATEGORIES);
-    const [pickedTag, setTag] = useState(null);
+    const [pickedTag, setTag] = useState(() => searchParams.get('tag'));
     usePanelFilterRequests(setSource, setCategory, setTag);
     const bySource = spots.filter((spot) => source === 'ALL' || spot.source === source);
     const categories = countCategories(bySource);
