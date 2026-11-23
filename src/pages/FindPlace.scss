@@ -47,18 +47,36 @@
 }
 
 // 여행지 카드 목록: PC 2열, 휴대폰 1열
-// 공개 일정 둘러보기로 가는 링크
+// 공개 일정 둘러보기로 가는 링크: 메인 화면 오른쪽 아래에 떠서 스크롤을 따라다님 (헤더·앱 설치 안내보다 아래 층)
 .FindPlace__explore {
-    display: table;
-    margin: 28px auto 0;
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 900;
     padding: 12px 22px;
     border: 1px solid var(--color-secondary);
     border-radius: 999px;
+    background-color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     color: var(--color-secondary-strong);
     font-weight: 700;
 
     &:hover {
         background-color: var(--color-secondary-soft);
+    }
+
+    @media (max-width: 768px) {
+        right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom));
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+
+// 아래쪽 앱 설치·새 버전 안내(가운데 최대 520px)가 떠 있고 화면이 좁아 겹치면 그 위로 올림
+@media (max-width: 1100px) {
+    body:has(.pwa-banner) .FindPlace__explore {
+        bottom: calc(112px + env(safe-area-inset-bottom));
     }
 }
 
