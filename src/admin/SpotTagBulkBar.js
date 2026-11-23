@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { adminApi } from '../api/adminApi';
-import { SPOT_TAGS, tagLabel } from '../community/spotTags';
+import { fetchTagSuggestions } from '../api/communityApi';
 import { toast } from '../ui/feedback';
 
 /** 목록에서 고른 장소 (지금 보이는 장소만 남김: 거르기를 바꾸거나 태그를 달아 목록에서 빠지면 선택도 풀림) */
@@ -14,8 +14,17 @@ export const useSpotSelection = (visibleSpots) => {
     return { selectedIds, isSelected: (id) => picked.has(id), toggle, allSelected, toggleAll, clear };
 };
 
-const useBulkTag = (cityId, selection, run) => {
-    const [tag, setTag] = useState(SPOT_TAGS[0].value);
+// 고를 수 있는 태그: 공식·많이 쓴 태그 (새 태그는 장소 하나에 먼저 달면 목록에 나옴)
+const useTagOptions = () => {
+    const [options, setOptions] = useState([]);
+    useEffect(() => { fetchTagSuggestions('').then(setOptions).catch(() => setOptions([])); }, []);
+    return options;
+};
+
+const useBulkTag = (cityId, selection, run, options) => {
+    const [picked, setTag] = useState('');
+    const tag = picked || options[0]?.key || '';
+    const tagLabel = (key) => options.find((option) => option.key === key)?.name || key;
     const apply = async (action) => {
         const count = selection.selectedIds.length;
         const result = await run(() => adminApi.changeSpotTags(cityId, { spotIds: selection.selectedIds, tag, action }));
@@ -23,19 +32,19 @@ const useBulkTag = (cityId, selection, run) => {
         selection.clear();
         toast(`${count}곳에서 "${tagLabel(tag)}" 태그를 ${action === 'ADD' ? '달았어요' : '뺐어요'}.`);
     };
-    return { tag, setTag, apply };
+    return { tag, setTag, apply, options };
 };
 
-// 고른 장소에 상황 태그를 한 번에 달기·빼기 (에디터 이상, 서버가 그 여행지 장소인지 다시 확인)
+// 고른 장소에 해시태그를 한 번에 달기·빼기 (에디터 이상, 서버가 그 여행지 장소인지 다시 확인)
 const SpotTagBulkBar = ({ cityId, selection, run, visibleCount }) => {
-    const bulk = useBulkTag(cityId, selection, run);
-    const none = selection.selectedIds.length === 0;
+    const bulk = useBulkTag(cityId, selection, run, useTagOptions());
+    const none = selection.selectedIds.length === 0 || !bulk.tag;
     return (
-        <div className="admin-bulk" role="group" aria-label="상황 태그 한 번에 바꾸기">
+        <div className="admin-bulk" role="group" aria-label="해시태그 한 번에 바꾸기">
             <label className="admin-check"><input type="checkbox" checked={selection.allSelected} disabled={visibleCount === 0} onChange={selection.toggleAll} /> 보이는 장소 모두 고르기</label>
             <span className="admin-bulk__count">{selection.selectedIds.length}곳 고름</span>
-            <select value={bulk.tag} aria-label="바꿀 상황 태그" onChange={(e) => bulk.setTag(e.target.value)}>
-                {SPOT_TAGS.map((tag) => <option key={tag.value} value={tag.value}>{tag.icon} {tag.label}</option>)}
+            <select value={bulk.tag} aria-label="바꿀 해시태그" onChange={(e) => bulk.setTag(e.target.value)}>
+                {bulk.options.map((option) => <option key={option.key} value={option.key}>{option.icon ? `${option.icon} ` : ''}#{option.name}</option>)}
             </select>
             <button type="button" className="admin-button is-primary" disabled={none} onClick={() => bulk.apply('ADD')}>태그 달기</button>
             <button type="button" className="admin-button" disabled={none} onClick={() => bulk.apply('REMOVE')}>태그 빼기</button>

@@ -8,7 +8,8 @@ import MapModal from './MapModal';
 import PhotoUploader from './PhotoUploader';
 import PlaceSearch from './PlaceSearch';
 import { SPOT_CATEGORIES } from './spotCategories';
-import SpotTagPicker from './SpotTagPicker';
+import HashtagInput from './HashtagInput';
+import { addSpotTag } from '../api/communityApi';
 import './Community.scss';
 import { toast, toastError } from '../ui/feedback';
 
@@ -18,20 +19,33 @@ const MAX_PHOTOS = 3;
 const toForm = (spot) => ({
     name: spot?.spotName || '',
     category: spot?.category || '',
-    tags: spot?.tags || [],
+    tags: [],
+    isNew: !spot,
     description: spot?.description || '',
     position: spot ? { lat: spot.lat, lng: spot.lon } : null,
     imageUrls: spot?.source === 'USER' ? spot.images : [],
 });
+
+// 등록한 장소에 고른 태그를 차례로 닮 (규칙에 어긋난 태그는 알리고 나머지는 계속)
+const addTagsAfterCreate = async (spotId, names) => {
+    for (const name of names) {
+        try {
+            await addSpotTag(spotId, name); // eslint-disable-line no-await-in-loop
+        } catch (error) {
+            toastError(`#${name}: ${getApiErrorMessage(error)}`);
+        }
+    }
+};
 
 const useSpotSave = (cityName, spot, onSaved) => {
     const [saving, setSaving] = useState(false);
     const save = async (form) => {
         if (!form.position) return toast('지도를 눌러 장소 위치를 정해 주세요.');
         setSaving(true);
-        const payload = { name: form.name, category: form.category, tags: form.tags, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
+        const payload = { name: form.name, category: form.category, description: form.description, lat: form.position.lat, lng: form.position.lng, imageUrls: form.imageUrls };
         try {
-            await (spot ? updateSpot(spot.id, payload) : createSpot(cityName, payload));
+            const saved = await (spot ? updateSpot(spot.id, payload) : createSpot(cityName, payload));
+            if (!spot) await addTagsAfterCreate(saved.id, form.tags);
             toast(spot ? '장소를 수정했어요.' : '장소를 등록했어요. 다른 여행자에게 바로 보여요.');
             onSaved();
         } catch (error) {
@@ -43,16 +57,26 @@ const useSpotSave = (cityName, spot, onSaved) => {
     return { saving, save };
 };
 
-// 종류(필수, 하나) + 상황 태그(선택, 여러 개)
-const KindFields = ({ form, set }) => (
+const cleanTag = (text) => text.replace(/[#\s·]/g, '').toLowerCase();
+
+// 새로 등록할 때만: 해시태그 (선택, 등록 뒤 달림. 등록한 장소의 태그는 장소 상세에서 고침)
+const NewSpotTags = ({ form, set }) => (
+    <>
+        <label>해시태그 (선택)</label>
+        {form.tags.length > 0 && <p className="new-spot-tags">{form.tags.map((name) => <button key={name} type="button" onClick={() => set('tags', form.tags.filter((item) => item !== name))}>#{name} ×</button>)}</p>}
+        <HashtagInput exclude={form.tags} onAdd={(text) => { const name = cleanTag(text); if (name && !form.tags.includes(name)) set('tags', [...form.tags, name]); return true; }} />
+    </>
+);
+
+// 종류(필수, 하나) + 새 장소면 해시태그
+const KindFields = ({ form, set, isNew }) => (
     <>
         <label htmlFor="spotCategory">종류</label>
         <select id="spotCategory" value={form.category} onChange={(e) => set('category', e.target.value)} required>
             <option value="">골라 주세요</option>
             {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
         </select>
-        <label>이런 때 좋아요 (선택)</label>
-        <SpotTagPicker value={form.tags} onChange={(tags) => set('tags', tags)} />
+        {isNew && <NewSpotTags form={form} set={set} />}
     </>
 );
 
@@ -66,7 +90,7 @@ const SpotForm = ({ initial, center, provider, saving, onSubmit }) => {
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }}>
             <label htmlFor="spotName">장소 이름</label>
             <input id="spotName" value={form.name} onChange={(e) => set('name', e.target.value)} maxLength="100" required />
-            <KindFields form={form} set={set} />
+            <KindFields form={form} set={set} isNew={form.isNew} />
             <label>위치 (검색하거나 지도를 눌러 표시)</label>
             <PlaceSearch provider={provider} center={center} onPick={onPick} />
             <LocationPicker provider={provider} center={center} position={form.position} onChange={onPosition} />

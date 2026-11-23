@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import useForecast from '../group/useForecast';
 import { MAP_PANELS, requestMapPanel, requestSpotTag } from './mapPanelEvents';
 import { trackEvent } from '../analytics/analytics';
+import { RAINY_TAG, hasTag } from '../community/spotTags';
 import './RainHint.scss';
 
-const RAINY_TAG = 'RAINY';
 const WET_TEXT = { RAIN: { icon: '☔', word: '비' }, SNOW: { icon: '❄️', word: '눈' } };
 
 // 추천 목록을 "비 오는 날" 태그로 거르고 보여 줌 (휴대폰은 "추천 장소" 탭으로)
@@ -25,7 +25,7 @@ const RainHint = ({ cityName, activeDay }) => {
     const { byDay } = useForecast(cityName, startDate, dayCount);
     const day = byDay[activeDay + 1];
     if (!day?.wet) return null;
-    const rainyCount = remaining.filter((spot) => spot.tags?.includes(RAINY_TAG)).length;
+    const rainyCount = remaining.filter((spot) => hasTag(spot, RAINY_TAG)).length;
     const text = WET_TEXT[day.wet];
     return (
         <div className="rain-hint" role="status">

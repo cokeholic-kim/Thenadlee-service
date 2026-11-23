@@ -4,19 +4,18 @@ import { getApiErrorMessage } from '../util/apiError';
 import ImageUploadField from './ImageUploadField';
 import SpotMediaManager from './SpotMediaManager';
 import { SPOT_CATEGORIES, categoryLabel } from '../community/spotCategories';
-import { spotTagList } from '../community/spotTags';
-import SpotTagPicker from '../community/SpotTagPicker';
+import { tagText } from '../community/spotTags';
+import SpotHashtags from '../community/SpotHashtags';
 import SpotTagBulkBar, { useSpotSelection } from './SpotTagBulkBar';
 import AdminPlaceSearch, { SpotCityContext } from './AdminPlaceSearch';
 import { toastError, confirmDialog } from '../ui/feedback';
 
-const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '', tags: [] };
+const EMPTY_SPOT = { name: '', lat: '', lng: '', description: '', imageUrl: '', category: '' };
 const toSpotForm = (spot) => ({
     name: spot.name, lat: spot.lat, lng: spot.lon, description: spot.description || '', imageUrl: spot.imageUrl || '', category: spot.category || '',
-    tags: spot.tags || [],
 });
 
-// 종류(하나) + 상황 태그(여러 개)
+// 종류(하나). 해시태그는 장소 수정 화면 아래에서 바로 달고 뺌
 const KindFields = ({ form, set }) => (
     <>
         <label>종류
@@ -25,7 +24,6 @@ const KindFields = ({ form, set }) => (
                 {SPOT_CATEGORIES.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
             </select>
         </label>
-        <div className="admin-form__field">상황 태그 (선택)<SpotTagPicker value={form.tags} onChange={(tags) => set('tags', tags)} /></div>
     </>
 );
 
@@ -65,17 +63,22 @@ const SpotLabel = ({ spot }) => (
             {spot.tourContentId && <span className="admin-badge is-muted">관광공사</span>} {spot.name}
             {spot.status === 'HIDDEN' && <span className="admin-badge is-muted">숨김</span>}
         </strong>
-        <span className={`admin-category${spot.category ? '' : ' is-empty'}`}>{categoryLabel(spot.category) || '미분류'}{spotTagList(spot.tags).map((tag) => ` ${tag.icon}`).join('')}</span>
+        <span className={`admin-category${spot.category ? '' : ' is-empty'}`}>{categoryLabel(spot.category) || '미분류'}{(spot.tags || []).map((tag) => ` ${tagText(tag)}`).join('')}</span>
         <span>{spot.lat}, {spot.lon}{spot.source === 'USER' && ` · ${spot.authorNickName || '탈퇴한 회원'} 님 등록`}</span>
     </div>
 );
 
-const SpotRow = ({ spot, selection, onSave, onDelete, onToggleStatus }) => {
+const SpotRow = ({ spot, selection, onSave, onDelete, onToggleStatus, onTagsChanged }) => {
     const [editing, setEditing] = useState(false);
     const [mediaOpen, setMediaOpen] = useState(false);
     if (editing) {
-        return <li><SpotForm initial={toSpotForm(spot)} submitLabel="수정 저장" onCancel={() => setEditing(false)}
-            onSubmit={async (form) => { if (await onSave(spot.id, form)) setEditing(false); }} /></li>;
+        return (
+            <li>
+                <SpotForm initial={toSpotForm(spot)} submitLabel="수정 저장" onCancel={() => setEditing(false)}
+                    onSubmit={async (form) => { if (await onSave(spot.id, form)) setEditing(false); }} />
+                <div className="admin-form__field admin-spot-tags">해시태그 (바로 저장)<SpotHashtags spot={spot} onChange={onTagsChanged} /></div>
+            </li>
+        );
     }
     return (
         <>
@@ -121,13 +124,13 @@ const useAdminRun = (onChanged) => async (action) => {
     try { const result = await action(); onChanged(); return result ?? true; } catch (error) { toastError(getApiErrorMessage(error)); return false; }
 };
 
-const SpotList = ({ spots, selection, run }) => {
+const SpotList = ({ spots, selection, run, onTagsChanged }) => {
     const onDelete = async (spot) => {
         if (await confirmDialog(`"${spot.name}" 장소를 삭제할까요? 이 장소를 담은 회원 일정에서도 빠집니다.`)) run(() => adminApi.deleteSpot(spot.id));
     };
     return (
         <ul className="admin-list">
-            {spots.map((spot) => <SpotRow key={spot.id} spot={spot} selection={selection} onDelete={onDelete}
+            {spots.map((spot) => <SpotRow key={spot.id} spot={spot} selection={selection} onDelete={onDelete} onTagsChanged={onTagsChanged}
                 onSave={(id, form) => run(() => adminApi.updateSpot(id, form))}
                 onToggleStatus={(target) => run(() => adminApi.changeSpotStatus(target.id, target.status === 'HIDDEN' ? 'ACTIVE' : 'HIDDEN'))} />)}
         </ul>
@@ -144,7 +147,7 @@ const SpotManager = ({ cityId, city, spots, onChanged }) => {
             <h2>추천 장소 ({spots.length})</h2>
             <SpotListFilters filter={filter} />
             <SpotTagBulkBar cityId={cityId} selection={selection} run={run} visibleCount={filter.visible.length} />
-            <SpotList spots={filter.visible} selection={selection} run={run} />
+            <SpotList spots={filter.visible} selection={selection} run={run} onTagsChanged={onChanged} />
             <h3>장소 추가</h3>
             <SpotForm initial={EMPTY_SPOT} submitLabel="장소 추가"
                 onSubmit={async (form, reset) => { if (await run(() => adminApi.addSpot(cityId, form))) reset(); }} />

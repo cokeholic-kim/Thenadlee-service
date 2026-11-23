@@ -32,12 +32,10 @@ export const cityPageMeta = (city) => {
 
 // 여행지별 장소 종류 페이지 (/spots/도시/종류, 종류는 소문자): 장소가 적으면 검색 노출 안 함
 export const CATEGORY_NAMES = seo.categoryNames;
-// 상황 태그 페이지도 같은 주소 모양(/spots/도시/kids 등, 종류 이름과 겹치지 않음)
-export const TAG_NAMES = seo.tagNames;
-export const spotPageName = (slug) => CATEGORY_NAMES[slug] || TAG_NAMES[slug] || slug;
 
-export const spotCategoryPageMeta = (city, slug, count) => {
-    const values = { '{city}': CITY_NAMES[city] || city, '{category}': spotPageName(slug), '{count}': count };
+// name: 해시태그 페이지 이름 (종류 페이지는 seo.json 이름)
+export const spotCategoryPageMeta = (city, slug, count, name) => {
+    const values = { '{city}': CITY_NAMES[city] || city, '{category}': name || CATEGORY_NAMES[slug] || slug, '{count}': count };
     const fill = (text) => Object.entries(values).reduce((result, [key, value]) => result.replaceAll(key, value), text);
     return {
         title: fill(seo.categoryTitle),

@@ -29,6 +29,7 @@ const AdminCityEdit = lazy(() => import('./admin/AdminCityEdit'));
 const AdminItineraries = lazy(() => import('./admin/AdminItineraries'));
 const AdminUsers = lazy(() => import('./admin/AdminUsers'));
 const AdminReports = lazy(() => import('./admin/AdminReports'));
+const AdminTags = lazy(() => import('./admin/AdminTags'));
 
 function App() {
   usePageTracking();
@@ -60,6 +61,7 @@ function App() {
           <Route path="/admin/itineraries" element={<AdminItineraries/>}/>
           <Route path="/admin/users" element={<AdminUsers/>}/>
           <Route path="/admin/reports" element={<AdminReports/>}/>
+          <Route path="/admin/tags" element={<AdminTags/>}/>
           <Route path="/admin/inquiries" element={<AdminInquiries/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>

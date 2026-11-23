@@ -17,8 +17,12 @@ export const adminApi = {
     updateSpot: (spotId, form) => post(`/spots/${spotId}`, form),
     deleteSpot: (spotId) => post(`/spots/${spotId}/delete`),
     changeSpotStatus: (spotId, status) => post(`/spots/${spotId}/status`, { status }),
-    // 상황 태그 한 번에 달기·빼기 { spotIds, tag, action: ADD|REMOVE }
+    // 해시태그 한 번에 달기·빼기 { spotIds, tag: 태그 key, action: ADD|REMOVE }
     changeSpotTags: (cityId, body) => post(`/cities/${cityId}/spots/tags`, body),
+    // 해시태그 관리: 목록·수정({name, icon, pageTitle, official})·숨기기(status ACTIVE|HIDDEN), 바뀐 뒤 전체 목록을 돌려줌
+    listTags: () => get('/tags'),
+    updateTag: (tagId, form) => post(`/tags/${tagId}`, form),
+    changeTagStatus: (tagId, status) => post(`/tags/${tagId}/status`, { status }),
 
     // 장소 영상·후기 큐레이션: 고정(pin)·숨김(hide)·해제(unpick)·다시 검색(refresh)
     listSpotMedia: (spotId) => get(`/spots/${spotId}/media`),

@@ -62,3 +62,13 @@ export const deleteItineraryComment = (itineraryId, commentId) =>
 // 공개 일정 둘러보기 → { items, page, hasMore }. params: { city, days: '1'|'2-3'|'4+', sort: 'popular'|'recent', page }
 export const fetchExplore = (params) =>
     axios.get(`${API_URL}/explore/itineraries`, { params }).then(unwrap);
+
+// 해시태그: 입력 추천(누구나), 장소에 달기·빼기(로그인). 달기·빼기는 바뀐 뒤 그 장소의 태그 목록을 돌려줌
+export const fetchTagSuggestions = (query) =>
+    axios.get(`${API_URL}/tags`, { params: { q: query } }).then(unwrap);
+
+export const addSpotTag = (spotId, name) =>
+    axios.post(`${API_URL}/spots/${spotId}/tags`, { name }).then(unwrap);
+
+export const removeSpotTag = (spotId, tagKey) =>
+    axios.post(`${API_URL}/spots/${spotId}/tags/${encodeURIComponent(tagKey)}/delete`).then(unwrap);

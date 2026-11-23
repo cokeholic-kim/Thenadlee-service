@@ -6,7 +6,7 @@ import LinkManager from './LinkManager';
 import { addSpotLink, removeSpotLink } from '../api/communityApi';
 import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import { categoryLabel } from './spotCategories';
-import { spotTagList } from './spotTags';
+import SpotHashtags from './SpotHashtags';
 import MoreInCategory from './MoreInCategory';
 import './Community.scss';
 
@@ -56,10 +56,10 @@ const SpotDetailModal = ({ spot, onClose, ...actions }) => (
         <p className="spot-detail__meta">
             <SourceBadge spot={spot} />
             {spot.category && <span className="map-modal__badge is-category">{categoryLabel(spot.category)}</span>}
-            {spotTagList(spot.tags).map((tag) => <span key={tag.value} className="map-modal__badge is-tag">{tag.icon} {tag.label}</span>)}
             {spot.source === 'USER' && <span>{spot.authorNickName || '탈퇴한 회원'} 님이 등록</span>}
         </p>
         {spot.description && <p className="spot-detail__description">{spot.description}</p>}
+        <SpotHashtags spot={spot} />
         <SpotCredits spot={spot} />
         <MoreInCategory spot={spot} />
         <SpotActions spot={spot} {...actions} />

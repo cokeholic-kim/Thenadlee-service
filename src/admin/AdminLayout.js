@@ -14,6 +14,7 @@ const AdminTabs = ({ role }) => (
         <NavLink to="/admin/cities">여행지</NavLink>
         <NavLink to="/admin/itineraries">공개 일정</NavLink>
         <NavLink to="/admin/reports">신고</NavLink>
+        <NavLink to="/admin/tags">해시태그</NavLink>
         {isAdmin(role) && <NavLink to="/admin/inquiries">고객 문의</NavLink>}
         {isAdmin(role) && <NavLink to="/admin/users">회원 권한</NavLink>}
     </nav>

@@ -8,7 +8,12 @@ import useSpotActions from '../community/useSpotActions';
 import SpotModals from '../community/SpotModals';
 import { GroupMapBanner } from '../group/GroupMapContext';
 import { ALL_CATEGORIES, countCategories } from '../community/spotCategories';
-import { countTags } from '../community/spotTags';
+import { countTags, hasTag, tagText } from '../community/spotTags';
+import { CATEGORY_MIN_SPOTS } from '../seo/pageMeta';
+
+// 필터에 보일 해시태그 수 (공식 → 많이 달린 순)
+const MAX_TAG_FILTERS = 10;
+const filterTags = (spots) => countTags(spots).filter((tag) => tag.official || tag.count >= CATEGORY_MIN_SPOTS).slice(0, MAX_TAG_FILTERS);
 import '../community/Community.scss';
 import { useSpotCategoryRequest, useSpotTagRequest } from './mapPanelEvents';
 
@@ -30,12 +35,12 @@ const CategoryFilter = ({ categories, value, onChange }) => (categories.length <
     </div>
 ));
 
-// 상황 태그(아이와 함께·비 오는 날 등): 하나만 고르고, 다시 누르면 풂
+// 해시태그: 하나만 고르고, 다시 누르면 풂
 const TagFilter = ({ tags, value, onChange }) => (tags.length === 0 ? null : (
     <div className="spot-toolbar__categories spot-toolbar__tags" role="group" aria-label="상황">
         {tags.map((tag) => (
-            <button key={tag.value} type="button" className={value === tag.value ? 'is-active' : ''} aria-pressed={value === tag.value}
-                onClick={() => onChange(value === tag.value ? null : tag.value)}>{tag.icon} {tag.label} <span>{tag.count}</span></button>
+            <button key={tag.key} type="button" className={value === tag.key ? 'is-active' : ''} aria-pressed={value === tag.key}
+                onClick={() => onChange(value === tag.key ? null : tag.key)}>{tag.icon || ''} {tagText(tag)} <span>{tag.count}</span></button>
         ))}
     </div>
 ));
@@ -68,15 +73,15 @@ const useSpotFilters = (spots) => {
     const [searchParams] = useSearchParams();
     const [source, setSource] = useState('ALL');
     const [picked, setCategory] = useState(() => searchParams.get('category') || ALL_CATEGORIES);
-    const [pickedTag, setTag] = useState(() => searchParams.get('tag'));
+    const [pickedTag, setTag] = useState(() => searchParams.get('tag')?.toLowerCase() || null);
     usePanelFilterRequests(setSource, setCategory, setTag);
     const bySource = spots.filter((spot) => source === 'ALL' || spot.source === source);
     const categories = countCategories(bySource);
     const category = categories.some((option) => option.value === picked) ? picked : ALL_CATEGORIES;
     const byCategory = bySource.filter((spot) => category === ALL_CATEGORIES || spot.category === category);
-    const tags = countTags(byCategory);
-    const tag = tags.some((option) => option.value === pickedTag) ? pickedTag : null;
-    const visible = byCategory.filter((spot) => !tag || spot.tags.includes(tag));
+    const tags = filterTags(byCategory);
+    const tag = tags.some((option) => option.key === pickedTag) ? pickedTag : null;
+    const visible = byCategory.filter((spot) => !tag || hasTag(spot, tag));
     return { source, setSource, category, setCategory, categories, tag, setTag, tags, visible };
 };
 

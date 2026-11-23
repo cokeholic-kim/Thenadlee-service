@@ -29,12 +29,6 @@
     },
     "categoryTitle": "{city} {category} 추천",
     "categoryDescription": "{city} {category} {count}곳을 사진·설명과 함께 모았어요. 마음에 드는 곳을 지도에 담아 나만의 {city} 여행 일정을 만들어 보세요.",
-    "tagNames": {
-        "kids": "아이와 가볼 만한 곳",
-        "rainy": "비 오는 날 가볼 만한 곳",
-        "night": "야경·밤 명소",
-        "free": "무료로 즐기는 명소"
-    },
     "pages": {
         "explore": {
             "title": "여행자 일정 둘러보기",

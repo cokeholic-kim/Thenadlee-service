@@ -98,6 +98,24 @@ $community-like: #e0575b;
         margin-bottom: 8px;
     }
 
+    // 새 장소 등록: 고른 해시태그 (누르면 뺌)
+    .new-spot-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 4px 0 6px;
+
+        button {
+            padding: 3px 10px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--color-secondary-soft);
+            color: var(--color-secondary-strong);
+            font-size: 13px;
+            cursor: pointer;
+        }
+    }
+
     .place-search__row {
         display: flex;
         gap: 6px;

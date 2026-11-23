@@ -591,3 +591,28 @@ $admin-radius: 6px;
         color: $admin-sub;
     }
 }
+
+// 해시태그 관리
+.admin-hint {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.admin-search {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid $admin-line;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.admin-tag-form {
+    margin: 8px 0;
+}
+
+// 장소 수정 화면 아래 해시태그 칸
+.admin-spot-tags {
+    margin: 8px 0 16px;
+}

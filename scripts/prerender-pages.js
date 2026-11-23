@@ -68,7 +68,7 @@ function cityPage(siteUrl, city) {
     const spots = city.spots.map((spot) => `<li><strong>${escapeHtml(spot.spotName)}</strong> ${escapeHtml(summary(spot.description, SPOT_SUMMARY_LENGTH))}</li>`).join('');
     // 공개 추천 일정 링크 (검색 로봇이 /itinerary/{id} 페이지를 찾아가도록)
     const plans = city.itineraries.map((plan) => `<li><a href="/itinerary/${plan.id}">${escapeHtml(plan.title)}</a> ${plan.dayCount}일 · ${escapeHtml(plan.authorNickName)}</li>`).join('');
-    const categories = categoryGroups(city).map(({ slug, spots: list }) => `<li><a href="/spots/${encodeURIComponent(city.name)}/${slug}">${escapeHtml(fillCategory(seo.categoryTitle, cityName, slug, list.length))}</a></li>`).join('');
+    const categories = categoryGroups(city).map(({ slug, name, spots: list }) => `<li><a href="/spots/${encodeURIComponent(city.name)}/${encodeURIComponent(slug)}">${escapeHtml(fillCategory(seo.categoryTitle, cityName, name, list.length))}</a></li>`).join('');
     return {
         file: `map/${city.name}.html`, url, title: `${title} | ${seo.siteName}`, image: absolute(siteUrl, city.titleImageUrl),
         description: seo.cityDescription.replaceAll('{city}', cityName),
@@ -81,27 +81,35 @@ function cityPage(siteUrl, city) {
 }
 
 // 장소 종류·상황 태그별 묶음 중 장소가 seo.categoryMinSpots 곳 이상인 것만 (서버 사이트맵의 seo.categoryMinSpots 와 같은 기준)
-const hasTag = (spot, slug) => (spot.tags || []).some((tag) => String(tag).toLowerCase() === slug);
-
-function categoryGroups(city) {
-    const byCategory = Object.keys(seo.categoryNames).map((slug) => ({ slug, spots: city.spots.filter((spot) => String(spot.category || '').toLowerCase() === slug) }));
-    const byTag = Object.keys(seo.tagNames).map((slug) => ({ slug, spots: city.spots.filter((spot) => hasTag(spot, slug)) }));
-    return [...byCategory, ...byTag].filter((group) => group.spots.length >= seo.categoryMinSpots);
+function tagGroups(city) {
+    const byKey = new Map();
+    city.spots.forEach((spot) => (spot.tags || []).forEach((tag) => {
+        const group = byKey.get(tag.key) || { slug: tag.key, name: tag.title || `#${tag.name} 장소`, query: `tag=${encodeURIComponent(tag.key)}`, spots: [] };
+        group.spots.push(spot);
+        byKey.set(tag.key, group);
+    }));
+    return [...byKey.values()];
 }
 
-function fillCategory(text, cityName, slug, count) {
-    const name = seo.categoryNames[slug] || seo.tagNames[slug];
+function categoryGroups(city) {
+    const byCategory = Object.keys(seo.categoryNames).map((slug) => ({
+        slug, name: seo.categoryNames[slug], query: `category=${slug.toUpperCase()}`, spots: city.spots.filter((spot) => String(spot.category || '').toLowerCase() === slug),
+    }));
+    return [...byCategory, ...tagGroups(city)].filter((group) => group.spots.length >= seo.categoryMinSpots);
+}
+
+function fillCategory(text, cityName, name, count) {
     return text.replaceAll('{city}', cityName).replaceAll('{category}', name).replaceAll('{count}', String(count));
 }
 
-function categoryPage(siteUrl, city, { slug, spots }) {
+function categoryPage(siteUrl, city, { slug, name, query, spots }) {
     const cityName = seo.cityNames[city.name] || city.displayName || city.name;
-    const title = fillCategory(seo.categoryTitle, cityName, slug, spots.length);
+    const title = fillCategory(seo.categoryTitle, cityName, name, spots.length);
     const items = spots.map((spot) => `<li><strong>${escapeHtml(spot.spotName)}</strong> ${escapeHtml(summary(spot.description, SPOT_SUMMARY_LENGTH))}</li>`).join('');
-    const mapLink = `/map/${encodeURIComponent(city.name)}?${seo.tagNames[slug] ? 'tag' : 'category'}=${slug.toUpperCase()}`;
+    const mapLink = `/map/${encodeURIComponent(city.name)}?${query}`;
     return {
-        file: `spots/${city.name}/${slug}.html`, url: `${siteUrl}/spots/${encodeURIComponent(city.name)}/${slug}`, title: `${title} | ${seo.siteName}`,
-        description: fillCategory(seo.categoryDescription, cityName, slug, spots.length), image: absolute(siteUrl, spots.find((spot) => spot.imageUrl)?.imageUrl),
+        file: `spots/${city.name}/${slug}.html`, url: `${siteUrl}/spots/${encodeURIComponent(city.name)}/${encodeURIComponent(slug)}`, title: `${title} | ${seo.siteName}`,
+        description: fillCategory(seo.categoryDescription, cityName, name, spots.length), image: absolute(siteUrl, spots.find((spot) => spot.imageUrl)?.imageUrl),
         body: `<main class="prerender"><h1>${escapeHtml(title)}</h1><ul>${items}</ul><p><a href="${mapLink}">지도에 담아 일정 만들기</a> · `
             + `<a href="/map/${encodeURIComponent(city.name)}">${escapeHtml(seo.cityTitle.replaceAll('{city}', cityName))}</a></p></main>`,
     };

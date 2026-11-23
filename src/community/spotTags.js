@@ -1,19 +1,27 @@
-// 장소 상황 태그 (서버 SpotTag 와 같은 값, 장소마다 여러 개). 배열 순서가 화면 순서
-export const SPOT_TAGS = [
-    { value: 'KIDS', label: '아이와 함께', icon: '👶' },
-    { value: 'RAINY', label: '비 오는 날', icon: '☔' },
-    { value: 'NIGHT', label: '야경·밤', icon: '🌙' },
-    { value: 'FREE', label: '무료', icon: '🆓' },
-];
+// 장소 해시태그 (서버 tag): 장소 응답의 tags = [{ key, name, icon, title, official, mine }]
+//   key: 추천 페이지 주소 이름 (공식 태그는 kids·rainy 등, 회원이 만든 태그는 t{id})
+export const RAINY_TAG = 'rainy';
+// 관리자가 아이콘을 정하지 않은 태그의 페이지·링크 아이콘
+export const DEFAULT_TAG_ICON = '🏷️';
 
-const BY_VALUE = Object.fromEntries(SPOT_TAGS.map((tag) => [tag.value, tag]));
+export const hasTag = (spot, key) => (spot.tags || []).some((tag) => tag.key === key);
 
-/** 장소의 태그를 화면 순서대로 (모르는 값은 뺌) */
-export const spotTagList = (tags = []) => SPOT_TAGS.filter((tag) => tags.includes(tag.value));
+export const tagText = (tag) => `#${tag.name}`;
 
-export const tagLabel = (value) => BY_VALUE[value]?.label || '';
+// 좁은 카드에는 아이콘이 있는 공식 태그만
+export const iconTags = (tags = []) => tags.filter((tag) => tag.official && tag.icon);
 
-// 목록에 있는 태그만 장소 수와 함께 (필터 버튼용)
-export const countTags = (spots) => SPOT_TAGS
-    .map((tag) => ({ ...tag, count: spots.filter((spot) => (spot.tags || []).includes(tag.value)).length }))
-    .filter((tag) => tag.count > 0);
+/** 추천 페이지 제목에 쓰는 이름 (관리자가 정한 제목, 없으면 "#이름 장소") */
+export const tagPageName = (tag) => tag.title || `#${tag.name} 장소`;
+
+const byOfficialThenCount = (a, b) => Number(b.official) - Number(a.official) || b.count - a.count;
+
+/** 장소 목록에 있는 태그와 장소 수 (공식 먼저, 많이 달린 순) */
+export const countTags = (spots) => {
+    const byKey = new Map();
+    spots.forEach((spot) => (spot.tags || []).forEach((tag) => {
+        const current = byKey.get(tag.key) || { ...tag, count: 0 };
+        byKey.set(tag.key, { ...current, count: current.count + 1 });
+    }));
+    return [...byKey.values()].sort(byOfficialThenCount);
+};
