@@ -56,14 +56,14 @@ const TagRow = ({ tag, run }) => {
 
 const matches = (tag, query, onlyOfficial) => (!onlyOfficial || tag.official) && (!query || tag.name.toLowerCase().includes(query.toLowerCase()));
 
-// 해시태그 관리 (에디터 이상): 회원이 만든 태그 확인·이름 다듬기·공식 지정·숨기기
+// 해시태그 관리 (관리자만, 모든 여행지에 영향): 회원이 만든 태그 확인·이름 다듬기·공식 지정·숨기기
 const AdminTags = () => {
     const { tags, run } = useTags();
     const [query, setQuery] = useState('');
     const [onlyOfficial, setOnlyOfficial] = useState(false);
     const visible = (tags || []).filter((tag) => matches(tag, query, onlyOfficial));
     return (
-        <AdminLayout title="해시태그">
+        <AdminLayout title="해시태그" adminOnly>
             <p className="admin-hint">회원 누구나 장소에 태그를 달 수 있어요. 이상한 태그는 숨기면 모든 장소에서 사라지고 다시 달 수 없어요. 같은 태그가 장소 3곳 이상에 달리면 여행지별 추천 페이지가 생겨요.</p>
             <div className="admin-filters">
                 <input className="admin-search" value={query} placeholder="태그 이름 찾기" aria-label="태그 이름 찾기" onChange={(e) => setQuery(e.target.value)} />

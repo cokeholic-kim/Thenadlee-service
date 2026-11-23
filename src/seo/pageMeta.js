@@ -15,6 +15,7 @@ export const PAGE_META = {
     privacy: seo.pages.privacy,
     terms: seo.pages.terms,
     settle: seo.pages.settle,
+    editors: seo.pages.editors,
     notFound: { title: '페이지를 찾을 수 없습니다', noindex: true }
 };
 
@@ -47,3 +48,10 @@ export const spotCategoryPageMeta = (city, slug, count, name) => {
 
 // 종류별 페이지를 미리 만들고 링크하는 최소 장소 수 (서버 config.php 의 seo.categoryMinSpots 와 같은 값)
 export const CATEGORY_MIN_SPOTS = seo.categoryMinSpots;
+
+// 에디터 공개 프로필: 소개 글이 있으면 설명으로, 없으면 담당 여행지로 만든 문장
+export const editorPageMeta = (editor, profileId) => {
+    const cities = editor.cities.map((city) => city.displayName).join(', ');
+    const fallback = `에디터 ${editor.nickName}님이 소개한 ${cities ? `${cities} ` : ''}장소와 공개 일정을 만나 보세요.`;
+    return { title: `에디터 ${editor.nickName}`, description: editor.intro || fallback, path: `/editors/${profileId}` };
+};

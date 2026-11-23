@@ -57,7 +57,9 @@ export const toSpot = (item) => ({
     imageCredit: item.imageCredit || null,
     category: item.category || null,
     tags: item.tags || [],
-    links: item.links || []
+    links: item.links || [],
+    // 소개한 에디터 { id: 공개 프로필 번호, nickName } (프로필을 공개한 에디터 장소만)
+    editor: item.editor || null
 });
 
 // 3. 초기값

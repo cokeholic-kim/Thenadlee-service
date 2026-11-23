@@ -30,6 +30,10 @@ const AdminItineraries = lazy(() => import('./admin/AdminItineraries'));
 const AdminUsers = lazy(() => import('./admin/AdminUsers'));
 const AdminReports = lazy(() => import('./admin/AdminReports'));
 const AdminTags = lazy(() => import('./admin/AdminTags'));
+const AdminActivity = lazy(() => import('./admin/AdminActivity'));
+const EditorListPage = lazy(() => import('./editor/EditorListPage'));
+const EditorProfilePage = lazy(() => import('./editor/EditorProfilePage'));
+const AdminEditorProfile = lazy(() => import('./admin/AdminEditorProfile'));
 
 function App() {
   usePageTracking();
@@ -62,6 +66,10 @@ function App() {
           <Route path="/admin/users" element={<AdminUsers/>}/>
           <Route path="/admin/reports" element={<AdminReports/>}/>
           <Route path="/admin/tags" element={<AdminTags/>}/>
+          <Route path="/admin/activity" element={<AdminActivity/>}/>
+          <Route path="/editors" element={<EditorListPage/>}/>
+          <Route path="/editors/:id" element={<EditorProfilePage/>}/>
+          <Route path="/admin/profile" element={<AdminEditorProfile/>}/>
           <Route path="/admin/inquiries" element={<AdminInquiries/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>

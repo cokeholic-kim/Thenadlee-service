@@ -6,6 +6,8 @@ import { CITY_NAMES, spotCategoryPageMeta } from '../seo/pageMeta';
 import { PAGE_KINDS, resolveSpotPage, spotPageOptions } from './spotPageKind';
 import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
 import { tagText } from '../community/spotTags';
+import { editorCreditText, editorPath } from '../editor/editorPaths';
+import '../editor/Editor.scss';
 import useCategorySpots from './useCategorySpots';
 import './SpotCategory.scss';
 
@@ -14,6 +16,13 @@ const DESCRIPTION_LENGTH = 120;
 const shorten = (text) => {
     const clean = String(text || '').replace(/\s+/g, ' ').trim();
     return clean.length > DESCRIPTION_LENGTH ? `${clean.slice(0, DESCRIPTION_LENGTH)}…` : clean;
+};
+
+// 출처: 여행자 추천(닉네임) / 에디터 ○○ 추천(공개 프로필 링크) / 운영진 추천
+const SpotSource = ({ spot }) => {
+    if (spot.source === 'USER') return `여행자 추천${spot.authorNickName ? ` · ${spot.authorNickName}님` : ''}`;
+    if (spot.editor) return <Link className="editor-credit" to={editorPath(spot.editor.id)}>{editorCreditText(spot.editor)} 추천</Link>;
+    return '운영진 추천';
 };
 
 const SpotCard = ({ spot }) => (
@@ -26,7 +35,7 @@ const SpotCard = ({ spot }) => (
             {spot.tags?.length > 0 && <span className="spot-category-card__tags">{spot.tags.map(tagText).join(' ')}</span>}
             {spot.description && <p>{shorten(spot.description)}</p>}
             <span className="spot-category-card__meta">
-                {spot.source === 'USER' ? `여행자 추천${spot.authorNickName ? ` · ${spot.authorNickName}님` : ''}` : '운영진 추천'}
+                <SpotSource spot={spot} />
                 {spot.credit && ` · 자료: ${spot.credit}`}
                 {spot.imageCredit && ` · 사진: ${spot.imageCredit}`}
             </span>

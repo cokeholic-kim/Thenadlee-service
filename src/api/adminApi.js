@@ -21,6 +21,12 @@ export const adminApi = {
     changeSpotTags: (cityId, body) => post(`/cities/${cityId}/spots/tags`, body),
     // 해시태그 관리: 목록·수정({name, icon, pageTitle, official})·숨기기(status ACTIVE|HIDDEN), 바뀐 뒤 전체 목록을 돌려줌
     listTags: () => get('/tags'),
+    // 에디터: 목록·담당 여행지 지정(관리자만), 편집 기록({ userId, cityId, beforeId }), 내 에디터 프로필
+    listEditors: () => get('/editors'),
+    setEditorCities: (userId, cityIds) => post(`/editors/${userId}/cities`, { cityIds }),
+    listActivity: (params) => get('/activity', params),
+    getEditorProfile: () => get('/editor-profile'),
+    saveEditorProfile: (form) => post('/editor-profile', form),
     updateTag: (tagId, form) => post(`/tags/${tagId}`, form),
     changeTagStatus: (tagId, status) => post(`/tags/${tagId}/status`, { status }),
 

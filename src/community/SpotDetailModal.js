@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import MapModal from './MapModal';
 import SpotMedia from './SpotMedia';
 import SocialLinks from './SocialLinks';
@@ -8,11 +9,15 @@ import { GroupSpotComments, GroupWishButton } from '../group/GroupMapContext';
 import { categoryLabel } from './spotCategories';
 import SpotHashtags from './SpotHashtags';
 import MoreInCategory from './MoreInCategory';
+import { editorCreditText, editorPath } from '../editor/editorPaths';
 import './Community.scss';
 
-export const SourceBadge = ({ spot }) => (spot.source === 'USER'
-    ? <span className="map-modal__badge">여행자 추천</span>
-    : <span className="map-modal__badge is-official">운영진 추천</span>);
+// 운영진 장소는 소개한 에디터가 프로필을 공개했으면 "에디터 ○○ 추천" (누르면 에디터 소개)
+export const SourceBadge = ({ spot }) => {
+    if (spot.source === 'USER') return <span className="map-modal__badge">여행자 추천</span>;
+    if (spot.editor) return <Link className="map-modal__badge is-official" to={editorPath(spot.editor.id)}>{editorCreditText(spot.editor)} 추천</Link>;
+    return <span className="map-modal__badge is-official">운영진 추천</span>;
+};
 
 const SpotActions = ({ spot, isAdded, onAdd, onEdit, onDelete, onReport }) => (
     <div className="map-modal__actions">

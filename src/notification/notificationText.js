@@ -16,6 +16,8 @@ const KINDS = {
     },
     COPY: { icon: '📋', path: itineraryPath, text: (item) => `누군가 '${item.targetTitle}' 일정으로 새 일정을 시작했어요.` },
     INQUIRY_ANSWER: { icon: '✉', path: () => '/inquiries', text: (item) => `문의 '${item.targetTitle}'에 답변이 달렸어요.` },
+    EDITOR_CITY: { icon: '🗺️', path: () => '/admin/cities', text: (item) => `${item.targetTitle} 담당 에디터가 되었어요. 관리 화면에서 장소를 소개해 주세요.` },
+    SPOT_SAVED: { icon: '📍', path: () => '/admin/profile', text: (item) => `내가 소개한 '${item.targetTitle}'이(가) 일정 ${item.actorCount}개에 담겼어요.` },
 };
 
 export const describeNotification = (item) => {

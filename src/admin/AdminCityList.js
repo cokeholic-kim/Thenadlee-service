@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { adminApi } from '../api/adminApi';
 import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
+import { isAdmin } from './roles';
 import { toastError } from '../ui/feedback';
 
 const CityTable = ({ cities }) => (
@@ -26,7 +28,11 @@ const CityTable = ({ cities }) => (
     </table>
 );
 
+// 에디터는 담당 여행지만 보임 (여행지 추가는 관리자만)
+const EmptyMessage = ({ admin }) => <p className="admin__hint">{admin ? '아직 여행지가 없어요.' : '맡은 여행지가 아직 없어요. 관리자에게 담당 여행지를 요청해 주세요.'}</p>;
+
 const CityListPanel = () => {
+    const admin = isAdmin(useSelector((state) => state.logincheck.user?.role));
     const [cities, setCities] = useState(null);
     useEffect(() => {
         adminApi.listCities().then(setCities).catch((error) => toastError(getApiErrorMessage(error)));
@@ -35,10 +41,12 @@ const CityListPanel = () => {
     return (
         <>
             <div className="admin__toolbar">
-                <p>메인 화면에는 공개된 여행지만 노출 순서대로 보여요.</p>
-                <Link className="admin-button is-primary" to="/admin/cities/new">여행지 추가</Link>
+                <p>{admin ? '메인 화면에는 공개된 여행지만 노출 순서대로 보여요.' : '내가 맡은 여행지만 보여요.'}</p>
+                {admin && <Link className="admin-button is-primary" to="/admin/cities/new">여행지 추가</Link>}
             </div>
-            {cities === null ? <p>불러오는 중…</p> : <CityTable cities={cities} />}
+            {cities === null && <p>불러오는 중…</p>}
+            {cities?.length === 0 && <EmptyMessage admin={admin} />}
+            {cities?.length > 0 && <CityTable cities={cities} />}
         </>
     );
 };
