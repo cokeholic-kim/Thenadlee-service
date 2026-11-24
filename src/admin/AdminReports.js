@@ -5,7 +5,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import AdminLayout from './AdminLayout';
 import { toast, toastError, confirmDialog } from '../ui/feedback';
 
-const TARGET_LABELS = { SPOT: '추천 장소', ITINERARY: '공개 일정', COMMENT: '일정 댓글' };
+const TARGET_LABELS = { SPOT: '추천 장소', ITINERARY: '공개 일정', COMMENT: '일정 댓글', TAG: '해시태그' };
 const STATUS_LABELS = { ACTIVE: '공개 중', HIDDEN: '숨김' };
 const ACTIONS = [
     { value: 'HIDE', label: '숨김 유지', confirm: '이 게시물을 숨김 상태로 둘까요?' },
@@ -16,6 +16,8 @@ const ACTIONS = [
 // 댓글은 댓글이 달린 공개 일정 페이지로
 const targetLink = (row) => {
     if (row.targetType === 'COMMENT') return `/itinerary/${row.parentItineraryId}`;
+    // 해시태그는 모든 여행지 공통 → 해시태그 관리 화면 (관리자만 보임)
+    if (row.targetType === 'TAG') return '/admin/tags';
     return row.targetType === 'ITINERARY' ? `/map/${row.cityName}?itinerary=${row.targetId}` : `/map/${row.cityName}`;
 };
 

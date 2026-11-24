@@ -8,6 +8,7 @@ import { getApiErrorMessage } from '../util/apiError';
 import { toastError } from '../ui/feedback';
 import { loginPathHere } from '../session/loginPath';
 import HashtagInput from './HashtagInput';
+import ReportModal from './ReportModal';
 import { tagText } from './spotTags';
 import './Hashtag.scss';
 
@@ -34,11 +35,31 @@ const useSpotHashtags = (spot, onChange) => {
     return { tags, busy, add: (name) => run(() => addSpotTag(spot.id, name)), remove: (key) => run(() => removeSpotTag(spot.id, key)) };
 };
 
-const TagChip = ({ tag, removable, busy, onRemove }) => (
+// 신고할 수 있는 태그: 회원이 만든 태그 중 내가 단 것이 아닌 것 (공식 태그는 관리자가 관리)
+const isReportable = (tag) => !tag.mine && !tag.official;
+
+const TagChip = ({ tag, removable, busy, onRemove, onReport }) => (
     <li className={`hashtag-chip${tag.official ? ' is-official' : ''}${tag.mine ? ' is-mine' : ''}`}>
         {tag.icon && <span aria-hidden="true">{tag.icon}</span>}{tagText(tag)}
         {removable && <button type="button" aria-label={`${tagText(tag)} 빼기`} disabled={busy} onClick={() => onRemove(tag.key)}>×</button>}
+        {onReport && <button type="button" className="hashtag-chip__report" onClick={() => onReport(tag)}>신고</button>}
     </li>
+);
+
+// "이상한 태그 신고"를 누르면 신고할 수 있는 태그 옆에 신고 버튼, 고르면 신고 창
+const useTagReport = (tags, enabled) => {
+    const [reporting, setReporting] = useState(false);
+    const [target, setTarget] = useState(null);
+    const available = enabled && tags.some(isReportable);
+    const onReport = (tag) => (reporting && available && isReportable(tag) ? () => setTarget(tag) : null);
+    return { available, reporting, toggle: () => setReporting(!reporting), onReport, target, close: () => { setTarget(null); setReporting(false); } };
+};
+
+const ReportArea = ({ report }) => (
+    <>
+        {report.available && <button type="button" className="hashtag-report-toggle" onClick={report.toggle}>{report.reporting ? '신고 그만하기' : '이상한 태그 신고'}</button>}
+        {report.target && <ReportModal target={{ type: 'TAG', id: report.target.id, title: tagText(report.target) }} onClose={report.close} />}
+    </>
 );
 
 const AddArea = ({ isLogin, open, setOpen, state }) => {
@@ -57,14 +78,16 @@ const SpotHashtags = ({ spot, onChange }) => {
     const state = useSpotHashtags(spot, onChange);
     // 지도 장소는 서버가 계산한 값(담당 여행지 기준), 관리자 화면 장소는 그 여행지를 다룰 수 있는 에디터 이상
     const manageAll = spot.canManageTags ?? (Boolean(spot.isMine) || canEdit(user?.role));
+    const report = useTagReport(state.tags, isLogin && !manageAll);
     return (
         <div className="spot-hashtags">
             {state.tags.length > 0 && (
                 <ul className="spot-hashtags__list">
-                    {state.tags.map((tag) => <TagChip key={tag.key} tag={tag} removable={manageAll || tag.mine} busy={state.busy} onRemove={state.remove} />)}
+                    {state.tags.map((tag) => <TagChip key={tag.key} tag={tag} removable={manageAll || tag.mine} busy={state.busy} onRemove={state.remove} onReport={report.onReport(tag)} />)}
                 </ul>
             )}
             <AddArea isLogin={isLogin} open={open} setOpen={setOpen} state={state} />
+            <ReportArea report={report} />
         </div>
     );
 };

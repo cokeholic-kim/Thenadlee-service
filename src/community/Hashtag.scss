@@ -103,3 +103,24 @@
         }
     }
 }
+
+// 태그 신고: 신고 모드일 때만 칩 옆에 작은 버튼
+.hashtag-chip .hashtag-chip__report {
+    width: auto;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-size: 11px;
+}
+
+.hashtag-report-toggle {
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-sub);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+}
