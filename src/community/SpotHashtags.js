@@ -49,13 +49,14 @@ const AddArea = ({ isLogin, open, setOpen, state }) => {
 
 /**
  * 장소 해시태그: 누구나 보고, 로그인한 회원은 달 수 있음 (인스타그램처럼 기존 태그를 고르거나 새로 만듦)
- *   빼기: 내가 단 태그, 장소 등록자·에디터는 모든 태그 (서버가 다시 확인)
+ *   빼기: 내가 단 태그, 장소 등록자·그 여행지 담당 에디터·관리자는 모든 태그 (서버가 다시 확인)
  */
 const SpotHashtags = ({ spot, onChange }) => {
     const { isLogin, user } = useSelector((state) => state.logincheck);
     const [open, setOpen] = useState(false);
     const state = useSpotHashtags(spot, onChange);
-    const manageAll = Boolean(spot.isMine) || canEdit(user?.role);
+    // 지도 장소는 서버가 계산한 값(담당 여행지 기준), 관리자 화면 장소는 그 여행지를 다룰 수 있는 에디터 이상
+    const manageAll = spot.canManageTags ?? (Boolean(spot.isMine) || canEdit(user?.role));
     return (
         <div className="spot-hashtags">
             {state.tags.length > 0 && (

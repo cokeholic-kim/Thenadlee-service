@@ -59,7 +59,9 @@ export const toSpot = (item) => ({
     tags: item.tags || [],
     links: item.links || [],
     // 소개한 에디터 { id: 공개 프로필 번호, nickName } (프로필을 공개한 에디터 장소만)
-    editor: item.editor || null
+    editor: item.editor || null,
+    // 태그 통째로 빼기 가능 (장소 등록자·그 여행지 담당 에디터·관리자, 서버가 계산)
+    canManageTags: Boolean(item.canManageTags)
 });
 
 // 3. 초기값
