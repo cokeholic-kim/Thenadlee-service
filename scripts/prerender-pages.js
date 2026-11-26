@@ -2,7 +2,9 @@
  * 빌드 후 공개 페이지별 HTML 을 미리 만듦 (build/prerender/...) — npm run build 의 postbuild 단계
  *   검색 로봇(네이버·다음)과 링크 미리보기(카카오톡 등)는 JavaScript 를 거의 실행하지 않아 SPA 의 빈 index.html 만 보므로,
  *   페이지마다 제목·설명·대표 주소·대표 사진·구조화 데이터·본문 요약을 넣어 둠 (React 가 뜨면 본문은 실제 화면으로 바뀜)
- *   제공은 root/.htaccess 가 담당 (/ → prerender/index.html, /map/도시 → prerender/map/도시.html, /spots/도시/종류·태그 → prerender/spots/도시/종류·태그.html)
+ *   제공은 root/.htaccess 가 담당 (/ → prerender/index.html, /map/도시 → prerender/map/도시.html, /spots/도시/종류·태그 → prerender/spots/도시/종류·태그.html,
+ *   /editors/번호 → prerender/editors/번호.html)
+ *   미리 만들지 않은 화면이 받는 기본 index.html 은 대표 주소(canonical)를 빼 둠 (첫 화면 주소로 남아 있으면 검색엔진이 중복으로 봄, 화면이 뜨면 주소별로 넣음)
  * 데이터는 운영 API(/back/cities, /back/place/spot/{도시})에서 받고, 받지 못하면 seo.json 의 도시 이름으로 제목·설명만 만듦
  */
 const fs = require('fs');
@@ -137,6 +139,40 @@ function homePage(siteUrl, cities) {
     };
 }
 
+// 공개 프로필을 켠 에디터 (API 실패 시 없음)
+async function loadEditors(apiUrl) {
+    try {
+        const editors = await fetchBody(`${apiUrl}/editors`);
+        return await Promise.all(editors.map((editor) => fetchBody(`${apiUrl}/editors/${editor.id}`)));
+    } catch (error) {
+        console.warn(`[prerender] 에디터 목록을 읽지 못했습니다: ${error.message}`);
+        return [];
+    }
+}
+
+const editorDescription = (editor) => {
+    const cities = editor.cities.map((city) => city.displayName).join(', ');
+    return summary(editor.intro || `에디터 ${editor.nickName}님이 소개한 ${cities ? `${cities} ` : ''}장소와 공개 일정을 만나 보세요.`, 150);
+};
+
+function editorPage(siteUrl, editor) {
+    const spots = editor.spots.map((spot) => `<li><a href="/map/${encodeURIComponent(spot.cityName)}">${escapeHtml(spot.name)}</a> ${escapeHtml(spot.cityDisplayName)}</li>`).join('');
+    const plans = editor.itineraries.map((plan) => `<li><a href="/itinerary/${plan.id}">${escapeHtml(plan.title)}</a> ${plan.dayCount}일</li>`).join('');
+    const url = `${siteUrl}/editors/${editor.id}`;
+    return {
+        file: `editors/${editor.id}.html`, url, title: `에디터 ${editor.nickName} | ${seo.siteName}`, description: editorDescription(editor),
+        jsonLd: { '@context': 'https://schema.org', '@type': 'ProfilePage', url, mainEntity: { '@type': 'Person', name: editor.nickName } },
+        body: `<main class="prerender"><h1>에디터 ${escapeHtml(editor.nickName)}</h1><p>${escapeHtml(editor.intro || '')}</p>`
+            + `${spots ? `<h2>소개한 장소</h2><ul>${spots}</ul>` : ''}${plans ? `<h2>공개 일정</h2><ul>${plans}</ul>` : ''}</main>`,
+    };
+}
+
+function editorsListPage(siteUrl, page, editors) {
+    const base = policyPage(siteUrl, page);
+    const links = editors.map((editor) => `<li><a href="/editors/${editor.id}">에디터 ${escapeHtml(editor.nickName)}</a></li>`).join('');
+    return { ...base, body: base.body.replace('</main>', `${links ? `<ul>${links}</ul>` : ''}</main>`) };
+}
+
 function policyPage(siteUrl, page) {
     return {
         file: `${page.path.slice(1)}.html`, url: `${siteUrl}${page.path}`, title: `${page.title} | ${seo.siteName}`, description: page.description,
@@ -144,18 +180,29 @@ function policyPage(siteUrl, page) {
     };
 }
 
+// 페이지 틀에는 대표 주소 태그가 있어야 함 (이미 한 번 돌려 기본 HTML 에서 빠졌어도 다시 넣고 시작)
+const withCanonical = (html) => (/rel="canonical"/.test(html) ? html : html.replace('</head>', '<link rel="canonical" href="" /></head>'));
+
+// 미리 만들지 않은 화면·404 가 받는 기본 HTML: 첫 화면 대표 주소를 빼서 다른 주소가 첫 화면 중복으로 보이지 않게 함
+function writeAppShell(template) {
+    fs.writeFileSync(path.join(BUILD_DIR, 'index.html'), template.replace(/\s*<link[^>]*rel="canonical"[^>]*>/, ''));
+}
+
 async function main() {
     const siteUrl = resolveSiteUrl();
-    const template = fs.readFileSync(path.join(BUILD_DIR, 'index.html'), 'utf8');
+    const template = withCanonical(fs.readFileSync(path.join(BUILD_DIR, 'index.html'), 'utf8'));
     const cities = await loadCities((process.env.PRERENDER_API_URL || `${siteUrl}/back`).replace(/\/+$/, ''));
+    const editors = await loadEditors((process.env.PRERENDER_API_URL || `${siteUrl}/back`).replace(/\/+$/, ''));
     const categoryPages = cities.flatMap((city) => categoryGroups(city).map((group) => categoryPage(siteUrl, city, group)));
-    const pages = [homePage(siteUrl, cities), ...cities.map((city) => cityPage(siteUrl, city)), ...categoryPages, ...Object.values(seo.pages).map((page) => policyPage(siteUrl, page))];
+    const fixedPages = Object.values(seo.pages).map((page) => (page.path === seo.pages.editors.path ? editorsListPage(siteUrl, page, editors) : policyPage(siteUrl, page)));
+    const pages = [homePage(siteUrl, cities), ...cities.map((city) => cityPage(siteUrl, city)), ...categoryPages, ...fixedPages, ...editors.map((editor) => editorPage(siteUrl, editor))];
     pages.forEach((page) => {
         const target = path.join(OUT_DIR, page.file);
         fs.mkdirSync(path.dirname(target), { recursive: true });
         fs.writeFileSync(target, applyHead(template, page));
     });
-    console.log(`[prerender] ${pages.length}개 페이지 생성 (장소 ${cities.reduce((sum, city) => sum + city.spots.length, 0)}곳)`);
+    writeAppShell(template);
+    console.log(`[prerender] ${pages.length}개 페이지 생성 (장소 ${cities.reduce((sum, city) => sum + city.spots.length, 0)}곳, 에디터 ${editors.length}명)`);
 }
 
 main().catch((error) => {

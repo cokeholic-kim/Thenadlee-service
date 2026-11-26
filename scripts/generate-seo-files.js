@@ -11,7 +11,7 @@ const { BUILD_DIR, resolveSiteUrl } = require('./site-url');
 // 검색 결과에 나올 필요 없는 경로 (관리자 API, 회원 화면)
 //   /back/ 전체를 막으면 검색 로봇이 화면을 그릴 때 부르는 공개 API(xhr)를 못 불러 빈 화면으로 봄 (네이버 "접근 제한된 리소스")
 //   → API 는 열어 두고 응답에 X-Robots-Tag: noindex (back JsonResponder) 로 JSON 자체는 검색 결과에 안 나오게 함
-const DISALLOW_PATHS = ['/back/admin/', '/login', '/join', '/findPass', '/mypage', '/admin', '/groups', '/invite'];
+const DISALLOW_PATHS = ['/back/admin/', '/login', '/join', '/findPass', '/mypage', '/itineraries', '/inquiries', '/admin', '/groups', '/invite'];
 // 검색 사이트 소유 확인 값 (GitHub Variables → 빌드 환경변수, 없으면 넣지 않음)
 const VERIFICATION_TAGS = [
     { env: 'REACT_APP_NAVER_SITE_VERIFICATION', name: 'naver-site-verification' },
