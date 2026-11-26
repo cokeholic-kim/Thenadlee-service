@@ -32,6 +32,7 @@ const AdminReports = lazy(() => import('./admin/AdminReports'));
 const AdminTags = lazy(() => import('./admin/AdminTags'));
 const AdminActivity = lazy(() => import('./admin/AdminActivity'));
 const EditorListPage = lazy(() => import('./editor/EditorListPage'));
+const CityGuidePage = lazy(() => import('./guide/CityGuidePage'));
 const EditorProfilePage = lazy(() => import('./editor/EditorProfilePage'));
 const AdminEditorProfile = lazy(() => import('./admin/AdminEditorProfile'));
 
@@ -68,6 +69,7 @@ function App() {
           <Route path="/admin/tags" element={<AdminTags/>}/>
           <Route path="/admin/activity" element={<AdminActivity/>}/>
           <Route path="/editors" element={<EditorListPage/>}/>
+          <Route path="/guide/:city/:month" element={<CityGuidePage/>}/>
           <Route path="/editors/:id" element={<EditorProfilePage/>}/>
           <Route path="/admin/profile" element={<AdminEditorProfile/>}/>
           <Route path="/admin/inquiries" element={<AdminInquiries/>}/>

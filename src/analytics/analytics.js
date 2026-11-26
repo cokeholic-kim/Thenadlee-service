@@ -10,7 +10,7 @@ const MASKED_PATHS = [[/^\/invite\/[^/]+/, '/invite/:token']];
 // 초대 토큰이 든 주소에서 시작하면 토큰이 넘어갈 수 있음
 const BLOCKED_PATHS = [/^\/invite\//];
 // 행사(이벤트)에 붙일 수 있는 값 (그 밖의 값은 버림)
-const ALLOWED_PARAMS = ['city', 'day_count', 'spot_count', 'method', 'tab', 'category'];
+const ALLOWED_PARAMS = ['city', 'day_count', 'spot_count', 'method', 'tab', 'category', 'month'];
 
 let loaded = false;
 

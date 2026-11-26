@@ -28,7 +28,7 @@ ErrorDocument 404 /front/index.html
     # 빌드 때 미리 만든 페이지별 HTML
     RewriteRule ^$ front/prerender/index.html [L]
     RewriteCond %{DOCUMENT_ROOT}/front/prerender/$1.html -f
-    RewriteRule ^(map/[^/]+|spots/[^/]+/[^/]+|explore|settle|editors|editors/[0-9]+|privacy|terms)/?$ front/prerender/$1.html [L]
+    RewriteRule ^(map/[^/]+|spots/[^/]+/[^/]+|guide/[^/]+/[0-9]+|explore|settle|editors|editors/[0-9]+|privacy|terms)/?$ front/prerender/$1.html [L]
 
     # 브라우저가 gzip 을 받을 수 있으면 미리 압축한 JS·CSS(.gz) 제공 (형식·인코딩 헤더는 front/.htaccess 가 붙임, mod_headers 가 있을 때만)
     <IfModule mod_headers.c>
@@ -42,5 +42,5 @@ ErrorDocument 404 /front/index.html
     RewriteRule ^(.+)$ front/$1 [L]
 
     # APP_ROUTES: React 앱 화면 주소만 index.html 로 (여기 없는 주소는 404)
-    RewriteRule ^(login|join|findPass|mypage|itineraries|inquiries|privacy|terms|map|groups|invite|admin|itinerary|explore|settle|spots|editors)(/.*)?$ front/index.html [L]
+    RewriteRule ^(login|join|findPass|mypage|itineraries|inquiries|privacy|terms|map|groups|invite|admin|itinerary|explore|settle|spots|editors|guide)(/.*)?$ front/index.html [L]
 </IfModule>

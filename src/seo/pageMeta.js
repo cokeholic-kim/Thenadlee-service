@@ -49,6 +49,17 @@ export const spotCategoryPageMeta = (city, slug, count, name) => {
 // 종류별 페이지를 미리 만들고 링크하는 최소 장소 수 (서버 config.php 의 seo.categoryMinSpots 와 같은 값)
 export const CATEGORY_MIN_SPOTS = seo.categoryMinSpots;
 
+// 월별 여행 가이드 /guide/도시/월: 설명은 그달 정보 첫 줄을 넣어 페이지마다 다르게
+const GUIDE_SUMMARY_LENGTH = 70;
+const firstLine = (text) => String(text || '').split('\n').map((line) => line.trim()).find(Boolean) || '';
+const shorten = (text, length) => (text.length > length ? `${text.slice(0, length - 1)}…` : text);
+
+export const guidePageMeta = (city, month, description) => {
+    const values = { '{city}': CITY_NAMES[city] || city, '{month}': String(month), '{summary}': shorten(firstLine(description), GUIDE_SUMMARY_LENGTH) };
+    const fill = (template) => Object.entries(values).reduce((text, [key, value]) => text.replaceAll(key, value), template);
+    return { title: fill(seo.guideTitle), description: fill(seo.guideDescription), path: `/guide/${encodeURIComponent(city)}/${month}` };
+};
+
 // 에디터 공개 프로필: 소개 글이 있으면 설명으로, 없으면 담당 여행지로 만든 문장
 export const editorPageMeta = (editor, profileId) => {
     const cities = editor.cities.map((city) => city.displayName).join(', ');

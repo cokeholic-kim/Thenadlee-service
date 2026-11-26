@@ -39,10 +39,11 @@ async function loadCities(apiUrl) {
             ...city,
             spots: await fetchBody(`${apiUrl}/place/spot/${encodeURIComponent(city.name)}`),
             itineraries: await fetchBody(`${apiUrl}/cities/${encodeURIComponent(city.name)}/itineraries`).catch(() => []),
+            months: await fetchBody(`${apiUrl}/place/month/${encodeURIComponent(city.name)}`).catch(() => []),
         })));
     } catch (error) {
         console.warn(`[prerender] 운영 API 를 읽지 못해 제목·설명만 만듭니다: ${error.message}`);
-        return Object.keys(seo.cityNames).map((name) => ({ name, displayName: seo.cityNames[name], description: '', spots: [], itineraries: [] }));
+        return Object.keys(seo.cityNames).map((name) => ({ name, displayName: seo.cityNames[name], description: '', spots: [], itineraries: [], months: [] }));
     }
 }
 
@@ -63,6 +64,28 @@ function applyHead(template, page) {
     return html.replace('</head>', `${PRERENDER_STYLE}${jsonLd}</head>`).replace('<div id="root"></div>', `<div id="root">${page.body}</div>`);
 }
 
+// 월별 여행 가이드: 그달 정보가 있는 달만 (서버 사이트맵과 같은 기준)
+const guideMonths = (city) => (city.months || []).filter((info) => String(info.description || '').trim());
+
+const fillGuide = (template, cityName, info) => template.replaceAll('{city}', cityName).replaceAll('{month}', String(info.month))
+    .replaceAll('{summary}', summary(String(info.description).split('\n').map((line) => line.trim()).find(Boolean), 70));
+
+function guidePage(siteUrl, city, info) {
+    const cityName = seo.cityNames[city.name] || city.displayName || city.name;
+    const url = `${siteUrl}/guide/${encodeURIComponent(city.name)}/${info.month}`;
+    const months = guideMonths(city).map((item) => `<a href="/guide/${encodeURIComponent(city.name)}/${item.month}">${item.month}월</a>`).join(' ');
+    const spots = city.spots.slice(0, 12).map((spot) => `<li><strong>${escapeHtml(spot.spotName)}</strong> ${escapeHtml(summary(spot.description, SPOT_SUMMARY_LENGTH))}</li>`).join('');
+    const lines = escapeHtml(info.description).split('\n').join('<br>');
+    return {
+        file: `guide/${city.name}/${info.month}.html`, url, title: `${fillGuide(seo.guideTitle, cityName, info)} | ${seo.siteName}`,
+        description: fillGuide(seo.guideDescription, cityName, info), image: absolute(siteUrl, city.titleImageUrl),
+        jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: `${cityName} ${info.month}월 여행`, url, about: { '@type': 'TouristDestination', name: cityName } },
+        body: `<main class="prerender"><h1>${escapeHtml(cityName)} ${info.month}월 여행</h1><p>${months}</p><h2>${info.month}월 날씨·옷차림·축제</h2><p>${lines}</p>`
+            + (spots ? `<h2>${escapeHtml(cityName)} 추천 장소</h2><ul>${spots}</ul>` : '')
+            + `<p><a href="/map/${encodeURIComponent(city.name)}">${escapeHtml(cityName)} ${info.month}월 일정 만들기</a></p></main>`,
+    };
+}
+
 function cityPage(siteUrl, city) {
     const cityName = seo.cityNames[city.name] || city.displayName || city.name;
     const title = seo.cityTitle.replaceAll('{city}', cityName);
@@ -71,6 +94,7 @@ function cityPage(siteUrl, city) {
     // 공개 추천 일정 링크 (검색 로봇이 /itinerary/{id} 페이지를 찾아가도록)
     const plans = city.itineraries.map((plan) => `<li><a href="/itinerary/${plan.id}">${escapeHtml(plan.title)}</a> ${plan.dayCount}일 · ${escapeHtml(plan.authorNickName)}</li>`).join('');
     const categories = categoryGroups(city).map(({ slug, name, spots: list }) => `<li><a href="/spots/${encodeURIComponent(city.name)}/${encodeURIComponent(slug)}">${escapeHtml(fillCategory(seo.categoryTitle, cityName, name, list.length))}</a></li>`).join('');
+    const guides = guideMonths(city).map((info) => `<li><a href="/guide/${encodeURIComponent(city.name)}/${info.month}">${escapeHtml(cityName)} ${info.month}월 여행 가이드</a></li>`).join('');
     return {
         file: `map/${city.name}.html`, url, title: `${title} | ${seo.siteName}`, image: absolute(siteUrl, city.titleImageUrl),
         description: seo.cityDescription.replaceAll('{city}', cityName),
@@ -78,6 +102,7 @@ function cityPage(siteUrl, city) {
         body: `<main class="prerender"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(city.description)}</p>`
             + (spots ? `<h2>${escapeHtml(cityName)} 추천 여행지</h2><ul>${spots}</ul>` : '')
             + (categories ? `<h2>${escapeHtml(cityName)} 테마별 추천</h2><ul>${categories}</ul>` : '')
+            + (guides ? `<h2>${escapeHtml(cityName)} 월별 여행 가이드</h2><ul>${guides}</ul>` : '')
             + (plans ? `<h2>${escapeHtml(cityName)} 추천 일정</h2><ul>${plans}</ul>` : '') + `<p><a href="/">${escapeHtml(seo.siteName)} 홈</a></p></main>`,
     };
 }
@@ -195,7 +220,8 @@ async function main() {
     const editors = await loadEditors((process.env.PRERENDER_API_URL || `${siteUrl}/back`).replace(/\/+$/, ''));
     const categoryPages = cities.flatMap((city) => categoryGroups(city).map((group) => categoryPage(siteUrl, city, group)));
     const fixedPages = Object.values(seo.pages).map((page) => (page.path === seo.pages.editors.path ? editorsListPage(siteUrl, page, editors) : policyPage(siteUrl, page)));
-    const pages = [homePage(siteUrl, cities), ...cities.map((city) => cityPage(siteUrl, city)), ...categoryPages, ...fixedPages, ...editors.map((editor) => editorPage(siteUrl, editor))];
+    const guidePages = cities.flatMap((city) => guideMonths(city).map((info) => guidePage(siteUrl, city, info)));
+    const pages = [homePage(siteUrl, cities), ...cities.map((city) => cityPage(siteUrl, city)), ...categoryPages, ...guidePages, ...fixedPages, ...editors.map((editor) => editorPage(siteUrl, editor))];
     pages.forEach((page) => {
         const target = path.join(OUT_DIR, page.file);
         fs.mkdirSync(path.dirname(target), { recursive: true });

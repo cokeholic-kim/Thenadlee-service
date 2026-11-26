@@ -1,0 +1,181 @@
+// 월별 여행 가이드
+.city-guide {
+    max-width: 960px;
+    margin: 32px auto 80px;
+    padding: 0 16px;
+    text-align: left;
+    color: var(--color-text);
+    word-break: keep-all;
+
+    h1 {
+        margin: 0 0 16px;
+        font-size: 30px;
+    }
+
+    h2 {
+        margin: 0 0 12px;
+        font-size: 19px;
+    }
+}
+
+.city-guide__eyebrow {
+    margin: 0 0 4px;
+    color: var(--color-secondary-strong);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.city-guide__message {
+    padding: 40px 0;
+    color: var(--color-sub);
+
+    a {
+        color: var(--color-secondary-strong);
+    }
+}
+
+// 1월~12월 바로가기 (정보가 없는 달은 흐리게)
+.city-guide__months {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+
+    a,
+    span {
+        min-width: 44px;
+        padding: 6px 10px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        font-size: 13px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    a {
+        color: var(--color-text);
+
+        &.is-active {
+            border-color: var(--color-secondary);
+            background: var(--color-secondary);
+            color: #fff;
+            font-weight: 700;
+        }
+    }
+
+    .is-empty {
+        color: #bbb;
+    }
+}
+
+.city-guide__info {
+    padding: 20px;
+    border-radius: var(--radius-card);
+    background: var(--color-secondary-soft);
+
+    p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.8;
+        white-space: pre-line;
+    }
+}
+
+.city-guide__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    margin: 20px 0 8px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: var(--color-primary-strong);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.city-guide__section {
+    margin-top: 36px;
+}
+
+.city-guide__note {
+    margin: 8px 0 0;
+    color: var(--color-sub);
+    font-size: 12px;
+}
+
+.city-guide__themes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+
+    a {
+        padding: 6px 12px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        color: var(--color-text);
+        font-size: 14px;
+        text-decoration: none;
+    }
+}
+
+.city-guide__spots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    strong {
+        font-size: 14px;
+    }
+
+    span:not(.city-guide__thumb) {
+        color: var(--color-sub);
+        font-size: 12px;
+    }
+}
+
+.city-guide__thumb {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 10px;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.city-guide__plans {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 4px 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--color-line);
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    span {
+        color: var(--color-sub);
+        font-size: 13px;
+    }
+}
