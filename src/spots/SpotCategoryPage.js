@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
-import { CITY_NAMES, spotCategoryPageMeta } from '../seo/pageMeta';
+import { CITY_NAMES, PAGE_META, spotCategoryPageMeta } from '../seo/pageMeta';
 import { PAGE_KINDS, resolveSpotPage, spotPageOptions } from './spotPageKind';
 import SpotThumbPlaceholder from '../community/SpotThumbPlaceholder';
 import { tagText } from '../community/spotTags';
@@ -89,12 +89,15 @@ const SpotCategoryPage = () => {
     const page = resolveSpotPage(category, data.spots);
     const list = page ? data.spots.filter(page.matches) : [];
     const found = Boolean(page && data.city);
-    usePageMeta(found ? spotCategoryPageMeta(cityName, page.slug, list.length, page.name) : { title: '페이지를 찾을 수 없습니다', noindex: true });
+    // 불러오는 중·불러오기 실패(서버 404 제외)는 "없음"으로 단정하지 않음 → 색인 제외(noindex) 표시를 하지 않음
+    const failed = Boolean(data.error && !data.notFound);
+    usePageMeta(data.loading || failed ? null : found ? spotCategoryPageMeta(cityName, page.slug, list.length, page.name) : PAGE_META.notFound);
     return (
         <PageLayout>
             <div className="spot-category-page">
                 {data.loading && <p className="spot-category-page__message">불러오는 중…</p>}
-                {!data.loading && !found && <div className="spot-category-page__message"><p>찾을 수 없는 페이지예요.</p><Link to="/">여행지 고르러 가기</Link></div>}
+                {failed && <p className="spot-category-page__message">장소를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>}
+                {!data.loading && !failed && !found && <div className="spot-category-page__message"><p>찾을 수 없는 페이지예요.</p><Link to="/">여행지 고르러 가기</Link></div>}
                 {!data.loading && found && <PageBody cityName={cityName} page={page} data={data} list={list} />}
             </div>
         </PageLayout>

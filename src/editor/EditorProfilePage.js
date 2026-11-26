@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
 import { fetchEditor } from '../api/editorApi';
+import { isNotFoundError } from '../util/apiError';
 import usePageMeta from '../seo/usePageMeta';
 import { PAGE_META, editorPageMeta } from '../seo/pageMeta';
 import { providerLabel } from '../community/SocialLinks';
@@ -66,13 +67,15 @@ const ProfileBody = ({ editor }) => (
 // 에디터 공개 프로필 (/editors/:id): 공개를 켠 에디터만, 없으면 찾을 수 없음
 const EditorProfilePage = () => {
     const { id } = useParams();
+    // editor: undefined 불러오는 중, null 없음(404), false 불러오기 실패
     const [editor, setEditor] = useState(undefined);
-    useEffect(() => { setEditor(undefined); fetchEditor(id).then(setEditor).catch(() => setEditor(null)); }, [id]);
-    usePageMeta(editor ? editorPageMeta(editor, id) : editor === null ? PAGE_META.notFound : {});
+    useEffect(() => { setEditor(undefined); fetchEditor(id).then(setEditor).catch((error) => setEditor(isNotFoundError(error) ? null : false)); }, [id]);
+    usePageMeta(editor ? editorPageMeta(editor, id) : editor === null ? PAGE_META.notFound : null);
     return (
         <PageLayout>
             <div className="editor-page editor-profile">
                 {editor === undefined && <p>불러오는 중…</p>}
+                {editor === false && <p className="editor-page__empty">에디터 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>}
                 {editor === null && <p className="editor-page__empty">에디터를 찾을 수 없어요. <Link to={EDITORS_PATH}>에디터 소개</Link>에서 찾아보세요.</p>}
                 {editor && <ProfileBody editor={editor} />}
             </div>

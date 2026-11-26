@@ -5,7 +5,8 @@ import SocialLinks from '../community/SocialLinks';
 import LinkManager from '../community/LinkManager';
 import PageLayout from '../components/PageLayout';
 import usePageMeta from '../seo/usePageMeta';
-import { CITY_NAMES } from '../seo/pageMeta';
+import { CITY_NAMES, PAGE_META } from '../seo/pageMeta';
+import { isNotFoundError } from '../util/apiError';
 import { findTravelMode } from '../route/travelModes';
 import AdSenseUnit from '../marketing/AdSenseUnit';
 import { ADSENSE_SLOTS } from '../config/ads';
@@ -83,22 +84,32 @@ const ItineraryBody = ({ itinerary, onVisibility }) => {
     );
 };
 
+// 서버가 "없음"이라고 한 경우만 색인 제외, 불러오는 중·불러오기 실패는 서버가 만든 제목·색인 설정을 그대로 둠
+const itineraryMeta = ({ itinerary, notFound }, id, cityName) => {
+    const path = `/itinerary/${id}`;
+    if (itinerary) {
+        const title = `${itinerary.title} - ${cityName} ${itinerary.dayCount}일 여행 일정`;
+        return { title, description: `${itinerary.authorNickName}님의 ${cityName} ${itinerary.dayCount}일 여행 일정`, path, noindex: itinerary.visibility !== 'PUBLIC' };
+    }
+    return notFound ? { ...PAGE_META.notFound, path } : null;
+};
+
 // 공개 일정 페이지 (/itinerary/:id): 공개·숨김 아닌 일정만 보임 (서버 API 가 확인), 그 외는 "찾을 수 없음"
 const ItineraryPage = () => {
     const { id } = useParams();
-    const [state, setState] = useState({ itinerary: null, failed: false });
+    const [state, setState] = useState({ itinerary: null, failed: false, notFound: false });
     useEffect(() => {
-        fetchItinerary(id).then((itinerary) => setState({ itinerary, failed: false })).catch(() => setState({ itinerary: null, failed: true }));
+        fetchItinerary(id).then((itinerary) => setState({ itinerary, failed: false, notFound: false }))
+            .catch((error) => setState({ itinerary: null, failed: true, notFound: isNotFoundError(error) }));
     }, [id]);
-    const { itinerary, failed } = state;
+    const { itinerary, failed, notFound } = state;
     const cityName = itinerary ? CITY_NAMES[itinerary.cityName] || itinerary.cityName : '';
-    usePageMeta(itinerary
-        ? { title: `${itinerary.title} - ${cityName} ${itinerary.dayCount}일 여행 일정`, description: `${itinerary.authorNickName}님의 ${cityName} ${itinerary.dayCount}일 여행 일정`, path: `/itinerary/${id}`, noindex: itinerary.visibility !== 'PUBLIC' }
-        : { title: failed ? '페이지를 찾을 수 없습니다' : '여행 일정', path: `/itinerary/${id}`, noindex: failed });
+    usePageMeta(itineraryMeta(state, id, cityName));
     return (
         <PageLayout>
             {!itinerary && !failed && <p className="itinerary-page__message">불러오는 중…</p>}
-            {failed && <article className="itinerary-page"><h1>일정을 찾을 수 없습니다</h1><p>비공개로 바뀌었거나 삭제된 일정입니다.</p><Link to="/">메인으로 돌아가기</Link></article>}
+            {notFound && <article className="itinerary-page"><h1>일정을 찾을 수 없습니다</h1><p>비공개로 바뀌었거나 삭제된 일정입니다.</p><Link to="/">메인으로 돌아가기</Link></article>}
+            {failed && !notFound && <p className="itinerary-page__message">일정을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>}
             {itinerary && <ItineraryBody itinerary={itinerary} onVisibility={(visibility) => setState({ itinerary: { ...itinerary, visibility }, failed: false })} />}
             {itinerary && <AdSenseUnit slot={ADSENSE_SLOTS.itinerary} />}
         </PageLayout>
