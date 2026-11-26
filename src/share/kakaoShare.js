@@ -67,6 +67,17 @@ export const shareCard = async ({ blob, fileName, title, text, path }) => {
     Kakao.Share.sendDefault({ objectType: 'text', text: shorten(`${title}\n${text}`), link: { mobileWebUrl: url, webUrl: url }, buttonTitle: '모임에서 보기' });
 };
 
+/**
+ * 정산 계산기 결과를 카카오톡 메시지로 보냄 (보낼 돈 요약 글 + 정산 계산기 링크)
+ *   계산 내용은 서버에 저장하지 않으므로 링크로 결과를 다시 열 수는 없음 → 받은 사람은 글로 확인
+ */
+export const shareSettleResult = async ({ text, path }) => {
+    trackEvent('share', { method: 'kakao_settle' });
+    const Kakao = await loadSdk();
+    const url = absoluteUrl(path);
+    Kakao.Share.sendDefault({ objectType: 'text', text: shorten(text), link: { mobileWebUrl: url, webUrl: url }, buttonTitle: '정산 계산기 열기' });
+};
+
 /** 공개 일정 페이지 공유: 카카오톡 피드(사진·제목·링크). 링크는 누구나 볼 수 있는 공개 일정만 */
 export const shareItinerary = async ({ title, description, path, imageUrl }) => {
     trackEvent('share', { method: 'kakao_itinerary' });

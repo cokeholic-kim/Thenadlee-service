@@ -292,3 +292,53 @@
         flex: 1;
     }
 }
+
+// 통화 고르기는 좁게
+.settle-currency {
+    flex: 0 0 96px;
+}
+
+// 외화 환율 입력 줄: "1 USD = [ ] 원 ≈ 41,400원"
+.settle-rate {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    font-size: 14px;
+
+    label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    input {
+        width: 120px;
+    }
+
+    span {
+        color: var(--color-secondary-strong);
+        font-weight: 700;
+    }
+}
+
+.settle-button.is-kakao {
+    border-color: #fee500;
+    background: #fee500;
+    color: #191919;
+}
+
+.settle-expenses small {
+    color: var(--color-sub);
+    font-size: 12px;
+}
+
+// 버튼이 3개라 좁은 화면에서는 줄바꿈
+.settle-actions {
+    flex-wrap: wrap;
+
+    button {
+        min-width: 120px;
+    }
+}

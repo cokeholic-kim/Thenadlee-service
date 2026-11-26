@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { LIMITS, SPLIT } from './settleCalc';
+import { LIMITS, roundAmount, SPLIT } from './settleCalc';
 import useExpenseForm, { toAmount } from './useExpenseForm';
-import { number, won } from '../group/expenseFormat';
+import { BASE_CURRENCY, CURRENCIES, money, number, won } from '../group/expenseFormat';
 import { toastError } from '../ui/feedback';
 
+// 원화는 쉼표를 넣어 보여 주고, 외화·환율은 소수점을 쓸 수 있게 숫자·점만 남김
 const formatAmountInput = (text) => (toAmount(text) ? number(toAmount(text)) : '');
+const formatDecimalInput = (text) => String(text).replace(/[^0-9.]/g, '');
+const formatMoneyInput = (text, currency) => (currency === BASE_CURRENCY ? formatAmountInput(text) : formatDecimalInput(text));
+const moneyInputMode = (currency) => (currency === BASE_CURRENCY ? 'numeric' : 'decimal');
 
 const usePersonName = (people, onAdd) => {
     const [name, setName] = useState('');
@@ -43,8 +47,8 @@ const ParticipantRow = ({ person, form, expense, toggle, changeCustom }) => {
         <li className="settle-participant">
             <label><input type="checkbox" checked={checked} onChange={() => toggle(person.id)} />{person.name}</label>
             {form.split === SPLIT.CUSTOM && checked && (
-                <input inputMode="numeric" placeholder="0" aria-label={`${person.name} 부담액`}
-                    value={formatAmountInput(form.custom[person.id] || '')} onChange={(e) => changeCustom(person.id, e.target.value)} />
+                <input inputMode={moneyInputMode(form.currency)} placeholder="0" aria-label={`${person.name} 부담액 (${form.currency})`}
+                    value={formatMoneyInput(form.custom[person.id] || '', form.currency)} onChange={(e) => changeCustom(person.id, e.target.value)} />
             )}
         </li>
     );
@@ -58,24 +62,44 @@ const SplitChoice = ({ form, change }) => (
     </div>
 );
 
-const customLeft = (expense) => expense.amount - expense.participantIds.reduce((sum, id) => sum + (expense.custom[id] || 0), 0);
+const customLeft = (expense) => roundAmount(expense.originalAmount - expense.participantIds.reduce((sum, id) => sum + (expense.custom[id] || 0), 0));
+
+// 외화: "1 USD = ?원" 환율과 원화로 바꾼 금액 미리 보기 (환율은 카드 명세서·환전 영수증 값을 적으면 정확)
+const RateFields = ({ state }) => (
+    <div className="settle-rate">
+        <label>1 {state.form.currency} =
+            <input inputMode="decimal" placeholder="환율" aria-label={`환율 (1 ${state.form.currency} = ?원)`} value={formatDecimalInput(state.form.rateText)}
+                onChange={(e) => state.change('rateText', e.target.value)} />원
+        </label>
+        {state.expense.amount > 0 && <span>≈ {won(state.expense.amount)}</span>}
+    </div>
+);
+
+const AmountRow = ({ state }) => (
+    <div className="settle-row">
+        <input inputMode={moneyInputMode(state.form.currency)} placeholder={`금액 (${state.form.currency === BASE_CURRENCY ? '원' : state.form.currency})`} aria-label="금액"
+            value={formatMoneyInput(state.form.amountText, state.form.currency)} onChange={(e) => state.change('amountText', e.target.value)} />
+        <select className="settle-currency" value={state.form.currency} aria-label="통화" onChange={(e) => state.changeCurrency(e.target.value)}>
+            {CURRENCIES.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
+        </select>
+    </div>
+);
 
 const ExpenseFields = ({ people, state }) => (
     <>
         <input value={state.form.title} maxLength={LIMITS.titleLength} placeholder="무엇에 썼나요? (예: 저녁 식사)" aria-label="지출 내용" onChange={(e) => state.change('title', e.target.value)} />
-        <div className="settle-row">
-            <input inputMode="numeric" placeholder="금액 (원)" aria-label="금액" value={formatAmountInput(state.form.amountText)} onChange={(e) => state.change('amountText', e.target.value)} />
-            <select value={state.form.payerId} aria-label="낸 사람" onChange={(e) => state.change('payerId', e.target.value)}>
-                <option value="">낸 사람</option>
-                {people.map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}
-            </select>
-        </div>
+        <AmountRow state={state} />
+        {state.form.currency !== BASE_CURRENCY && <RateFields state={state} />}
+        <select value={state.form.payerId} aria-label="낸 사람" onChange={(e) => state.change('payerId', e.target.value)}>
+            <option value="">낸 사람</option>
+            {people.map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}
+        </select>
     </>
 );
 
 /** 지출 추가 (낸 사람, 나눌 사람, 나누는 방법) */
-export const ExpenseForm = ({ people, expenseCount, onAdd }) => {
-    const state = useExpenseForm(people, onAdd);
+export const ExpenseForm = ({ people, expenseCount, rates, onAdd }) => {
+    const state = useExpenseForm(people, onAdd, rates);
     const submit = (event) => {
         event.preventDefault();
         if (expenseCount >= LIMITS.expenses) return toastError(`지출은 ${LIMITS.expenses}건까지 적을 수 있어요.`);
@@ -90,7 +114,7 @@ export const ExpenseForm = ({ people, expenseCount, onAdd }) => {
                 <ExpenseFields people={people} state={state} />
                 <SplitChoice form={state.form} change={state.change} />
                 <ul className="settle-participants">{people.map((person) => <ParticipantRow key={person.id} person={person} {...state} />)}</ul>
-                {state.form.split === SPLIT.CUSTOM && <p className="settle-hint">남은 금액: {won(customLeft(state.expense))}</p>}
+                {state.form.split === SPLIT.CUSTOM && <p className="settle-hint">남은 금액: {money(customLeft(state.expense), state.form.currency)}</p>}
                 <button type="submit" className="settle-button is-primary is-wide">지출 추가</button>
             </form>
         </section>
