@@ -3,6 +3,8 @@ import { number } from './expenseFormat';
 import { buildReport, reportToText } from './reportBuilder';
 import useCardExport from './useCardExport';
 import { isKakaoShareAvailable } from '../share/kakaoShare';
+import { downloadXlsx } from '../export/download';
+import { groupSettlementSheets } from './groupSettlementWorkbook';
 import './SettlementReport.scss';
 import { toast } from '../ui/feedback';
 
@@ -94,6 +96,7 @@ const SettlementReport = ({ group, overview }) => {
             <div className="report-toolbar">
                 <h2>정산서</h2>
                 <button type="button" className="group-button is-small" onClick={copyText}>텍스트 복사</button>
+                <button type="button" className="group-button is-small" onClick={() => downloadXlsx(groupSettlementSheets(overview), `${report.title}_정산`)}>엑셀</button>
                 {isKakaoShareAvailable() && <button type="button" className="group-button is-small" onClick={shareReport} disabled={busy}>공유하기</button>}
                 <button type="button" className="group-button is-small is-primary" onClick={saveImage} disabled={busy}>{busy ? '만드는 중…' : '이미지로 저장'}</button>
             </div>

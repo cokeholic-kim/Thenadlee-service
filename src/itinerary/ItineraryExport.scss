@@ -1,0 +1,164 @@
+// 일정 페이지 "일정표 내보내기"
+.schedule-export__open {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    margin: 8px 8px 8px 0;
+    padding: 0 16px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--color-secondary-strong);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: default;
+    }
+}
+
+.schedule-export {
+    margin: 16px 0;
+}
+
+.schedule-export__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    button {
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--color-text);
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:first-child {
+            border-color: var(--color-secondary);
+            background: var(--color-secondary);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        &.is-plain {
+            border-color: transparent;
+            color: var(--color-sub);
+        }
+    }
+}
+
+// 이미지로 저장되는 카드: 화면 너비와 상관없이 읽기 좋은 폭
+.schedule-card {
+    max-width: 560px;
+    padding: 24px 22px 18px;
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    background: #fffdf9;
+    color: #222;
+    text-align: left;
+
+    // 일정 페이지 제목·소제목 스타일(.itinerary-page h2·h3)을 물려받지 않게 한 단계 더 구체적으로
+    .schedule-card__title {
+        margin: 4px 0 16px;
+        color: #222;
+        font-size: 22px;
+    }
+}
+
+.schedule-card__meta {
+    margin: 0;
+    color: var(--color-secondary-strong);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.schedule-card__day {
+    margin-top: 14px;
+    break-inside: avoid;
+
+    h3 {
+        margin: 0 0 8px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--color-secondary);
+        font-size: 16px;
+
+        small {
+            color: var(--color-sub);
+            font-size: 13px;
+            font-weight: 500;
+        }
+    }
+
+    ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+.schedule-card__row {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    gap: 8px;
+    align-items: baseline;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.schedule-card__time {
+    color: var(--color-secondary-strong);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.schedule-card__stay,
+.schedule-card__travel,
+.schedule-card__memo,
+.schedule-card__empty {
+    color: var(--color-sub);
+    font-size: 12px;
+}
+
+.schedule-card__travel {
+    margin: 0 0 0 104px;
+}
+
+.schedule-card__memo {
+    margin: 0 0 4px 104px;
+}
+
+.schedule-card__footer {
+    margin: 16px 0 0;
+    color: #999;
+    font-size: 11px;
+    text-align: right;
+}
+
+// 인쇄: 일정표 카드만 종이에 (다른 화면 요소는 숨김)
+@media print {
+    body.is-printing-schedule * {
+        visibility: hidden;
+    }
+
+    body.is-printing-schedule .schedule-card,
+    body.is-printing-schedule .schedule-card * {
+        visibility: visible;
+    }
+
+    body.is-printing-schedule .schedule-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: none;
+        border: 0;
+        background: #fff;
+    }
+}

@@ -7,6 +7,8 @@ import { confirmDialog, toast, toastError } from '../ui/feedback';
 import { BASE_CURRENCY, money, won } from '../group/expenseFormat';
 import { isKakaoShareAvailable, shareSettleResult } from '../share/kakaoShare';
 import { balances, kakaoText, originalAmount, SPLIT, summaryText, transfers } from './settleCalc';
+import { settleSheets } from './settleWorkbook';
+import { downloadXlsx } from '../export/download';
 import useSettleDraft from './useSettleDraft';
 import { ExpenseForm, PeopleForm } from './SettleForms';
 import './SettleCalculator.scss';
@@ -59,7 +61,10 @@ const copyResult = (text) => (navigator.clipboard
 const sendKakao = (list, total) => shareSettleResult({ text: kakaoText(list, total), path: PAGE_META.settle.path })
     .catch((error) => toastError(error.message || '카카오톡으로 보내지 못했어요.'));
 
-const ResultSection = ({ rows, list, total, expenses }) => (
+// 엑셀: 정산·보낼 돈·지출 시트 (파일 이름에 오늘 날짜)
+const downloadExcel = (data) => downloadXlsx(settleSheets(data), `정산_${new Date().toISOString().slice(0, 10)}`);
+
+const ResultSection = ({ rows, list, total, expenses, people }) => (
     <section className="settle-card">
         <h2>3. 정산 결과 <small>총 {won(total)}</small></h2>
         <div className="settle-table-wrap"><BalanceTable rows={rows} /></div>
@@ -68,6 +73,7 @@ const ResultSection = ({ rows, list, total, expenses }) => (
         <div className="settle-actions">
             <button type="button" className="settle-button" onClick={() => copyResult(summaryText(rows, list, total, expenses))}>결과 복사</button>
             <button type="button" className="settle-button" onClick={() => shareResult(summaryText(rows, list, total, expenses))}>공유하기</button>
+            <button type="button" className="settle-button" onClick={() => downloadExcel({ people, expenses, rows, list, total })}>엑셀 내려받기</button>
             {isKakaoShareAvailable() && <button type="button" className="settle-button is-kakao" onClick={() => sendKakao(list, total)}>카카오톡으로 보내기</button>}
         </div>
         <p className="settle-hint">공유할 때만 결과 글이 고른 앱(카카오톡 등)으로 전달되고, 서버에는 저장되지 않아요.</p>
@@ -104,7 +110,7 @@ const SettleCalculatorPage = () => {
                 <PeopleForm people={draft.people} onAdd={draft.addPerson} onRemove={actions.removePerson} />
                 <ExpenseForm people={draft.people} expenseCount={draft.expenses.length} rates={draft.rates} onAdd={draft.addExpense} />
                 <ExpenseList people={draft.people} expenses={draft.expenses} onRemove={draft.removeExpense} />
-                {draft.expenses.length > 0 && <ResultSection rows={rows} list={transfers(rows)} total={total} expenses={draft.expenses} />}
+                {draft.expenses.length > 0 && <ResultSection rows={rows} list={transfers(rows)} total={total} expenses={draft.expenses} people={draft.people} />}
             </div>
         </PageLayout>
     );

@@ -12,6 +12,7 @@ import AdSenseUnit from '../marketing/AdSenseUnit';
 import { ADSENSE_SLOTS } from '../config/ads';
 import ItineraryMap from './ItineraryMap';
 import CalendarExportButton from '../itinerary/CalendarExportButton';
+import ItineraryExport from '../itinerary/ItineraryExport';
 import ItineraryShare from './ItineraryShare';
 import ItineraryReactions from './ItineraryReactions';
 import { trackEvent } from '../analytics/analytics';
@@ -64,6 +65,7 @@ const ItineraryBody = ({ itinerary, onVisibility }) => {
             <ItineraryShare itinerary={itinerary} title={itinerary.title} description={`${itinerary.authorNickName}님의 ${cityName} ${itinerary.dayCount}일 여행 일정`} />
             {itinerary.description && <p className="itinerary-page__description">{itinerary.description}</p>}
             <ItineraryMap itinerary={itinerary} />
+            <ItineraryExport itinerary={itinerary} />
             <CalendarExportButton itinerary={itinerary} />
             <ItineraryLinks itinerary={itinerary} />
             {itinerary.days.map((day) => (
